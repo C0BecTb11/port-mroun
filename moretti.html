@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Семья Моретти — Port-Mroun</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a;
+      --gold-dim: #8a7a3a;
+      --cream: #e8ddb8;
+      --navy: #0a1520;
+      --navy-mid: #0d1f2d;
+      --red: #8a2020;
+      --red-dim: #5a1515;
+      --text: #c8c0a0;
+      --text-dim: #7a7060;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    /* GRAIN */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      height: 55vh;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('moretti.png');
+      background-size: cover;
+      background-position: center 15%;
+      filter: brightness(0.3) saturate(0.7);
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10,21,32,0.2) 0%, rgba(10,21,32,0.95) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Crimson Text', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--red);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(32px, 6vw, 64px);
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 6px;
+      text-shadow: 0 0 40px rgba(196,168,74,0.3);
+      line-height: 1.1;
+    }
+
+    .hero-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+
+    /* BACK LINK */
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    /* NAV TABS */
+    .page-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,21,32,0.97);
+      border-bottom: 1px solid rgba(196,168,74,0.15);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .page-nav::-webkit-scrollbar { display: none; }
+
+    .page-nav ul {
+      display: flex;
+      list-style: none;
+      min-width: max-content;
+      padding: 0 16px;
+    }
+
+    .page-nav a {
+      display: block;
+      padding: 14px 18px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .page-nav a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* MAIN LAYOUT */
+    .page-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* SECTION */
+    .lore-section {
+      padding: 60px 0 20px;
+      border-bottom: 1px solid rgba(196,168,74,0.08);
+    }
+
+    .lore-section:last-child { border-bottom: none; }
+
+    .section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .section-rule {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, var(--red), transparent);
+      margin-bottom: 28px;
+    }
+
+    /* PROSE */
+    .prose p {
+      margin-bottom: 18px;
+      color: var(--text);
+    }
+
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose strong {
+      color: var(--cream);
+      font-weight: 600;
+    }
+
+    /* PULL QUOTE */
+    .pull-quote {
+      border-left: 3px solid var(--red);
+      padding: 16px 20px;
+      margin: 28px 0;
+      background: rgba(138,32,32,0.06);
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    /* TIMELINE */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+      margin-top: 10px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--red), rgba(138,32,32,0.1));
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .timeline-item:last-child { margin-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -25px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--navy);
+      box-shadow: 0 0 8px rgba(138,32,32,0.5);
+    }
+
+    .timeline-year {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .timeline-title {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .timeline-text {
+      font-size: 16px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* RULE CARDS */
+    .rule-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .rule-card {
+      background: rgba(13,21,32,0.8);
+      border: 1px solid rgba(196,168,74,0.1);
+      border-left: 3px solid var(--red-dim);
+      padding: 18px 20px;
+      transition: border-color 0.2s;
+    }
+
+    .rule-card:hover { border-left-color: var(--red); }
+
+    .rule-card.severe { border-left-color: #6a0a0a; }
+    .rule-card.severe:hover { border-left-color: #9a1010; }
+
+    .rule-title {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .rule-desc {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .rule-verdict {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--red-dim);
+      color: #aa4040;
+    }
+
+    /* RANK TABLE */
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    .rank-table th {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(196,168,74,0.2);
+      text-align: left;
+    }
+
+    .rank-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(196,168,74,0.06);
+      vertical-align: top;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .rank-table td:first-child {
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      white-space: nowrap;
+      width: 35%;
+    }
+
+    .rank-table tr:last-child td { border-bottom: none; }
+    .rank-table tr:hover td { background: rgba(196,168,74,0.03); }
+
+    /* PERSONS */
+    .persons-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .person-card {
+      background: rgba(13,21,32,0.7);
+      border: 1px solid rgba(196,168,74,0.1);
+      padding: 20px;
+    }
+
+    .person-name {
+      font-family: 'Cinzel', serif;
+      font-size: 17px;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .person-role {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .person-bio {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* WARNING BOX */
+    .warning-box {
+      background: rgba(90,15,15,0.2);
+      border: 1px solid rgba(138,32,32,0.3);
+      padding: 20px 22px;
+      margin: 24px 0;
+    }
+
+    .warning-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .warning-text {
+      font-size: 15px;
+      color: #aa8080;
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    .page-footer {
+      text-align: center;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(196,168,74,0.1);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .lore-section { padding: 40px 0 16px; }
+      .pull-quote { font-size: 16px; }
+      .rank-table td:first-child { width: 40%; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <a class="back-link" href="index.html">← Назад</a>
+  <div class="hero-bg"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Досье фракции</p>
+    <h1 class="hero-title">СЕМЬЯ МОРЕТТИ</h1>
+    <p class="hero-sub">«Кровь — не вода. Но иногда она льётся именно так.»</p>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="page-nav">
+  <ul>
+    <li><a href="#history">История</a></li>
+    <li><a href="#persons">Люди</a></li>
+    <li><a href="#structure">Структура</a></li>
+    <li><a href="#ranks">Ранги</a></li>
+    <li><a href="#laws">Законы</a></li>
+    <li><a href="#punishment">Наказания</a></li>
+    <li><a href="#exit">Выход</a></li>
+    <li><a href="#customs">Обычаи</a></li>
+    <li><a href="#conflicts">Стычки</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <!-- ИСТОРИЯ -->
+  <section class="lore-section" id="history">
+    <p class="section-eyebrow">1920 — 1947</p>
+    <h2 class="section-title">История семьи</h2>
+    <div class="section-rule"></div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1920 — Прибытие</div>
+        <div class="timeline-title">Начало. Порт-Мроун встречает чужаков.</div>
+        <div class="timeline-text">Витторио Моретти прибыл в Порт-Мроун в феврале 1920 года — через три недели после вступления в силу Восемнадцатой поправки, сделавшей производство и продажу алкоголя незаконными. Ему было тридцать два года. С ним приехали его младший брат <strong>Альберто</strong>, двоюродный племянник <strong>Джованни Фаббри</strong> и шесть человек, которых он называл «моими людьми». Официально — рабочие. На деле — костяк того, что позже назовут Семьёй.<br><br>
+        Первые месяцы были тяжёлыми. Город уже делили два ирландских клана — Кэхилы и Брэннаны. Итальянцев не ждали. Витторио снял подвал на углу Виа Наполи и открыл там «импортный склад оливкового масла». Первую партию виски он продал через месяц.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1921–1923 — Закрепление</div>
+        <div class="timeline-title">Литтл-Палермо становится их территорией.</div>
+        <div class="timeline-text">В 1921 году в Порт-Мроун начали прибывать итальянские иммигранты — волна за волной. Витторио встречал каждый корабль лично. Он давал людям работу, крышу, еду — и забирал долг лояльностью. К 1923 году квартал, который местные называли Литтл-Палермо, де-факто принадлежал Моретти. Ни один магазин не открывался без его слова. Ни один конфликт не решался без его участия.<br><br>
+        Именно тогда он впервые назвал своё окружение «семьёй» — не метафорически, а буквально. Структура, правила, иерархия. Всё как дома, в Палермо. Только вместо сицилийских апельсинов — американский виски.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1924 — Война с Кэхилами</div>
+        <div class="timeline-title">Первая настоящая кровь.</div>
+        <div class="timeline-text">Братья Кэхил контролировали доки и большую часть нелегального алкоголя в городе. Когда Витторио начал перехватывать их поставщиков — сначала тихо, потом открыто — война стала неизбежной.<br><br>
+        В марте 1924 года был застрелен Альберто Моретти — младший брат Витторио. Пуля предназначалась самому Витторио, но тот вышел из машины на минуту раньше. Альберто умер на мостовой у ресторана «Да Луиджи». Это был первый и последний раз, когда видели слёзы Дона.<br><br>
+        Ответ пришёл через десять дней. Старший из братьев Кэхил, <strong>Патрик</strong>, был найден в реке Мроун. Руки связаны. Рот — зашит. Это был фирменный знак, который Витторио использовал однажды и больше никогда: зашитый рот означал — болтал лишнее.<br><br>
+        К лету 1924 года Кэхилы запросили мира. Витторио согласился — при условии, что доки переходят под совместный контроль. Кэхилы приняли. Реально это означало, что они платят долю Моретти и получают защиту. Через два года клан распался сам.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1925–1928 — Золотые годы</div>
+        <div class="timeline-title">Сухой закон кормил всех. Моретти ели лучше остальных.</div>
+        <div class="timeline-text">Период с 1925 по 1928 год семья вспоминает как «золотые годы». Виски лился рекой. Прибыль от нелегального алкоголя позволила Витторио купить три ресторана, строительную компанию и долю в портовом складе.<br><br>
+        В 1926 году он впервые дал взятку судье. Не напрямую — через адвоката, через подставную компанию, через благотворительный фонд. Судья <strong>Харолд Уинтерс</strong> с тех пор выносил нужные приговоры и закрывал нужные дела. Этот принцип — никогда не платить напрямую, всегда через несколько слоёв — Витторио возвёл в абсолют.<br><br>
+        Именно в эти годы сформировалась внутренняя структура семьи: капо, солдаты, ассоциированные. Каждый знал своё место. Каждый знал, что бывает, если выйти за его пределы.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1929 — Чёрный октябрь</div>
+        <div class="timeline-title">Кризис не обошёл никого. Но Моретти выжили.</div>
+        <div class="timeline-text">Биржевой крах 1929 года ударил по легальному бизнесу семьи жёстко. Строительная компания встала. Один из ресторанов пришлось закрыть. Зато нелегальная торговля только выросла: люди пили больше, когда теряли работу.<br><br>
+        Витторио в эти годы начал систематически скупать долги. Разорившиеся торговцы, владельцы складов, мелкие чиновники — все они брали деньги у Моретти. Многие так и не смогли вернуть. Зато платили услугами всю оставшуюся жизнь. К концу тридцатых треть Даунтауна была так или иначе обязана семье.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1933 — Конец сухого закона</div>
+        <div class="timeline-title">Закон вернул алкоголь. Моретти уже нашли замену.</div>
+        <div class="timeline-text">Отмена Восемнадцатой поправки в декабре 1933 года многие считали катастрофой для семьи. Витторио так не думал. Он предвидел это за два года и заблаговременно перераспределил потоки: ставки, ростовщичество, контроль над докерскими профсоюзами, нелегальные азартные заведения.<br><br>
+        Рестораны, прачечные и строительный бизнес официально легализовались. Это дало возможность отмывать деньги открыто — через налоги, накладные и фиктивные контракты. Полиция получила свою долю. Всё встало на рельсы.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1935 — Приход Триады</div>
+        <div class="timeline-title">Новый игрок. Осторожное равновесие.</div>
+        <div class="timeline-text">В 1935 году в Порт-Мроуне резко выросло китайское население. Вместе с иммигрантами появилась и Триада Красного Лотоса — тихая, закрытая, непонятная. Первое время Витторио игнорировал их: Чайна-стрит была бедным районом, не представлявшим интереса.<br><br>
+        Ошибка стала очевидна в 1937-м, когда Триада взяла под контроль значительную часть портового транзита — тихо, через подставных докеров. Витторио запросил встречу. Мистер Лян не пришёл. Прислал представителя. Переговоры длились три месяца. Результатом стало молчаливое разграничение: Литтл-Палермо и Даунтаун — Моретти, Чайна-стрит и часть доков — Триада. Договор не подписан. Но держится.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1941–1945 — Война</div>
+        <div class="timeline-title">Семья воевала на двух фронтах.</div>
+        <div class="timeline-text">Когда Америка вступила в войну, Витторио отправил на фронт сорок человек из семьи — добровольно, демонстративно. Патриотизм был выгоден. Газеты писали об итальянцах-героях, что снижало давление властей на общину.<br><br>
+        Внутри города семья только укрепилась. Военные заказы шли через строительные компании Моретти. Дефицит товаров создал новый чёрный рынок — семья контролировала и его. К 1944 году семья стала богаче, чем когда-либо.<br><br>
+        Потери тоже были. <strong>Марко Фаббри</strong> — сын Джованни, один из лучших капо — погиб под Анцио в 1944-м. Витторио лично написал письмо его матери. Говорят, это единственное письмо, которое Дон написал своей рукой за всю жизнь.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1945–1947 — Послевоенное время</div>
+        <div class="timeline-title">Ветераны вернулись. Не все нашли место.</div>
+        <div class="timeline-text">После войны в семью начали приходить ветераны — свои и чужие. Люди с боевым опытом, привычкой к насилию и отсутствием перспектив. Витторио брал лучших. Они стали основой силового крыла.<br><br>
+        К 1947 году семья контролирует: все рестораны и заведения в Литтл-Палермо, букмекерскую сеть по всему городу, три строительные компании, долю в портовом транзите, двух судей, одного прокурора и начальника полиции. Витторио семьдесят лет. Он болен, но не слаб. Его слово — закон.<br><br>
+        Открытым остаётся вопрос наследства. У Дона нет прямых наследников — единственный сын умер в детстве. Советник <strong>Луиджи Конти</strong> и капо <strong>Сальваторе Грекко</strong> оба претендуют на влияние. Это напряжение — тихая война внутри семьи, которая пока не вышла наружу.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- КЛЮЧЕВЫЕ ПЕРСОНЫ -->
+  <section class="lore-section" id="persons">
+    <p class="section-eyebrow">Действующие лица</p>
+    <h2 class="section-title">Ключевые персоны</h2>
+    <div class="section-rule"></div>
+
+    <div class="persons-grid">
+
+      <div class="person-card">
+        <div class="person-name">Витторио Моретти</div>
+        <div class="person-role">Дон — глава семьи</div>
+        <div class="person-bio">Семьдесят лет. Седой, худой, с руками, покрытыми старческими пятнами — и взглядом, от которого молодые капо опускают глаза. Говорит тихо. Почти никогда не кричит. Никогда не угрожает дважды. Одет всегда безупречно: тёмный костюм в полоску, белый платок в нагрудном кармане, массивный перстень с гербом на правой руке — память об отце.<br><br>
+        Витторио не прощает предательства. Никогда. Даже спустя годы. Он помнит всё — лица, долги, обещания. Говорят, что он однажды ждал восемь лет, прежде чем ответить человеку, который его подвёл. Ответил.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Луиджи Конти</div>
+        <div class="person-role">Консильере — советник Дона</div>
+        <div class="person-bio">Шестьдесят два года. Юрист по образованию, никогда не державший оружия в руках — и не нуждавшийся в этом. Конти решает всё, что можно решить словами и деньгами. Его кабинет в центре города официально занимает адвокатская контора. На деле — место, где принимаются решения, которые потом исполняют другие.<br><br>
+        Конти и Витторио знакомы сорок лет. Это единственный человек, которому Дон позволяет возражать. Иногда — соглашается. После смерти Дона именно Конти, по мнению многих, станет серым кардиналом следующего главы — кто бы им ни оказался.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Сальваторе Грекко</div>
+        <div class="person-role">Старший капо — командир силового крыла</div>
+        <div class="person-bio">Сорок восемь лет. Ветеран Первой мировой, потом снова солдат — но уже в другой войне. Широкоплечий, медлительный в движениях и быстрый в решениях. Командует тремя бригадами. Его люди — самые проверенные в семье.<br><br>
+        Грекко не скрывает амбиций. Он хочет стать следующим Доном. Витторио об этом знает. Конти — тоже. Это создаёт треугольник напряжения, который пока удерживается уважением к старику. Пока.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Энцо Риччи</div>
+        <div class="person-role">Капо — бригада Литтл-Палермо</div>
+        <div class="person-bio">Тридцать пять лет. Вырос в Литтл-Палермо, знает каждую подворотню. Его бригада — самая многочисленная и самая видимая. Рестораны, рынок, уличная торговля — всё через Энцо. Он любит деньги, красивую одежду и громкую музыку. Витторио это раздражает, но Энцо слишком полезен, чтобы делать замечания.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Джованни Фаббри</div>
+        <div class="person-role">Капо — доки и портовые операции</div>
+        <div class="person-bio">Шестьдесят лет. Один из первых, кто приехал с Витторио в 1920-м. Его сын Марко погиб на войне. С тех пор Джованни стал тише и жёстче одновременно. Контролирует доки уже двадцать лет. Знает каждого докера, каждого инспектора, каждый груз. Предан Дону абсолютно — и именно поэтому Конти его немного боится.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Роза Моретти</div>
+        <div class="person-role">Жена Дона — неофициальный советник</div>
+        <div class="person-bio">Шестьдесят восемь лет. Ни разу публично не участвовала в делах семьи. Ни разу не присутствовала на советах. И тем не менее — те, кто знает семью изнутри, убеждены: без её молчаливого согласия не принято ни одно важное решение. Витторио советуется с ней ночью, когда никто не видит. Роза всегда говорит правду. Это редкость, которую Дон ценит превыше всего.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- СТРУКТУРА -->
+  <section class="lore-section" id="structure">
+    <p class="section-eyebrow">Организация</p>
+    <h2 class="section-title">Структура семьи</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Семья Моретти организована по принципу сицилийской традиции, адаптированной под американские реалии. Структура жёсткая, но не негибкая — Витторио умеет делать исключения там, где нужно.</p>
+
+      <div class="pull-quote">«Семья — это не люди. Это система. Люди приходят и уходят. Система остаётся.»<br><span style="font-size:14px; color: var(--text-dim)">— Витторио Моретти</span></div>
+
+      <p><strong>Дон</strong> — абсолютная власть. Его слово не обсуждается. Его решения не пересматриваются. Он не объясняет причин.</p>
+      <p><strong>Консильере</strong> — советник без формальных полномочий, но с реальным влиянием. Единственный, кто может говорить с Доном напрямую и честно.</p>
+      <p><strong>Капорежим (капо)</strong> — командиры бригад. В семье четыре бригады: Литтл-Палермо, доки, Даунтаун и «тихая» бригада — та, что занимается деликатными делами без лишнего шума.</p>
+      <p><strong>Солдаты (soldati)</strong> — принятые в семью люди. Имеют право носить кольцо с символикой семьи. Защищены законами семьи. Несут полную ответственность за свои действия.</p>
+      <p><strong>Ассоциированные</strong> — работают на семью, но не приняты официально. Могут быть любой национальности. Не защищены так же, как солдаты. Расходный материал — если так решит Дон.</p>
+    </div>
+  </section>
+
+  <!-- РАНГИ -->
+  <section class="lore-section" id="ranks">
+    <p class="section-eyebrow">Карьера</p>
+    <h2 class="section-title">Система рангов и повышения</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Повышение в семье — не вопрос выслуги лет. Это вопрос доверия, доказанного делом. Витторио лично утверждает каждое повышение до ранга солдата и выше.</p>
+    </div>
+
+    <table class="rank-table">
+      <thead>
+        <tr>
+          <th>Ранг</th>
+          <th>Как получить</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ассоциированный</td>
+          <td>Выполнить несколько поручений без провалов. Получить рекомендацию от действующего солдата. Пройти неформальную проверку капо.</td>
+        </tr>
+        <tr>
+          <td>Солдат</td>
+          <td>Церемония принятия. Требуется поручительство двух солдат. Иногда — «показать себя» в деле, которое нельзя отменить. Витторио должен одобрить лично.</td>
+        </tr>
+        <tr>
+          <td>Капорежим</td>
+          <td>Назначается Доном. Никаких выборов. Обычно — после длительной службы в качестве солдата и демонстрации организаторских способностей. Иногда — после смерти предыдущего капо.</td>
+        </tr>
+        <tr>
+          <td>Консильере</td>
+          <td>Не назначается — складывается из доверия. Нынешний Конти занял место советника постепенно, за двадцать лет. Следующий советник будет выбран так же.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warning-box" style="margin-top: 20px;">
+      <div class="warning-title">⚠ Важно для игроков</div>
+      <div class="warning-text">Роль Дона недоступна. Роль Консильере и старшего Капо — только с согласования администрации. При создании персонажа укажите, с какого момента он в семье и кто его рекомендовал.</div>
+    </div>
+  </section>
+
+  <!-- ЗАКОНЫ -->
+  <section class="lore-section" id="laws">
+    <p class="section-eyebrow">Кодекс</p>
+    <h2 class="section-title">Законы семьи</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>У семьи нет записанных правил. Всё передаётся устно, от старших к младшим. Незнание закона не является оправданием — новый человек обязан узнать всё у своего капо до того, как начнёт работать.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rule-title">Молчание превыше всего (Omertà)</div>
+        <div class="rule-desc">Никакой информации о делах семьи — чужим, полиции, прессе, жене, другу. Никому. Молчание — не просто правило. Это образ жизни. Разговаривать о семейных делах можно только с теми, кто в семье.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Не трогай семьи другого</div>
+        <div class="rule-desc">Жёны, дети, родители членов семьи — неприкосновенны. Даже в войне. Это правило нарушали единожды — человека, который это сделал, нашли через два месяца. Правило с тех пор не нарушали.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Приказ выполняется без обсуждения</div>
+        <div class="rule-desc">Вопросы задаются до получения приказа. После — только исполнение. Если приказ кажется неправильным — можно высказаться капо до начала. Но после слова «иди» — разговор окончен.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Деньги сдаются вверх</div>
+        <div class="rule-desc">Каждый уровень получает свою долю и передаёт остальное выше. Удерживать чужое — всё равно что красть у семьи. Это воспринимается именно так.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Без разрешения — не убивать</div>
+        <div class="rule-desc">Самовольное убийство — даже врага — требует объяснений и одобрения Дона задним числом. Без объяснений — это уже проблема убийцы. Особенно если убит человек с полезными связями.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Не иметь дел с наркотиками без ведома Дона</div>
+        <div class="rule-desc">Витторио лично против торговли наркотиками — считает это грязным делом, привлекающим лишнее внимание. Торговля возможна только с его личного разрешения, через конкретных людей. Нарушение — не предупреждение. Сразу последствия.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- НАКАЗАНИЯ -->
+  <section class="lore-section" id="punishment">
+    <p class="section-eyebrow">Последствия</p>
+    <h2 class="section-title">Наказания и пытки</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Семья не использует наказания как месть. Это инструмент — чтобы донести сообщение, получить информацию или сделать предупреждение остальным. Витторио относится к этому так же холодно, как бухгалтер — к цифрам.</p>
+    </div>
+
+    <div class="pull-quote">«Наказание должно быть соразмерно не проступку, а тому, что ты хочешь предотвратить в будущем.»</div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rule-title">Предупреждение</div>
+        <div class="rule-desc">Первый раз — разговор с капо. Возможно — снижение доли. Возможно — временное отстранение от операций. Никакого насилия. Это шанс исправиться.</div>
+        <div class="rule-verdict">Уровень: незначительный проступок</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Избиение</div>
+        <div class="rule-desc">Применяется при повторных мелких нарушениях, неуважении к старшему, задержке платежей. Проводится людьми Грекко — профессионально, без лишнего. Цель — боль, не увечье. Обычно два-три человека, закрытое помещение, час.</div>
+        <div class="rule-verdict">Уровень: нарушение дисциплины</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Сломанные пальцы</div>
+        <div class="rule-desc">Классическое наказание для тех, кто крадёт из кассы или удерживает чужие деньги. Символическое — руки, которые брали чужое, платят за это. Обычно ломают один-два пальца. Медицинской помощи не оказывают — сам дойдёт.</div>
+        <div class="rule-verdict">Уровень: финансовое нарушение</div>
+      </div>
+      <div class="rule-card severe">
+        <div class="rule-title">Допрос</div>
+        <div class="rule-desc">Когда нужна информация — применяются все доступные методы. Конкретные методы зависят от человека и ситуации. Используют: лишение сна, воду, огонь, удары по чувствительным точкам. Допрос ведёт специальный человек — его имя в семье не называют вслух. Зовут просто «Мастер».</div>
+        <div class="rule-verdict">Уровень: подозрение в предательстве</div>
+      </div>
+      <div class="rule-card severe">
+        <div class="rule-title">Показательное устранение</div>
+        <div class="rule-desc">Когда нужно послать сообщение остальным. Тело оставляют там, где его найдут свои. Иногда — с фирменным знаком семьи. После смерти Альберто Витторио ввёл правило: зашитый рот означает, что человек много болтал. Это использовали трижды за двадцать лет.</div>
+        <div class="rule-verdict">Уровень: серьёзное предательство</div>
+      </div>
+      <div class="rule-card severe">
+        <div class="rule-title">Тихое исчезновение</div>
+        <div class="rule-desc">Самый страшный вариант — когда человека не находят вообще. Ни тела, ни следов. Семья делает вид, что его никогда не существовало. Остальные понимают всё без слов. Применяется за предательство высшего уровня — слив полиции, работу на конкурентов.</div>
+        <div class="rule-verdict">Уровень: абсолютное предательство</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ВЫХОД -->
+  <section class="lore-section" id="exit">
+    <p class="section-eyebrow">Дорога в никуда</p>
+    <h2 class="section-title">Как покинуть семью</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Короткий ответ: никак. Из семьи не уходят. Это не работа — это принадлежность. Человек, принятый в семью, принадлежит ей до смерти — своей или Дона.</p>
+      <p>Существуют три исключения, которые Витторио допускает в редких случаях:</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rule-title">Тяжёлая болезнь или увечье</div>
+        <div class="rule-desc">Если человек физически не может продолжать работу — его «отправляют на покой». Он получает небольшое содержание, живёт тихо и никогда не говорит о семье. Никогда. Это молчаливый уговор — семья обеспечивает, человек молчит до конца дней.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Особое разрешение Дона</div>
+        <div class="rule-desc">Бывает раз в несколько лет. Только для тех, кто служил долго и верно, и у кого есть весомая причина — тяжело больной ребёнок, необходимость уехать далеко. Витторио рассматривает каждый случай лично. Большинство получают отказ.</div>
+      </div>
+      <div class="rule-card severe">
+        <div class="rule-title">Побег</div>
+        <div class="rule-desc">Если кто-то пытается уйти без разрешения — семья ищет. Долго. По всей стране. История знает троих, кто попробовал. Одного нашли через полгода в Чикаго. Второй сам вернулся через три месяца — он не мог спать. Третьего не нашли. Но семья говорит, что просто ещё ищет.</div>
+        <div class="rule-verdict">Исход: почти всегда фатальный</div>
+      </div>
+    </div>
+
+    <div class="pull-quote" style="margin-top: 28px;">«Ты можешь уйти только одним способом. И это не твой выбор.»</div>
+  </section>
+
+  <!-- ОБЫЧАИ -->
+  <section class="lore-section" id="customs">
+    <p class="section-eyebrow">Традиции</p>
+    <h2 class="section-title">Обычаи и ритуалы</h2>
+    <div class="section-rule"></div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rule-title">Церемония принятия</div>
+        <div class="rule-desc">Проходит ночью, в закрытом помещении. Присутствуют Дон, консильере, капо бригады и поручители. Новый солдат произносит клятву — её текст не записан нигде, только в памяти. Затем ему дают перстень с символикой семьи. Перстень нельзя снимать на людях.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Воскресный обед</div>
+        <div class="rule-desc">Каждое воскресенье в ресторане «Да Луиджи» — закрытый обед для членов семьи. Витторио сидит во главе стола. Это не просто еда — это смотр. Кто пришёл, кто опоздал, кто выглядит напряжённым. Дон замечает всё.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Дань уважения новому Дону</div>
+        <div class="rule-desc">Когда умирает Дон, каждый член семьи лично приходит к новому главе и приносит дань — деньги, подарок или услугу. Это не просто традиция — это присяга. Кто не пришёл — сам подписал себе приговор.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Запрет на имена</div>
+        <div class="rule-desc">В разговорах о делах не используются имена — только прозвища, клички или должности. «Старик», «Советник», «Доки», «Наш друг в суде». Это привычка, ставшая рефлексом.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Похороны</div>
+        <div class="rule-desc">Члена семьи хоронят с почестями — вне зависимости от того, как он умер. Даже если его убили по приказу Дона. На похоронах не обсуждают, как умер человек. Говорят только хорошее. Это правило.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Крёстный отец</div>
+        <div class="rule-desc">Если у члена семьи рождается ребёнок — Дон или его представитель становится крёстным. Это не метафора. Это обязательство с обеих сторон: семья защищает ребёнка, отец служит семье.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- СТЫЧКИ -->
+  <section class="lore-section" id="conflicts">
+    <p class="section-eyebrow">История конфликтов</p>
+    <h2 class="section-title">Ключевые стычки и войны</h2>
+    <div class="section-rule"></div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1924 — Война с Кэхилами</div>
+        <div class="timeline-title">Первая и самая кровавая.</div>
+        <div class="timeline-text">Подробно описана в разделе истории. Итог: ирландский клан Кэхилов прекратил существование как организованная сила. Двое братьев Кэхил эмигрировали в Бостон. Один остался — работает докером и никогда не смотрит в сторону Литтл-Палермо.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1931 — Инцидент с Брэннанами</div>
+        <div class="timeline-title">Коротко и жёстко.</div>
+        <div class="timeline-text">Ирландская банда Брэннанов попыталась захватить три букмекерских точки семьи в период, когда Витторио болел и его считали слабым. Ошибка. Грекко — тогда ещё молодой солдат — лично разобрался с ситуацией за четыре дня. Всё закончилось тем, что лидер Брэннанов <strong>Шон Брэннан</strong> пришёл к Витторио с извинениями и деньгами. Точки вернули. Плюс компенсация.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1938 — Дело Феррары</div>
+        <div class="timeline-title">Предательство изнутри.</div>
+        <div class="timeline-text"><strong>Антонио Феррара</strong> — капо «тихой» бригады — оказался информатором ФБР. Он сливал информацию три года, прежде чем его вычислили. Когда Витторио узнал — не сказал ничего. Просто попросил Конти «решить вопрос аккуратно».<br><br>
+        Феррара исчез в ноябре 1938 года. Официально — уехал на родину в Сицилию. Семья знает правду. ФБР — тоже, но доказать ничего не может. Это дело стало причиной введения правила двойной проверки при принятии новых людей.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1943 — Конфликт с Триадой из-за доков</div>
+        <div class="timeline-title">Почти война. Остановились в шаге.</div>
+        <div class="timeline-text">В военное время доки стали особенно ценными. Триада Красного Лотоса начала расширяться за пределы оговорённых границ — тихо, через подставных людей. Когда это обнаружили, Грекко предложил немедленный силовой ответ. Витторио запретил.<br><br>
+        Вместо этого — тихое давление: несколько торговых точек Триады в Даунтауне получили проблемы с пожарной инспекцией, поставщики отказались работать, нужный судья вынес решение не в пользу одного из китайских предпринимателей. Через два месяца Триада отступила. Граница была восстановлена. Никто не погиб. Витторио считает это своей лучшей операцией.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1946 — Убийство детектива Мартина</div>
+        <div class="timeline-title">Проблема, которая не закрыта до сих пор.</div>
+        <div class="timeline-text">Детектив <strong>Рой Мартин</strong> из уголовного розыска вёл расследование по делу о пожаре на одном из складов семьи. Он копал слишком глубоко и слишком честно. В январе 1946 года его нашли застреленным в машине у Доков.<br><br>
+        Семья отрицает причастность. Официально — нераскрытое преступление. Неофициально — большинство в управлении знает правду, но доказать не могут. Молодой детектив второго класса <strong>Эдди Коул</strong>, напарник Мартина, с тех пор ведёт личное расследование. Грекко предложил «решить вопрос». Витторио пока отказывается — лишнее внимание. Но терпение Дона небезгранично.</div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<div class="page-footer">
+  Port-Mroun Fandom ✦ Семья Моретти ✦ Конфиденциально
+</div>
+
+</body>
+</html>
