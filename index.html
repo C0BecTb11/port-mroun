@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Port-Mroun — Фандом</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a;
+      --gold-dim: #8a7a3a;
+      --cream: #e8ddb8;
+      --navy: #0a1520;
+      --navy-mid: #0d1f2d;
+      --navy-light: #162a3a;
+      --green-dim: #1a2e1a;
+      --text: #c8c0a0;
+      --text-dim: #7a7060;
+      --red-accent: #8a2020;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      cursor: crosshair;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ── RAIN EFFECT ── */
+    .rain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .rain::before {
+      content: '';
+      position: absolute;
+      inset: -100px 0 0 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 4px,
+        rgba(150,180,200,0.03) 4px,
+        rgba(150,180,200,0.03) 5px
+      );
+      background-size: 3px 80px;
+      animation: rain 0.8s linear infinite;
+    }
+    @keyframes rain {
+      from { transform: translateY(-80px); }
+      to   { transform: translateY(80px); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('banner.png');
+      background-size: cover;
+      background-position: center 30%;
+      filter: brightness(0.45) saturate(0.8);
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(10,21,32,0.8) 100%);
+    }
+
+    .hero-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent, var(--navy));
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Crimson Text', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--gold-dim);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 10px;
+      text-shadow: 0 0 60px rgba(196,168,74,0.4), 0 2px 4px rgba(0,0,0,0.8);
+      line-height: 1;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.6s forwards;
+    }
+
+    .hero-dash {
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 24px auto;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+    }
+
+    .hero-subtitle {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(16px, 2.5vw, 22px);
+      color: var(--cream);
+      opacity: 0;
+      animation: fadeUp 1s ease 1.1s forwards;
+      max-width: 600px;
+    }
+
+    .hero-year {
+      margin-top: 32px;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      letter-spacing: 6px;
+      color: var(--gold-dim);
+      opacity: 0;
+      animation: fadeUp 1s ease 1.4s forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,21,32,0.95);
+      border-bottom: 1px solid rgba(196,168,74,0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      list-style: none;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav a {
+      display: block;
+      padding: 16px 28px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s, background 0.3s;
+      border-bottom: 2px solid transparent;
+    }
+
+    nav a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+      background: rgba(196,168,74,0.05);
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 40px;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .section-rule {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin-bottom: 40px;
+    }
+
+    /* ── LORE ── */
+    #lore {
+      border-top: 1px solid rgba(196,168,74,0.15);
+    }
+
+    .lore-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 10px;
+    }
+
+    .lore-text p {
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .lore-quote {
+      border-left: 2px solid var(--gold);
+      padding: 20px 24px;
+      background: rgba(196,168,74,0.04);
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 20px;
+      color: var(--cream);
+      margin: 24px 0;
+      line-height: 1.5;
+    }
+
+    .lore-facts {
+      background: rgba(13,31,45,0.8);
+      border: 1px solid rgba(196,168,74,0.2);
+      padding: 28px;
+      align-self: start;
+    }
+
+    .lore-facts h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .fact-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(196,168,74,0.1);
+      font-size: 15px;
+    }
+
+    .fact-row:last-child { border-bottom: none; }
+    .fact-label { color: var(--text-dim); }
+    .fact-value { color: var(--cream); font-weight: 600; }
+
+    /* ── MAP ── */
+    #map {
+      border-top: 1px solid rgba(196,168,74,0.15);
+      padding-bottom: 40px;
+    }
+
+    .map-container {
+      position: relative;
+      margin-top: 10px;
+      border: 1px solid rgba(196,168,74,0.25);
+      overflow: hidden;
+    }
+
+    .map-container img {
+      width: 100%;
+      display: block;
+      filter: brightness(0.9) contrast(1.05);
+      transition: filter 0.3s;
+    }
+
+    .map-container:hover img {
+      filter: brightness(1) contrast(1.05);
+    }
+
+    .map-caption {
+      background: rgba(10,21,32,0.9);
+      border-top: 1px solid rgba(196,168,74,0.2);
+      padding: 14px 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--gold-dim);
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    /* ── DISTRICTS ── */
+    #districts {
+      border-top: 1px solid rgba(196,168,74,0.15);
+      position: relative;
+    }
+
+    #districts::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('districts.png');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.12) saturate(0.5);
+      z-index: 0;
+    }
+
+    #districts > * { position: relative; z-index: 1; }
+
+    .districts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2px;
+      margin-top: 10px;
+      border: 1px solid rgba(196,168,74,0.15);
+    }
+
+    .district-card {
+      background: rgba(13,31,45,0.6);
+      padding: 28px;
+      border: 1px solid rgba(196,168,74,0.08);
+      transition: background 0.3s, border-color 0.3s;
+      cursor: default;
+    }
+
+    .district-card:hover {
+      background: rgba(196,168,74,0.06);
+      border-color: rgba(196,168,74,0.25);
+    }
+
+    .district-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .district-name {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .district-desc {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ── FACTIONS ── */
+    #factions {
+      border-top: 1px solid rgba(196,168,74,0.15);
+    }
+
+    .factions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 10px;
+    }
+
+    /* ── FACTION CARD — компактная шапка ── */
+    .faction-card {
+      position: relative;
+      border: 1px solid rgba(196,168,74,0.12);
+      transition: border-color 0.3s;
+      cursor: pointer;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .faction-card:hover { border-color: rgba(196,168,74,0.35); }
+
+    /* Фото только в шапке — фиксированная высота */
+    .faction-header {
+      position: relative;
+      height: 160px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 701px) {
+      .faction-header { height: 200px; }
+    }
+
+    .faction-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center 20%;
+      filter: brightness(0.4) saturate(0.7);
+      transition: filter 0.4s;
+    }
+
+    .faction-card:hover .faction-bg { filter: brightness(0.5) saturate(0.8); }
+
+    .faction-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(8,15,22,1) 0%, rgba(8,15,22,0.3) 60%, transparent 100%);
+    }
+
+    /* Название поверх фото */
+    .faction-header-text {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px 20px;
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .faction-name {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      color: var(--gold);
+      line-height: 1.2;
+    }
+
+    .faction-status {
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border: 1px solid;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-law    { color: #6a9a6a; border-color: #6a9a6a; }
+    .status-crime  { color: #8a4a4a; border-color: #8a4a4a; }
+    .status-neutral{ color: var(--gold-dim); border-color: var(--gold-dim); }
+    .status-press  { color: #6a8aaa; border-color: #6a8aaa; }
+
+    /* Краткое описание под фото */
+    .faction-content {
+      padding: 14px 20px;
+      background: rgba(8,15,22,0.98);
+      border-top: 1px solid rgba(196,168,74,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .faction-desc {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .faction-toggle-btn {
+      flex-shrink: 0;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .faction-hint-arrow {
+      display: inline-block;
+      transition: transform 0.35s ease;
+      font-size: 13px;
+      color: var(--gold-dim);
+    }
+
+    .faction-card.open .faction-hint-arrow { transform: rotate(180deg); }
+
+    /* ── RULES TEASER ── */
+    #rules {
+      border-top: 1px solid rgba(196,168,74,0.15);
+      position: relative;
+    }
+
+    #rules::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('rules.png');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.18) saturate(0.6);
+      z-index: 0;
+    }
+
+    #rules > * { position: relative; z-index: 1; }
+
+    .rules-coming {
+      text-align: center;
+      padding: 60px 40px;
+      background: rgba(10,21,32,0.6);
+      border: 1px solid rgba(196,168,74,0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    .rules-coming p {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 20px;
+      color: var(--text-dim);
+      margin-top: 16px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(196,168,74,0.15);
+      text-align: center;
+      padding: 40px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    footer span {
+      color: var(--gold-dim);
+    }
+
+    /* ── DIVIDER ── */
+    .ornament {
+      text-align: center;
+      color: var(--gold-dim);
+      font-size: 20px;
+      margin: 0 0 40px;
+      letter-spacing: 12px;
+    }
+
+    /* ── FACTION EXPAND ── */
+    .faction-expand {
+      display: none;
+      background: rgba(8,15,22,0.99);
+      border-top: 1px solid rgba(196,168,74,0.15);
+      animation: expandIn 0.3s ease forwards;
+    }
+
+    @keyframes expandIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .faction-card.open .faction-expand { display: block; }
+
+    /* Вкладки Лор / Роли */
+    .expand-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(196,168,74,0.12);
+    }
+
+    .expand-tab {
+      flex: 1;
+      padding: 14px 10px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: center;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      user-select: none;
+    }
+
+    .expand-tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* Панели */
+    .expand-panel { display: none; padding: 20px; }
+    .expand-panel.active { display: block; }
+
+    /* Лор */
+    .expand-lore-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .expand-lore p {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .expand-lore p:last-child { margin-bottom: 0; }
+
+    /* Роли — разделены по отделам */
+    .roles-dept-block { margin-bottom: 20px; }
+    .roles-dept-block:last-child { margin-bottom: 0; }
+
+    .roles-dept-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(196,168,74,0.12);
+      margin-bottom: 10px;
+    }
+
+    .role-item {
+      padding: 12px 14px;
+      margin-bottom: 6px;
+      background: rgba(196,168,74,0.03);
+      border: 1px solid rgba(196,168,74,0.08);
+      transition: background 0.2s;
+    }
+
+    .role-item:hover { background: rgba(196,168,74,0.08); }
+    .role-item:last-child { margin-bottom: 0; }
+
+    .role-name {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .role-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 700px) {
+      .expand-panel { padding: 16px; }
+      .faction-name { font-size: 16px; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+
+      .hero {
+        height: 100svh;
+        min-height: 500px;
+      }
+      .hero-bg {
+        background-position: center center;
+        background-size: cover;
+      }
+      .hero-title { font-size: clamp(36px, 12vw, 60px); letter-spacing: 4px; }
+      .hero-subtitle { font-size: 15px; padding: 0 10px; }
+
+      nav ul {
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex-wrap: nowrap;
+        padding: 0 8px;
+      }
+      nav ul::-webkit-scrollbar { display: none; }
+      nav a { padding: 14px 16px; font-size: 9px; letter-spacing: 1px; white-space: nowrap; }
+
+      section { padding: 50px 20px; }
+
+      .lore-grid { grid-template-columns: 1fr; gap: 24px; }
+
+      .map-container img {
+        max-height: 220px;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .districts-grid { grid-template-columns: 1fr; }
+
+      .faction-card { min-height: 180px; }
+      .faction-bg { background-size: cover; background-position: center center; }
+      .faction-content { flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px; }
+      .faction-name { font-size: 17px; }
+      .faction-desc { font-size: 14px; }
+      .faction-status { font-size: 8px; padding: 5px 10px; }
+
+      #districts::before, #rules::before { background-attachment: scroll; }
+
+      .rules-coming { padding: 40px 20px; }
+      .rules-coming p { font-size: 16px; }
+
+      footer { padding: 30px 20px; font-size: 9px; }
+    }
+
+    @media (max-width: 400px) {
+      .hero-title { font-size: 32px; letter-spacing: 3px; }
+      .section-title { font-size: 24px; }
+      .faction-card { min-height: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rain"></div>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-bottom"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Текстовая ролевая игра</p>
+    <h1 class="hero-title">PORT-MROUN</h1>
+    <div class="hero-dash"></div>
+    <p class="hero-subtitle">«Город, где дождь смывает всё, кроме грехов»</p>
+    <p class="hero-year">1 9 4 7</p>
+  </div>
+</header>
+
+<!-- ── NAV ── -->
+<nav>
+  <ul>
+    <li><a href="#lore">Лор</a></li>
+    <li><a href="#map">Карта</a></li>
+    <li><a href="#districts">Районы</a></li>
+    <li><a href="#factions">Фракции</a></li>
+    <li><a href="#rules">Правила</a></li>
+  </ul>
+</nav>
+
+<!-- ── LORE ── -->
+<section id="lore">
+  <p class="section-label">История города</p>
+  <h2 class="section-title">О Порт-Мроуне</h2>
+  <div class="section-rule"></div>
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <div class="lore-grid">
+    <div class="lore-text">
+      <p>
+        Порт-Мроун — портовый город на восточном побережье США. Война закончилась два года назад,
+        солдаты вернулись домой — но мир так и не наступил. Улицы пропитаны дымом сигарет,
+        джазом из баров и запахом дождя на мостовой.
+      </p>
+      <div class="lore-quote">
+        Кто контролирует доки — контролирует всё.
+      </div>
+      <p>
+        Порт кормит весь город: легальные грузы, контрабанда, деньги. Итальянская семья Моретти
+        держит половину судей и весь Литтл-Палермо. Китайская Триада Красного Лотоса
+        действует тихо — но её щупальца тянутся повсюду. Полиция делает вид, что не замечает.
+        Или получает за это.
+      </p>
+      <p>
+        Репортёры газеты «Порт-Мроун Геральд» знают слишком много. Независимые преступники
+        не подчиняются никому — именно поэтому они опасны. А честные детективы ведут войну
+        сразу на два фронта: против преступников и против собственного начальства.
+      </p>
+    </div>
+
+    <div class="lore-facts">
+      <h3>Досье на город</h3>
+      <div class="fact-row">
+        <span class="fact-label">Год основания</span>
+        <span class="fact-value">1887</span>
+      </div>
+      <div class="fact-row">
+        <span class="fact-label">Текущий год</span>
+        <span class="fact-value">1947</span>
+      </div>
+      <div class="fact-row">
+        <span class="fact-label">Население</span>
+        <span class="fact-value">~380 000</span>
+      </div>
+      <div class="fact-row">
+        <span class="fact-label">Расположение</span>
+        <span class="fact-value">Восточное побережье США</span>
+      </div>
+      <div class="fact-row">
+        <span class="fact-label">Река</span>
+        <span class="fact-value">Река Мроун</span>
+      </div>
+      <div class="fact-row">
+        <span class="fact-label">Газета</span>
+        <span class="fact-value">Port-Mroun Herald</span>
+      </div>
+      <div class="fact-row">
+        <span class="fact-label">Атмосфера</span>
+        <span class="fact-value">Нуар, 40-е</span>
+      </div>
+      <div class="fact-row">
+        <span class="fact-label">Фракций</span>
+        <span class="fact-value">5</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MAP ── -->
+<section id="map">
+  <p class="section-label">Городская карта</p>
+  <h2 class="section-title">Карта Порт-Мроуна</h2>
+  <div class="section-rule"></div>
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <div class="map-container">
+    <img src="map.png" alt="Карта Порт-Мроуна"/>
+    <div class="map-caption">Port-Mroun City Map — 1947 — River Mroun District Survey</div>
+  </div>
+</section>
+
+<!-- ── DISTRICTS ── -->
+<section id="districts">
+  <p class="section-label">География</p>
+  <h2 class="section-title">Районы города</h2>
+  <div class="section-rule"></div>
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <div class="districts-grid">
+    <div class="district-card">
+      <div class="district-icon">🏛️</div>
+      <div class="district-name">Даунтаун</div>
+      <div class="district-desc">Деловой центр. Суды, мэрия, банки, театры. Красивый фасад самого грязного города на побережье.</div>
+    </div>
+    <div class="district-card">
+      <div class="district-icon">🍝</div>
+      <div class="district-name">Литтл-Палермо</div>
+      <div class="district-desc">Итальянский квартал. Узкие улочки, семейные рестораны и кое-что похуже. Территория семьи Моретти.</div>
+    </div>
+    <div class="district-card">
+      <div class="district-icon">🏮</div>
+      <div class="district-name">Чайна-стрит</div>
+      <div class="district-desc">Закрытый китайский район. Чужаки здесь не задерживаются. Триада видит всё.</div>
+    </div>
+    <div class="district-card">
+      <div class="district-icon">⚓</div>
+      <div class="district-name">Доки</div>
+      <div class="district-desc">Сердце контрабанды. Склады, краны, корабли. Ночью здесь лучше не появляться в одиночку.</div>
+    </div>
+    <div class="district-card">
+      <div class="district-icon">🚬</div>
+      <div class="district-name">Серый пояс</div>
+      <div class="district-desc">Трущобы и дешёвые мотели на окраине. Здесь живут те, кому некуда идти — и те, кого не ищут.</div>
+    </div>
+    <div class="district-card">
+      <div class="district-icon">💎</div>
+      <div class="district-name">Хиллсайд</div>
+      <div class="district-desc">Богатые особняки на холмах. Здесь живут те, кто покупает всех остальных. Академия и обсерватория.</div>
+    </div>
+    <div class="district-card">
+      <div class="district-icon">🚢</div>
+      <div class="district-name">Карго-ярд</div>
+      <div class="district-desc">Промышленный порт. Склады A и B, краны, грузовые суда. Официально — просто логистика.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FACTIONS ── -->
+<section id="factions">
+  <p class="section-label">Силы города</p>
+  <h2 class="section-title">Фракции</h2>
+  <div class="section-rule"></div>
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <div class="factions-list">
+
+    <!-- POLICE -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-header">
+        <div class="faction-bg" style="background-image: url('police.png'); background-position: center 20%;"></div>
+        <div class="faction-overlay"></div>
+        <div class="faction-header-text">
+          <div class="faction-name">Полицейское управление</div>
+          <div class="faction-status status-law">Закон</div>
+        </div>
+      </div>
+      <div class="faction-content">
+        <div class="faction-desc">Официальный закон города. Часть честная — часть давно куплена мафией.</div>
+        <div class="faction-toggle-btn">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-tabs">
+          <div class="expand-tab active" onclick="switchTab(event, this)">Лор</div>
+          <div class="expand-tab" onclick="switchTab(event, this)">Роли</div>
+        </div>
+        <div class="expand-panel active">
+          <div class="expand-lore">
+            <p>Полицейское управление Порт-Мроуна — главный инструмент закона в городе. На бумаге. На деле управление давно разделено: одни копы рискуют жизнью за копейки, другие получают конверты от Моретти. Начальник полиции — человек семьи, это знают все, но доказать никто не может.</p>
+            <p>В управлении несколько отделов: уголовный розыск, патрульная служба, отдел нравов, портовая полиция и засекреченный тактический отряд «Стальной кулак» из ветеранов войны.</p>
+            <p>Честному копу в Порт-Мроуне живётся тяжело. Враги — везде: и на улице, и в собственном кабинете.</p>
+          </div>
+        </div>
+        <div class="expand-panel">
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Уголовный розыск</div>
+            <div class="role-item"><div class="role-name">Детектив первого класса</div><div class="role-desc">Опытный следователь, ведёт тяжкие преступления. Работает в одиночку или с напарником.</div></div>
+            <div class="role-item"><div class="role-name">Детектив второго класса</div><div class="role-desc">Молодой следак. Часто получает дела, от которых отказываются старшие.</div></div>
+            <div class="role-item"><div class="role-name">Следователь по особым делам</div><div class="role-desc">Занимается делами с политическим душком. Прямое подчинение заму начальника.</div></div>
+            <div class="role-item"><div class="role-name">Криминалист</div><div class="role-desc">Работает с уликами, телами, следами. Редко выходит в поле — но его выводы решают дела.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Патрульная служба</div>
+            <div class="role-item"><div class="role-name">Патрульный офицер</div><div class="role-desc">Ходит маршрутом, знает свой район. Первый на месте происшествия.</div></div>
+            <div class="role-item"><div class="role-name">Сержант патруля</div><div class="role-desc">Командует звеном из 3–4 патрульных. Решает мелкие конфликты на месте.</div></div>
+            <div class="role-item"><div class="role-name">Дежурный офицер</div><div class="role-desc">Сидит на участке, принимает заявления, координирует выезды.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Отдел нравов</div>
+            <div class="role-item"><div class="role-name">Агент под прикрытием</div><div class="role-desc">Работает в барах, казино, борделях. Двойная жизнь — двойной риск.</div></div>
+            <div class="role-item"><div class="role-name">Инспектор по нравам</div><div class="role-desc">Борется с азартными играми и нелегальным алкоголем. Самый коррумпированный отдел.</div></div>
+            <div class="role-item"><div class="role-name">Осведомитель (на связи)</div><div class="role-desc">Технически гражданский, работает на отдел. Получает деньги за информацию.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Портовая полиция</div>
+            <div class="role-item"><div class="role-name">Портовый инспектор</div><div class="role-desc">Следит за грузами в доках. Половина куплена — другая пытается что-то доказать.</div></div>
+            <div class="role-item"><div class="role-name">Таможенный офицер</div><div class="role-desc">Проверяет документы на грузы. Знает, что провозят. Иногда предпочитает не знать.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Стальной кулак (спецотряд)</div>
+            <div class="role-item"><div class="role-name">Оперативник отряда</div><div class="role-desc">Ветеран войны. Рейды, захват опасных преступников, зачистки.</div></div>
+            <div class="role-item"><div class="role-name">Снайпер отряда</div><div class="role-desc">Работает с позиции. Выезжает только на особые операции.</div></div>
+            <div class="role-item"><div class="role-name">Медик отряда</div><div class="role-desc">Бывший военный фельдшер. Вытаскивает своих прямо на месте.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Администрация</div>
+            <div class="role-item"><div class="role-name">Полицейский адвокат</div><div class="role-desc">Защищает интересы управления в суде. Знает, какие дела лучше не доводить до приговора.</div></div>
+            <div class="role-item"><div class="role-name">Пресс-секретарь</div><div class="role-desc">Общается с журналистами. Умеет говорить много, не сказав ничего.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MORETTI -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-header">
+        <div class="faction-bg" style="background-image: url('moretti.png'); background-position: center 15%;"></div>
+        <div class="faction-overlay"></div>
+        <div class="faction-header-text">
+          <div class="faction-name">Семья Моретти</div>
+          <div class="faction-status status-crime">Преступность</div>
+        </div>
+      </div>
+      <div class="faction-content">
+        <div class="faction-desc">Итальянская мафия. Дон Витторио Моретти — старик, помнящий ещё сухой закон.</div>
+        <div class="faction-toggle-btn">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-tabs">
+          <div class="expand-tab active" onclick="switchTab(event, this)">Лор</div>
+          <div class="expand-tab" onclick="switchTab(event, this)">Роли</div>
+        </div>
+        <div class="expand-panel active">
+          <div class="expand-lore">
+            <p>Семья Моретти пришла в Порт-Мроун в двадцатых, во времена сухого закона. Тогда торговали виски, теперь — всем остальным. Дон Витторио — человек старой закалки: никогда не повышает голос, всегда держит слово и не прощает предательства.</p>
+            <p>Литтл-Палермо — их сердце, но щупальца тянутся в доки, Даунтаун и Хиллсайд. Легальный бизнес — рестораны, прачечные, строительство — прикрывает остальное.</p>
+            <p>Моретти ценят лояльность выше таланта. Нарушил — ответишь. Доказал себя — поднимешься.</p>
+          </div>
+        </div>
+        <div class="expand-panel">
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Иерархия семьи</div>
+            <div class="role-item"><div class="role-name">Капорежим (капо)</div><div class="role-desc">Командует бригадой из 5–10 человек. Получает долю с каждой операции.</div></div>
+            <div class="role-item"><div class="role-name">Солдат (soldato)</div><div class="role-desc">Полноправный член семьи. Выполняет приказы капо, ведёт своих людей.</div></div>
+            <div class="role-item"><div class="role-name">Ассоциированный</div><div class="role-desc">Работает на семью, но не принят официально. Доказывает лояльность делом.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Силовое крыло</div>
+            <div class="role-item"><div class="role-name">Enforcer (каратель)</div><div class="role-desc">Специалист по «решению вопросов» силой. Выбивает долги, запугивает, устраняет.</div></div>
+            <div class="role-item"><div class="role-name">Телохранитель</div><div class="role-desc">Охраняет высокопоставленных членов семьи. Всегда рядом, всегда начеку.</div></div>
+            <div class="role-item"><div class="role-name">Водитель</div><div class="role-desc">Знает все улицы города. Возит людей, грузы, иногда тела. Молчание — часть работы.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Бизнес</div>
+            <div class="role-item"><div class="role-name">Управляющий рестораном</div><div class="role-desc">Держит заведение семьи. Прачечная для денег. Место для встреч.</div></div>
+            <div class="role-item"><div class="role-name">Букмекер</div><div class="role-desc">Принимает ставки на скачки и бокс. Знает, кто сколько должен.</div></div>
+            <div class="role-item"><div class="role-name">Ростовщик</div><div class="role-desc">Даёт деньги под процент тем, кому банк отказал. Просрочка — проблема заёмщика.</div></div>
+            <div class="role-item"><div class="role-name">Контрабандист</div><div class="role-desc">Организует провоз товаров через доки. Знает портовых копов по именам.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Связи</div>
+            <div class="role-item"><div class="role-name">Коррумпированный адвокат</div><div class="role-desc">Вытаскивает людей семьи из-под следствия. Знает судей и их слабости.</div></div>
+            <div class="role-item"><div class="role-name">Осведомитель в полиции</div><div class="role-desc">Носит значок, но работает на семью. Сливает информацию о рейдах.</div></div>
+            <div class="role-item"><div class="role-name">Посредник</div><div class="role-desc">Ведёт переговоры с другими фракциями. Дипломат преступного мира.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Улица</div>
+            <div class="role-item"><div class="role-name">Сборщик долгов</div><div class="role-desc">Ходит по должникам. Сначала вежливо. Потом — как получится.</div></div>
+            <div class="role-item"><div class="role-name">Уличный торговец</div><div class="role-desc">Продаёт запрещённое на углах Литтл-Палермо. Маленькая рыба, но нужная.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRIAD -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-header">
+        <div class="faction-bg" style="background-image: url('triad2.png'); background-position: center center;"></div>
+        <div class="faction-overlay"></div>
+        <div class="faction-header-text">
+          <div class="faction-name">Триада Красного Лотоса</div>
+          <div class="faction-status status-crime">Преступность</div>
+        </div>
+      </div>
+      <div class="faction-content">
+        <div class="faction-desc">Китайская организация. Действуют тихо. Лидер — Мистер Лян, которого никто не видел лично.</div>
+        <div class="faction-toggle-btn">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-tabs">
+          <div class="expand-tab active" onclick="switchTab(event, this)">Лор</div>
+          <div class="expand-tab" onclick="switchTab(event, this)">Роли</div>
+        </div>
+        <div class="expand-panel active">
+          <div class="expand-lore">
+            <p>Триада Красного Лотоса появилась в Порт-Мроуне в тридцатых. Снаружи — торговцы и рестораторы. Внутри — жёсткая иерархия, древние ритуалы и железная дисциплина.</p>
+            <p>Их сила в невидимости. Они не стреляют на улицах — шепчут нужным людям нужные слова. Мистер Лян руководит из тени: никто не знает его лица, но все знают последствия его решений.</p>
+            <p>Чайна-стрит — их крепость. Чужой без приглашения выйдет с меньшим, чем зашёл. Или не выйдет вовсе.</p>
+          </div>
+        </div>
+        <div class="expand-panel">
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Иерархия</div>
+            <div class="role-item"><div class="role-name">Красный Шест (боевой командир)</div><div class="role-desc">Командует оперативниками. Планирует и ведёт операции. Третий по рангу.</div></div>
+            <div class="role-item"><div class="role-name">Белый Веер (советник)</div><div class="role-desc">Стратег и финансист. Управляет активами, ведёт переговоры.</div></div>
+            <div class="role-item"><div class="role-name">Соломенная Сандалия (посредник)</div><div class="role-desc">Связующее звено между триадой и внешним миром.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Оперативники</div>
+            <div class="role-item"><div class="role-name">49-й (боец)</div><div class="role-desc">Рядовой член триады. Путь наверх — через преданность и результат.</div></div>
+            <div class="role-item"><div class="role-name">Теневой оперативник</div><div class="role-desc">Специалист по слежке, шантажу, тихому устранению. Работает без следов.</div></div>
+            <div class="role-item"><div class="role-name">Курьер</div><div class="role-desc">Перевозит товар, деньги, послания. Знает — когда молчать.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Бизнес</div>
+            <div class="role-item"><div class="role-name">Хозяин опиумного притона</div><div class="role-desc">Держит заведение в глубине Чайна-стрит. Клиенты — от докеров до судей.</div></div>
+            <div class="role-item"><div class="role-name">Торговец (прикрытие)</div><div class="role-desc">Официально — лавка специй. Неофициально — перевалочный пункт.</div></div>
+            <div class="role-item"><div class="role-name">Контролёр порта</div><div class="role-desc">Следит за своей долей грузооборота в доках.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Связи и особые</div>
+            <div class="role-item"><div class="role-name">Информатор</div><div class="role-desc">Собирает сведения о других фракциях и полиции. Информация — главный товар.</div></div>
+            <div class="role-item"><div class="role-name">Вербовщик</div><div class="role-desc">Ищет новых членов за пределами Чайна-стрит. Умеет убеждать.</div></div>
+            <div class="role-item"><div class="role-name">Переводчик / Толмач</div><div class="role-desc">Сопровождает высокопоставленных членов на внешних встречах.</div></div>
+            <div class="role-item"><div class="role-name">Хранитель ритуалов</div><div class="role-desc">Проводит церемонии принятия. Хранит традиции и историю организации.</div></div>
+            <div class="role-item"><div class="role-name">Врач общины</div><div class="role-desc">Лечит своих без лишних вопросов. Единственный медик, которому доверяют.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INDEPENDENT -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-header">
+        <div class="faction-bg" style="background-image: url('independent.png'); background-position: center center;"></div>
+        <div class="faction-overlay"></div>
+        <div class="faction-header-text">
+          <div class="faction-name">Независимые</div>
+          <div class="faction-status status-neutral">Нейтрал</div>
+        </div>
+      </div>
+      <div class="faction-content">
+        <div class="faction-desc">Одиночки, наёмники, мелкие банды. Не подчиняются никому — именно поэтому опасны для всех.</div>
+        <div class="faction-toggle-btn">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-tabs">
+          <div class="expand-tab active" onclick="switchTab(event, this)">Лор</div>
+          <div class="expand-tab" onclick="switchTab(event, this)">Роли</div>
+        </div>
+        <div class="expand-panel active">
+          <div class="expand-lore">
+            <p>Независимые — не фракция в обычном смысле. Это все, кто работает вне крупных организаций: частные сыщики, наёмники, мелкие банды, контрабандисты-одиночки, шулеры и те, кто умеет решать чужие проблемы за деньги.</p>
+            <p>Главное преимущество — свобода. Главный недостаток — та же свобода. Без крыши в Порт-Мроуне долго не живут. Рано или поздно каждый одиночка выбирает, на кого работать.</p>
+            <p>Серый пояс — их территория. Здесь не задают лишних вопросов.</p>
+          </div>
+        </div>
+        <div class="expand-panel">
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Детективы</div>
+            <div class="role-item"><div class="role-name">Частный сыщик</div><div class="role-desc">Берётся за дела, от которых отказывается полиция. Изменщики, пропавшие, грязные секреты.</div></div>
+            <div class="role-item"><div class="role-name">Охотник за головами</div><div class="role-desc">Ловит беглецов за вознаграждение. Работает на грани закона.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Криминал</div>
+            <div class="role-item"><div class="role-name">Наёмник</div><div class="role-desc">Продаёт кулаки и оружие тому, кто платит. Без лишних вопросов.</div></div>
+            <div class="role-item"><div class="role-name">Взломщик</div><div class="role-desc">Специалист по замкам и сейфам. Работает тихо и быстро.</div></div>
+            <div class="role-item"><div class="role-name">Фальшивомонетчик</div><div class="role-desc">Делает документы, деньги, печати. Его продукт ходит по всему городу.</div></div>
+            <div class="role-item"><div class="role-name">Скупщик краденого</div><div class="role-desc">Держит «ломбард» в Сером поясе. Всё принимает, ни о чём не спрашивает.</div></div>
+            <div class="role-item"><div class="role-name">Карманник / Мошенник</div><div class="role-desc">Работает в толпе, на вокзалах, в барах. Быстрые руки, быстрые ноги.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Улица</div>
+            <div class="role-item"><div class="role-name">Лидер банды</div><div class="role-desc">Держит небольшую банду в Сером поясе. Постоянная борьба за выживание.</div></div>
+            <div class="role-item"><div class="role-name">Бандит</div><div class="role-desc">Рядовой уличной банды. Грабежи, разборки, мелкая торговля.</div></div>
+            <div class="role-item"><div class="role-name">Контрабандист-одиночка</div><div class="role-desc">Возит запрещённое без крыши фракций. Сам себе хозяин.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Особые</div>
+            <div class="role-item"><div class="role-name">Информатор (вольный)</div><div class="role-desc">Продаёт информацию всем желающим. Знает много — живёт недолго.</div></div>
+            <div class="role-item"><div class="role-name">Ветеран войны</div><div class="role-desc">Вернулся с фронта, не нашёл места. Навыки есть — применения нет.</div></div>
+            <div class="role-item"><div class="role-name">Шулер / Игрок</div><div class="role-desc">Живёт за карточным столом. Читает людей как книги.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRESS -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-header">
+        <div class="faction-bg" style="background-image: url('press.png'); background-position: center center;"></div>
+        <div class="faction-overlay"></div>
+        <div class="faction-header-text">
+          <div class="faction-name">Пресса и гражданские</div>
+          <div class="faction-status status-press">Гражданские</div>
+        </div>
+      </div>
+      <div class="faction-content">
+        <div class="faction-desc">Газета «Порт-Мроун Геральд», юристы, врачи. Слабые поодиночке — но слово журналиста меняет всё.</div>
+        <div class="faction-toggle-btn">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-tabs">
+          <div class="expand-tab active" onclick="switchTab(event, this)">Лор</div>
+          <div class="expand-tab" onclick="switchTab(event, this)">Роли</div>
+        </div>
+        <div class="expand-panel active">
+          <div class="expand-lore">
+            <p>«Порт-Мроун Геральд» — единственная независимая газета в городе. Остальные давно куплены. Геральд держится из последних сил: рекламодатели уходят, репортёров запугивают, редактора уже однажды избили в подворотне.</p>
+            <p>В городе есть адвокаты, которые ещё не продались, врачи, лечащие всех без разбора, и священники, слышащие больше чем полиция. Все они — часть гражданского мира между фракциями.</p>
+            <p>Их оружие — слово, закон и совесть. В Порт-Мроуне 1947 года это почти смешно. Почти.</p>
+          </div>
+        </div>
+        <div class="expand-panel">
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Геральд</div>
+            <div class="role-item"><div class="role-name">Репортёр-расследователь</div><div class="role-desc">Копает под фракции и коррупцию. Каждая статья — угроза жизни.</div></div>
+            <div class="role-item"><div class="role-name">Криминальный репортёр</div><div class="role-desc">Первым приезжает на место. Видит то, что полиция хочет скрыть.</div></div>
+            <div class="role-item"><div class="role-name">Фотограф</div><div class="role-desc">Снимает то, что нельзя описать словами. Его снимки стоят дороже статей.</div></div>
+            <div class="role-item"><div class="role-name">Редактор отдела</div><div class="role-desc">Решает, что выходит в печать. Давление со всех сторон.</div></div>
+            <div class="role-item"><div class="role-name">Колумнист</div><div class="role-desc">Пишет авторские колонки. Его читают все — и все хотят его замолчать.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Право</div>
+            <div class="role-item"><div class="role-name">Адвокат защиты</div><div class="role-desc">Берётся за безнадёжные дела. Защищает тех, кого система хочет сломать.</div></div>
+            <div class="role-item"><div class="role-name">Прокурор</div><div class="role-desc">Пытается посадить преступников несмотря на давление сверху.</div></div>
+            <div class="role-item"><div class="role-name">Нотариус</div><div class="role-desc">Оформляет документы. Знает чужие тайны. Хранит их. Обычно.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Медицина</div>
+            <div class="role-item"><div class="role-name">Врач скорой помощи</div><div class="role-desc">Лечит всех — копов, бандитов, жертв. Не задаёт лишних вопросов.</div></div>
+            <div class="role-item"><div class="role-name">Судмедэксперт</div><div class="role-desc">Говорит за мёртвых в пользу живых. Его заключения меняют дела.</div></div>
+            <div class="role-item"><div class="role-name">Аптекарь</div><div class="role-desc">Продаёт лекарства. Иногда — кое-что ещё. Знает, кто что принимает.</div></div>
+          </div>
+          <div class="roles-dept-block">
+            <div class="roles-dept-label">Прочие</div>
+            <div class="role-item"><div class="role-name">Священник</div><div class="role-desc">Исповедует грешников. Слышит больше, чем любой коп. Нейтральная территория.</div></div>
+            <div class="role-item"><div class="role-name">Бармен</div><div class="role-desc">За стойкой проходит весь город. Молчалив, наблюдателен, незаменим.</div></div>
+            <div class="role-item"><div class="role-name">Социальный работник</div><div class="role-desc">Помогает беднякам Серого пояса. Знает трущобы лучше любого копа.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+      <div class="faction-content">
+        <div class="faction-text">
+          <div class="faction-name">Полицейское управление</div>
+          <div class="faction-desc">Официальный закон Порт-Мроуна. Часть честная — часть давно на жалованье у мафии. Детективный отдел ведёт войну сразу на два фронта: против преступников и против собственного начальства.</div>
+        </div>
+        <div class="faction-status status-law">Закон</div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-lore">
+          <div class="expand-lore-title">▸ Досье фракции</div>
+          <p>Полицейское управление Порт-Мроуна — главный инструмент закона в городе. На бумаге. На деле управление давно разделено: одни копы рискуют жизнью за копейки, другие получают конверты от Моретти и смотрят в сторону. Начальник полиции — человек семьи, это знают все, но доказать никто не может.</p>
+          <p>В управлении несколько отделов: уголовный розыск, патрульная служба, отдел нравов, портовая полиция и засекреченный тактический отряд «Стальной кулак», созданный после войны из ветеранов. Каждый отдел — своя война.</p>
+          <p>Честному копу в Порт-Мроуне живётся тяжело. Враги — везде: и на улице, и в собственном кабинете.</p>
+        </div>
+        <div class="expand-roles-title">▸ Доступные роли</div>
+        <div class="roles-grid">
+          <div class="role-item"><div class="role-dept">Уголовный розыск</div><div class="role-name">Детектив первого класса</div><div class="role-desc">Опытный следователь, ведёт тяжкие преступления. Работает в одиночку или с напарником.</div></div>
+          <div class="role-item"><div class="role-dept">Уголовный розыск</div><div class="role-name">Детектив второго класса</div><div class="role-desc">Молодой следак, ещё доказывает себе и другим. Часто получает дела, от которых отказываются старшие.</div></div>
+          <div class="role-item"><div class="role-dept">Уголовный розыск</div><div class="role-name">Следователь по особым делам</div><div class="role-desc">Занимается делами с политическим душком. Прямое подчинение заму начальника.</div></div>
+          <div class="role-item"><div class="role-dept">Уголовный розыск</div><div class="role-name">Криминалист</div><div class="role-desc">Работает с уликами, телами, следами. Редко выходит в поле — но именно его выводы решают дела.</div></div>
+          <div class="role-item"><div class="role-dept">Патрульная служба</div><div class="role-name">Патрульный офицер</div><div class="role-desc">Ходит маршрутом, знает свой район как свои пять пальцев. Первый на месте происшествия.</div></div>
+          <div class="role-item"><div class="role-dept">Патрульная служба</div><div class="role-name">Сержант патруля</div><div class="role-desc">Командует звеном из трёх-четырёх патрульных. Решает мелкие конфликты на месте.</div></div>
+          <div class="role-item"><div class="role-dept">Патрульная служба</div><div class="role-name">Дежурный офицер</div><div class="role-desc">Сидит на участке, принимает заявления, координирует выезды. Знает всё, что происходит в округе.</div></div>
+          <div class="role-item"><div class="role-dept">Отдел нравов</div><div class="role-name">Агент под прикрытием</div><div class="role-desc">Работает в барах, казино, борделях. Собирает информацию изнутри. Двойная жизнь — двойной риск.</div></div>
+          <div class="role-item"><div class="role-dept">Отдел нравов</div><div class="role-name">Инспектор по нравам</div><div class="role-desc">Борется с азартными играми, проституцией, нелегальным алкоголем. Самый коррумпированный отдел.</div></div>
+          <div class="role-item"><div class="role-dept">Отдел нравов</div><div class="role-name">Осведомитель (на связи)</div><div class="role-desc">Технически гражданский, но работает на отдел. Получает деньги за информацию. Опасное положение.</div></div>
+          <div class="role-item"><div class="role-dept">Портовая полиция</div><div class="role-name">Портовый инспектор</div><div class="role-desc">Следит за грузами в доках. Половина куплена — другая половина пытается что-то доказать.</div></div>
+          <div class="role-item"><div class="role-dept">Портовая полиция</div><div class="role-name">Таможенный офицер</div><div class="role-desc">Проверяет документы на грузы. Знает, что провозят. Иногда предпочитает не знать.</div></div>
+          <div class="role-item"><div class="role-dept">Стальной кулак</div><div class="role-name">Оперативник отряда</div><div class="role-desc">Ветеран войны, теперь в тактическом спецподразделении. Рейды, захват опасных преступников, зачистки.</div></div>
+          <div class="role-item"><div class="role-dept">Стальной кулак</div><div class="role-name">Снайпер отряда</div><div class="role-desc">Работает с позиции. Выезжает только на особые операции. Человек немногих слов.</div></div>
+          <div class="role-item"><div class="role-dept">Стальной кулак</div><div class="role-name">Медик отряда</div><div class="role-desc">Бывший военный фельдшер. Вытаскивает своих с того света прямо на месте.</div></div>
+          <div class="role-item"><div class="role-dept">Администрация</div><div class="role-name">Полицейский адвокат</div><div class="role-desc">Защищает интересы управления в суде. Знает, какие дела лучше не доводить до приговора.</div></div>
+          <div class="role-item"><div class="role-dept">Администрация</div><div class="role-name">Пресс-секретарь</div><div class="role-desc">Общается с журналистами. Умеет говорить много, не сказав ничего.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MORETTI -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-bg" style="background-image: url('moretti.png'); background-position: center 15%;"></div>
+      <div class="faction-overlay"></div>
+      <div class="faction-hint">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      <div class="faction-content">
+        <div class="faction-text">
+          <div class="faction-name">Семья Моретти</div>
+          <div class="faction-desc">Итальянская мафия. Дон Витторио Моретти — старик, помнящий ещё сухой закон. Умный, терпеливый и беспощадный. Держат рестораны, букмекеров, доки и половину судей города.</div>
+        </div>
+        <div class="faction-status status-crime">Преступность</div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-lore">
+          <div class="expand-lore-title">▸ Досье фракции</div>
+          <p>Семья Моретти пришла в Порт-Мроун ещё в двадцатых, во времена сухого закона. Тогда они торговали виски, теперь — всем остальным. Дон Витторио Моретти — человек старой закалки: никогда не повышает голос, всегда держит слово и не прощает предательства.</p>
+          <p>Семья делится на несколько «бригад» по районам. Литтл-Палермо — их сердце, но щупальца тянутся в доки, Даунтаун и даже в Хиллсайд. Легальный бизнес — рестораны, прачечные, строительные компании — прикрывает остальное.</p>
+          <p>Внутри семьи своя иерархия и свои законы. Нарушил — ответишь. Доказал себя — поднимешься. Моретти ценят лояльность выше таланта.</p>
+        </div>
+        <div class="expand-roles-title">▸ Доступные роли</div>
+        <div class="roles-grid">
+          <div class="role-item"><div class="role-dept">Семья</div><div class="role-name">Капорежим (капо)</div><div class="role-desc">Командует бригадой из 5–10 человек. Получает долю с каждой операции. Отвечает перед советником.</div></div>
+          <div class="role-item"><div class="role-dept">Семья</div><div class="role-name">Солдат (soldato)</div><div class="role-desc">Полноправный член семьи. Выполняет приказы капо, ведёт своих людей.</div></div>
+          <div class="role-item"><div class="role-dept">Семья</div><div class="role-name">Ассоциированный</div><div class="role-desc">Работает на семью, но не принят официально. Доказывает лояльность делом.</div></div>
+          <div class="role-item"><div class="role-dept">Силовое крыло</div><div class="role-name">Enforcer (каратель)</div><div class="role-desc">Специалист по «решению вопросов» силой. Выбивает долги, запугивает, устраняет.</div></div>
+          <div class="role-item"><div class="role-dept">Силовое крыло</div><div class="role-name">Телохранитель</div><div class="role-desc">Охраняет высокопоставленных членов семьи. Всегда рядом, всегда начеку.</div></div>
+          <div class="role-item"><div class="role-dept">Силовое крыло</div><div class="role-name">Водитель</div><div class="role-desc">Знает все улицы города. Возит людей, грузы, иногда тела. Молчание — часть работы.</div></div>
+          <div class="role-item"><div class="role-dept">Бизнес</div><div class="role-name">Управляющий рестораном</div><div class="role-desc">Держит одно из заведений семьи. Прачечная для денег. Место для встреч.</div></div>
+          <div class="role-item"><div class="role-dept">Бизнес</div><div class="role-name">Букмекер</div><div class="role-desc">Принимает ставки на скачки и бокс. Знает, кто сколько должен. Ценный человек.</div></div>
+          <div class="role-item"><div class="role-dept">Бизнес</div><div class="role-name">Ростовщик</div><div class="role-desc">Даёт деньги под процент тем, кому банк отказал. Просрочка — проблема заёмщика.</div></div>
+          <div class="role-item"><div class="role-dept">Бизнес</div><div class="role-name">Контрабандист</div><div class="role-desc">Организует провоз товаров через доки. Знает портовых копов по именам.</div></div>
+          <div class="role-item"><div class="role-dept">Связи</div><div class="role-name">Коррумпированный адвокат</div><div class="role-desc">Вытаскивает людей семьи из-под следствия. Знает судей и их слабости.</div></div>
+          <div class="role-item"><div class="role-dept">Связи</div><div class="role-name">Осведомитель в полиции</div><div class="role-desc">Носит значок, но работает на семью. Сливает информацию о рейдах и арестах.</div></div>
+          <div class="role-item"><div class="role-dept">Связи</div><div class="role-name">Посредник</div><div class="role-desc">Ведёт переговоры с другими фракциями. Дипломат преступного мира.</div></div>
+          <div class="role-item"><div class="role-dept">Улица</div><div class="role-name">Сборщик долгов</div><div class="role-desc">Ходит по должникам. Сначала вежливо. Потом — как получится.</div></div>
+          <div class="role-item"><div class="role-dept">Улица</div><div class="role-name">Уличный торговец</div><div class="role-desc">Продаёт запрещённое на углах Литтл-Палермо. Маленькая рыба, но нужная.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRIAD -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-bg" style="background-image: url('triad2.png'); background-position: center center;"></div>
+      <div class="faction-overlay"></div>
+      <div class="faction-hint">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      <div class="faction-content">
+        <div class="faction-text">
+          <div class="faction-name">Триада Красного Лотоса</div>
+          <div class="faction-desc">Китайская организация. Контролируют Чайна-стрит, опиум и портовый транзит. В открытый конфликт не лезут — предпочитают действовать тихо. Лидер — Мистер Лян, которого никто никогда не видел лично.</div>
+        </div>
+        <div class="faction-status status-crime">Преступность</div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-lore">
+          <div class="expand-lore-title">▸ Досье фракции</div>
+          <p>Триада Красного Лотоса появилась в Порт-Мроуне в начале тридцатых — вместе с волной китайских иммигрантов. Снаружи — торговцы, рестораторы, прачечные. Внутри — жёсткая иерархия, древние ритуалы и железная дисциплина.</p>
+          <p>Их сила в невидимости. Они не стреляют на улицах — они шепчут нужным людям нужные слова. Мистер Лян руководит из тени: никто не знает его лица, но все знают последствия его решений.</p>
+          <p>Чайна-стрит — их крепость. Чужой, зашедший туда без приглашения, выйдет с меньшим, чем зашёл. Или не выйдет вовсе.</p>
+        </div>
+        <div class="expand-roles-title">▸ Доступные роли</div>
+        <div class="roles-grid">
+          <div class="role-item"><div class="role-dept">Иерархия</div><div class="role-name">Красный Шест (боевой командир)</div><div class="role-desc">Командует оперативниками. Планирует и ведёт операции. Третий по рангу в организации.</div></div>
+          <div class="role-item"><div class="role-dept">Иерархия</div><div class="role-name">Белый Веер (советник)</div><div class="role-desc">Стратег и финансист. Управляет активами, даёт советы руководству, ведёт переговоры.</div></div>
+          <div class="role-item"><div class="role-dept">Иерархия</div><div class="role-name">Соломенная Сандалия (посредник)</div><div class="role-desc">Связующее звено между триадой и внешним миром. Договаривается с другими фракциями.</div></div>
+          <div class="role-item"><div class="role-dept">Оперативники</div><div class="role-name">49-й (боец)</div><div class="role-desc">Рядовой член триады. Выполняет задания старших. Путь наверх — через преданность и результат.</div></div>
+          <div class="role-item"><div class="role-dept">Оперативники</div><div class="role-name">Теневой оперативник</div><div class="role-desc">Специалист по слежке, шантажу, тихому устранению. Работает без следов.</div></div>
+          <div class="role-item"><div class="role-dept">Оперативники</div><div class="role-name">Курьер</div><div class="role-desc">Перевозит товар, деньги, послания. Знает маршруты, знает лица, знает — когда молчать.</div></div>
+          <div class="role-item"><div class="role-dept">Бизнес</div><div class="role-name">Хозяин опиумного притона</div><div class="role-desc">Держит заведение в глубине Чайна-стрит. Клиенты — от докеров до судей.</div></div>
+          <div class="role-item"><div class="role-dept">Бизнес</div><div class="role-name">Торговец (прикрытие)</div><div class="role-desc">Официально — лавка специй или шёлка. Неофициально — перевалочный пункт.</div></div>
+          <div class="role-item"><div class="role-dept">Бизнес</div><div class="role-name">Контролёр порта</div><div class="role-desc">Следит за своей долей грузооборота в доках. Координирует с Карго-ярдом.</div></div>
+          <div class="role-item"><div class="role-dept">Связи</div><div class="role-name">Информатор</div><div class="role-desc">Собирает сведения о других фракциях, полиции, политиках. Информация — главный товар триады.</div></div>
+          <div class="role-item"><div class="role-dept">Связи</div><div class="role-name">Вербовщик</div><div class="role-desc">Ищет новых членов и полезных людей за пределами Чайна-стрит. Умеет убеждать.</div></div>
+          <div class="role-item"><div class="role-dept">Связи</div><div class="role-name">Переводчик / Толмач</div><div class="role-desc">Говорит на нескольких языках. Сопровождает высокопоставленных членов на внешних встречах.</div></div>
+          <div class="role-item"><div class="role-dept">Особые</div><div class="role-name">Хранитель ритуалов</div><div class="role-desc">Проводит церемонии принятия в триаду. Хранит традиции и историю организации.</div></div>
+          <div class="role-item"><div class="role-dept">Особые</div><div class="role-name">Врач общины</div><div class="role-desc">Лечит своих без лишних вопросов. Единственный медик, которому доверяют в Чайна-стрит.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INDEPENDENT -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-bg" style="background-image: url('independent.png'); background-position: center center;"></div>
+      <div class="faction-overlay"></div>
+      <div class="faction-hint">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      <div class="faction-content">
+        <div class="faction-text">
+          <div class="faction-name">Независимые</div>
+          <div class="faction-desc">Одиночки, наёмники, мелкие банды. Не подчиняются никому — именно поэтому опасны для всех. Некоторые работают на Моретти или Лотос, сами того не зная.</div>
+        </div>
+        <div class="faction-status status-neutral">Нейтрал</div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-lore">
+          <div class="expand-lore-title">▸ Досье фракции</div>
+          <p>Независимые — не фракция в обычном смысле. Это все, кто работает вне крупных организаций: частные сыщики, наёмники, мелкие банды, контрабандисты-одиночки, карточные шулеры и те, кто просто умеет решать чужие проблемы за деньги.</p>
+          <p>Их главное преимущество — свобода. Главный недостаток — та же самая свобода. Без крыши над головой в Порт-Мроуне долго не живут. Рано или поздно каждый одиночка выбирает, на кого работать.</p>
+          <p>Серый пояс — их территория. Здесь не задают лишних вопросов и не смотрят на чужие лица.</p>
+        </div>
+        <div class="expand-roles-title">▸ Доступные роли</div>
+        <div class="roles-grid">
+          <div class="role-item"><div class="role-dept">Детективы</div><div class="role-name">Частный сыщик</div><div class="role-desc">Берётся за дела, от которых отказывается полиция. Изменщики, пропавшие, грязные секреты.</div></div>
+          <div class="role-item"><div class="role-dept">Детективы</div><div class="role-name">Охотник за головами</div><div class="role-desc">Ловит беглецов за вознаграждение. Работает на грани закона — иногда за этой гранью.</div></div>
+          <div class="role-item"><div class="role-dept">Криминал</div><div class="role-name">Наёмник</div><div class="role-desc">Продаёт кулаки и оружие тому, кто платит. Без лишних вопросов. Без лишних принципов.</div></div>
+          <div class="role-item"><div class="role-dept">Криминал</div><div class="role-name">Взломщик</div><div class="role-desc">Специалист по замкам, сейфам, окнам. Работает тихо и быстро. Ценится дорого.</div></div>
+          <div class="role-item"><div class="role-dept">Криминал</div><div class="role-name">Фальшивомонетчик</div><div class="role-desc">Делает документы, деньги, печати. Его продукт ходит по всему городу.</div></div>
+          <div class="role-item"><div class="role-dept">Криминал</div><div class="role-name">Скупщик краденого</div><div class="role-desc">Держит «ломбард» в Сером поясе. Всё принимает, ни о чём не спрашивает.</div></div>
+          <div class="role-item"><div class="role-dept">Криминал</div><div class="role-name">Карманник / Мошенник</div><div class="role-desc">Работает в толпе, на вокзалах, в барах. Быстрые руки, быстрые ноги.</div></div>
+          <div class="role-item"><div class="role-dept">Улица</div><div class="role-name">Лидер банды</div><div class="role-desc">Держит небольшую банду в Сером поясе. Своя территория, свои правила, постоянная борьба за выживание.</div></div>
+          <div class="role-item"><div class="role-dept">Улица</div><div class="role-name">Бандит</div><div class="role-desc">Рядовой уличной банды. Грабежи, разборки, мелкая торговля. Мечтает о большем.</div></div>
+          <div class="role-item"><div class="role-dept">Улица</div><div class="role-name">Контрабандист-одиночка</div><div class="role-desc">Возит запрещённое без крыши фракций. Дороже, рискованнее, но сам себе хозяин.</div></div>
+          <div class="role-item"><div class="role-dept">Особые</div><div class="role-name">Информатор (вольный)</div><div class="role-desc">Продаёт информацию всем желающим. Знает много — именно поэтому живёт недолго.</div></div>
+          <div class="role-item"><div class="role-dept">Особые</div><div class="role-name">Ветеран войны</div><div class="role-desc">Вернулся с фронта, не нашёл места. Навыки есть — применения нет. Ищет себя в опасной жизни.</div></div>
+          <div class="role-item"><div class="role-dept">Особые</div><div class="role-name">Шулер / Игрок</div><div class="role-desc">Живёт за карточным столом. Читает людей как книги. Иногда это спасает жизнь.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRESS -->
+    <div class="faction-card" onclick="toggleFaction(this)">
+      <div class="faction-bg" style="background-image: url('press.png'); background-position: center center;"></div>
+      <div class="faction-overlay"></div>
+      <div class="faction-hint">Подробнее <span class="faction-hint-arrow">▾</span></div>
+      <div class="faction-content">
+        <div class="faction-text">
+          <div class="faction-name">Пресса и гражданские</div>
+          <div class="faction-desc">Газета «Порт-Мроун Геральд», юристы, врачи, обычные люди. Слабые поодиночке — но слово журналиста может уничтожить карьеру или спасти жизнь.</div>
+        </div>
+        <div class="faction-status status-press">Гражданские</div>
+      </div>
+      <div class="faction-expand">
+        <div class="expand-lore">
+          <div class="expand-lore-title">▸ Досье фракции</div>
+          <p>«Порт-Мроун Геральд» — единственная независимая газета в городе. Остальные давно куплены политиками или мафией. Геральд держится из последних сил: рекламодатели уходят под давлением, репортёров запугивают, редактора уже однажды избили в подворотне.</p>
+          <p>Помимо журналистов, в городе есть адвокаты, которые ещё не продались, врачи, которые лечат всех без разбора, и священники, которые слышат больше, чем полиция. Все они — часть гражданского мира, пытающегося выжить между фракциями.</p>
+          <p>Их оружие — слово, закон и совесть. В Порт-Мроуне 1947 года это почти смешно. Почти.</p>
+        </div>
+        <div class="expand-roles-title">▸ Доступные роли</div>
+        <div class="roles-grid">
+          <div class="role-item"><div class="role-dept">Геральд</div><div class="role-name">Репортёр-расследователь</div><div class="role-desc">Копает под фракции и коррупцию. Каждая статья — угроза жизни. Каждая правда — победа.</div></div>
+          <div class="role-item"><div class="role-dept">Геральд</div><div class="role-name">Криминальный репортёр</div><div class="role-desc">Пишет о преступлениях. Первым приезжает на место. Видит то, что полиция хочет скрыть.</div></div>
+          <div class="role-item"><div class="role-dept">Геральд</div><div class="role-name">Фотограф</div><div class="role-desc">Снимает то, что нельзя описать словами. Его снимки иногда стоят дороже статей.</div></div>
+          <div class="role-item"><div class="role-dept">Геральд</div><div class="role-name">Редактор отдела</div><div class="role-desc">Решает, что выходит в печать. Давление со всех сторон. Моральный компас города.</div></div>
+          <div class="role-item"><div class="role-dept">Геральд</div><div class="role-name">Колумнист</div><div class="role-desc">Пишет авторские колонки. Его читают все — и все хотят заставить его замолчать.</div></div>
+          <div class="role-item"><div class="role-dept">Право</div><div class="role-name">Адвокат защиты</div><div class="role-desc">Берётся за безнадёжные дела. Защищает тех, кого система хочет сломать.</div></div>
+          <div class="role-item"><div class="role-dept">Право</div><div class="role-name">Прокурор</div><div class="role-desc">Пытается посадить преступников несмотря на давление сверху. Тяжёлая работа в продажном городе.</div></div>
+          <div class="role-item"><div class="role-dept">Право</div><div class="role-name">Нотариус</div><div class="role-desc">Оформляет сделки и документы. Знает чужие тайны. Хранит их. Обычно.</div></div>
+          <div class="role-item"><div class="role-dept">Медицина</div><div class="role-name">Врач скорой помощи</div><div class="role-desc">Лечит всех — копов, бандитов, жертв. Не задаёт лишних вопросов. Видел всё.</div></div>
+          <div class="role-item"><div class="role-dept">Медицина</div><div class="role-name">Судмедэксперт</div><div class="role-desc">Говорит за мёртвых в пользу живых. Его заключения могут изменить ход дела.</div></div>
+          <div class="role-item"><div class="role-dept">Медицина</div><div class="role-name">Аптекарь</div><div class="role-desc">Продаёт лекарства. Иногда — кое-что ещё. Знает, кто что принимает.</div></div>
+          <div class="role-item"><div class="role-dept">Прочие</div><div class="role-name">Священник</div><div class="role-desc">Исповедует грешников. Слышит больше, чем любой коп. Его церковь — нейтральная территория.</div></div>
+          <div class="role-item"><div class="role-dept">Прочие</div><div class="role-name">Бармен</div><div class="role-desc">За стойкой бара проходит весь город. Молчалив, наблюдателен, незаменим как источник информации.</div></div>
+          <div class="role-item"><div class="role-dept">Прочие</div><div class="role-name">Владелец ломбарда</div><div class="role-desc">Принимает вещи, выдаёт деньги. Видит людей в самые трудные моменты жизни.</div></div>
+          <div class="role-item"><div class="role-dept">Прочие</div><div class="role-name">Социальный работник</div><div class="role-desc">Помогает беднякам Серого пояса. Знает подноготную трущоб лучше любого копа.</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── RULES ── -->
+<section id="rules">
+  <p class="section-label">Механика</p>
+  <h2 class="section-title">Правила игры</h2>
+  <div class="section-rule"></div>
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <div class="rules-coming">
+    <div style="font-size:48px; margin-bottom:16px;">🎲</div>
+    <p>Правила в разработке. Скоро здесь появятся система бросков,<br/>анкеты персонажей и механика фракций.</p>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p>Port-Mroun Fandom &nbsp;✦&nbsp; <span>1947</span> &nbsp;✦&nbsp; Текстовая РП в Telegram</p>
+  <p style="margin-top:10px; font-size:9px; opacity:0.4;">Все персонажи и события вымышлены</p>
+</footer>
+
+<script>
+  function toggleFaction(card) {
+    var isOpen = card.classList.contains('open');
+    document.querySelectorAll('.faction-card.open').forEach(function(c) {
+      c.classList.remove('open');
+    });
+    if (!isOpen) {
+      card.classList.add('open');
+      setTimeout(function() {
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
+  }
+
+  function switchTab(event, tab) {
+    event.stopPropagation(); // не закрывать карточку
+    var expand = tab.closest('.faction-expand');
+    expand.querySelectorAll('.expand-tab').forEach(function(t) { t.classList.remove('active'); });
+    expand.querySelectorAll('.expand-panel').forEach(function(p) { p.classList.remove('active'); });
+    tab.classList.add('active');
+    var idx = Array.from(tab.parentNode.children).indexOf(tab);
+    expand.querySelectorAll('.expand-panel')[idx].classList.add('active');
+  }
+</script>
+</body>
+</html>
