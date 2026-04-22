@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Триада Красного Лотоса — Port-Mroun</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a;
+      --gold-dim: #8a7a3a;
+      --cream: #e8ddb8;
+      --navy: #0a1520;
+      --red: #aa2020;
+      --red-dim: #6a1010;
+      --red-bright: #cc3030;
+      --red-glow: rgba(180,30,30,0.15);
+      --text: #c8c0a0;
+      --text-dim: #7a7060;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      height: 60vh;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('triad2.png');
+      background-size: cover;
+      background-position: center center;
+      filter: brightness(0.25) saturate(0.5);
+    }
+
+    .hero-lanterns {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(180,30,30,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(180,30,30,0.08) 0%, transparent 50%);
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10,21,32,0.3) 0%, rgba(10,21,32,0.97) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Crimson Text', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--red);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 5.5vw, 58px);
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 5px;
+      text-shadow: 0 0 40px rgba(196,168,74,0.25), 0 0 80px rgba(180,30,30,0.15);
+      line-height: 1.15;
+    }
+
+    .hero-chinese {
+      font-size: clamp(18px, 3vw, 26px);
+      color: var(--red);
+      letter-spacing: 8px;
+      margin-top: 8px;
+      opacity: 0.7;
+    }
+
+    .hero-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-top: 12px;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    /* NAV */
+    .page-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,21,32,0.97);
+      border-bottom: 1px solid rgba(180,30,30,0.2);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .page-nav::-webkit-scrollbar { display: none; }
+
+    .page-nav ul {
+      display: flex;
+      list-style: none;
+      min-width: max-content;
+      padding: 0 16px;
+    }
+
+    .page-nav a {
+      display: block;
+      padding: 14px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .page-nav a:hover { color: var(--gold); border-bottom-color: var(--red); }
+
+    /* CONTENT */
+    .page-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    .lore-section {
+      padding: 60px 0 20px;
+      border-bottom: 1px solid rgba(180,30,30,0.08);
+    }
+
+    .lore-section:last-child { border-bottom: none; }
+
+    .section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .section-rule {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, var(--red), transparent);
+      margin-bottom: 28px;
+    }
+
+    /* PROSE */
+    .prose p {
+      margin-bottom: 18px;
+      color: var(--text);
+    }
+
+    .prose p:last-child { margin-bottom: 0; }
+    .prose strong { color: var(--cream); font-weight: 600; }
+
+    /* PULL QUOTE */
+    .pull-quote {
+      border-left: 3px solid var(--red);
+      padding: 16px 20px;
+      margin: 28px 0;
+      background: var(--red-glow);
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    /* TIMELINE */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+      margin-top: 10px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--red), rgba(180,30,30,0.05));
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 36px;
+    }
+
+    .timeline-item:last-child { margin-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -25px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--navy);
+      box-shadow: 0 0 8px rgba(180,30,30,0.6);
+    }
+
+    .timeline-year {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .timeline-title {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .timeline-text {
+      font-size: 16px;
+      color: var(--text-dim);
+      line-height: 1.75;
+    }
+
+    /* CARDS */
+    .rule-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .rule-card {
+      background: rgba(13,21,32,0.8);
+      border: 1px solid rgba(196,168,74,0.08);
+      border-left: 3px solid var(--red-dim);
+      padding: 18px 20px;
+      transition: border-left-color 0.2s;
+    }
+
+    .rule-card:hover { border-left-color: var(--red); }
+    .rule-card.severe { border-left-color: #500808; }
+    .rule-card.severe:hover { border-left-color: #880808; }
+    .rule-card.gold { border-left-color: var(--gold-dim); }
+    .rule-card.gold:hover { border-left-color: var(--gold); }
+
+    .rule-title {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 7px;
+    }
+
+    .rule-desc {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    .rule-verdict {
+      display: inline-block;
+      margin-top: 9px;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--red-dim);
+      color: #bb5050;
+    }
+
+    /* RANK TABLE */
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    .rank-table th {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(196,168,74,0.2);
+      text-align: left;
+    }
+
+    .rank-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(180,30,30,0.07);
+      vertical-align: top;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+
+    .rank-table td:first-child {
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      width: 30%;
+    }
+
+    .rank-table td:nth-child(2) {
+      color: var(--red);
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      width: 22%;
+    }
+
+    .rank-table tr:last-child td { border-bottom: none; }
+    .rank-table tr:hover td { background: rgba(180,30,30,0.04); }
+
+    /* PERSONS */
+    .persons-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .person-card {
+      background: rgba(13,21,32,0.7);
+      border: 1px solid rgba(180,30,30,0.15);
+      padding: 22px;
+    }
+
+    .person-name {
+      font-family: 'Cinzel', serif;
+      font-size: 17px;
+      color: var(--gold);
+      margin-bottom: 3px;
+    }
+
+    .person-chinese {
+      font-size: 13px;
+      color: var(--red);
+      letter-spacing: 3px;
+      margin-bottom: 5px;
+      opacity: 0.7;
+    }
+
+    .person-role {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .person-bio {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.75;
+    }
+
+    /* WARNING */
+    .warning-box {
+      background: rgba(80,10,10,0.2);
+      border: 1px solid rgba(180,30,30,0.3);
+      padding: 20px 22px;
+      margin: 24px 0;
+    }
+
+    .warning-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .warning-text {
+      font-size: 15px;
+      color: #bb8888;
+      line-height: 1.6;
+    }
+
+    /* RITUAL BOX */
+    .ritual-box {
+      background: rgba(180,30,30,0.05);
+      border: 1px solid rgba(180,30,30,0.2);
+      border-top: 3px solid var(--red-dim);
+      padding: 22px;
+      margin: 20px 0;
+    }
+
+    .ritual-title {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .ritual-text {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* NUMBER LIST */
+    .number-list {
+      counter-reset: nl;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .number-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .number-item::before {
+      counter-increment: nl;
+      content: counter(nl, cjk-decimal);
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      color: var(--red);
+      flex-shrink: 0;
+      width: 24px;
+      line-height: 1.4;
+    }
+
+    .number-item-text {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    .number-item-text strong { color: var(--cream); }
+
+    /* FOOTER */
+    .page-footer {
+      text-align: center;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(180,30,30,0.1);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .lore-section { padding: 40px 0 16px; }
+      .pull-quote { font-size: 16px; }
+      .rank-table td:first-child { font-size: 11px; }
+      .rank-table td:nth-child(2) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="index.html">← Назад</a>
+  <div class="hero-bg"></div>
+  <div class="hero-lanterns"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Досье фракции</p>
+    <h1 class="hero-title">ТРИАДА КРАСНОГО ЛОТОСА</h1>
+    <p class="hero-chinese">紅蓮三合會</p>
+    <p class="hero-sub">«Лотос растёт в грязи. Именно поэтому он так красив.»</p>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <ul>
+    <li><a href="#origins">Происхождение</a></li>
+    <li><a href="#history">История</a></li>
+    <li><a href="#persons">Люди</a></li>
+    <li><a href="#structure">Структура</a></li>
+    <li><a href="#ranks">Ранги</a></li>
+    <li><a href="#laws">Законы</a></li>
+    <li><a href="#punishment">Наказания</a></li>
+    <li><a href="#exit">Выход</a></li>
+    <li><a href="#rituals">Ритуалы</a></li>
+    <li><a href="#business">Бизнес</a></li>
+    <li><a href="#conflicts">Конфликты</a></li>
+    <li><a href="#chinastreet">Чайна-стрит</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <!-- ПРОИСХОЖДЕНИЕ -->
+  <section class="lore-section" id="origins">
+    <p class="section-eyebrow">Корни</p>
+    <h2 class="section-title">Происхождение триады</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Чтобы понять Триаду Красного Лотоса, нужно сначала понять, что такое триада вообще. Это не просто преступная организация — это структура с трёхсотлетней историей, уходящей корнями в Китай эпохи династии Цин.</p>
+      <p>Первые триады возникли в XVII веке как тайные общества сопротивления — сначала против маньчжурских завоевателей, потом против любой власти, которую считали несправедливой. Слово «триада» — западное название, происходящее от треугольного символа, олицетворяющего три силы: Небо, Землю и Человека. Сами члены организации никогда не используют это слово. Они говорят «братство» или называют организацию по имени.</p>
+      <p>К XIX веку большинство триад превратились из политических обществ в криминальные структуры — но сохранили ритуалы, иерархию и кодекс, которым сотни лет. Именно это делает их непохожими на западную мафию: там, где у Моретти — семейные связи и личная лояльность, у триады — система, существующая независимо от конкретных людей.</p>
+      <p><strong>Красный Лотос</strong> как название появился в Шанхае в конце XIX века. Лотос — буддийский символ чистоты, произрастающей из грязи. Красный цвет — кровь братства, удача и сила. Основатели выбрали это имя намеренно: они хотели создать организацию, которая действует в самых тёмных местах, оставаясь при этом внутренне чистой. Насколько им это удалось — вопрос открытый.</p>
+    </div>
+
+    <div class="pull-quote">«Мы не преступники. Мы — люди, которые поняли, как устроен мир, раньше остальных.»<br><span style="font-size:14px; color:var(--text-dim)">— Приписывается основателю братства</span></div>
+  </section>
+
+  <!-- ИСТОРИЯ -->
+  <section class="lore-section" id="history">
+    <p class="section-eyebrow">1895 — 1947</p>
+    <h2 class="section-title">История в Порт-Мроуне</h2>
+    <div class="section-rule"></div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1895–1910 — Первые корни</div>
+        <div class="timeline-title">Когда ещё никто не замечал.</div>
+        <div class="timeline-text">Первые китайские иммигранты появились в Порт-Мроуне в конце XIX века — строители железных дорог, докеры, прачечники. Их никто не замечал, никто не уважал и никто не защищал. Закон работал для белых. Для китайцев — нет.<br><br>
+        Именно в этом вакууме и возникла первая ячейка того, что позже станет Триадой Красного Лотоса. Несколько человек, приехавших из Шанхая в 1898 году, привезли с собой не только котомки — они привезли знание о братстве и его структуре. Первые десять лет — почти полная невидимость. Несколько семей, несколько лавок, взаимная защита и взаимопомощь. Снаружи — добропорядочные торговцы. Внутри — зародыш организации.<br><br>
+        К 1910 году в Порт-Мроуне было около трёхсот китайских семей. Большинство жили в двух-трёх кварталах у восточного берега — то, что сейчас называют Чайна-стрит. Тогда у этого места не было красивого названия. Просто — китайский квартал.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1912 — Первый Дракон</div>
+        <div class="timeline-title">Братство обретает форму.</div>
+        <div class="timeline-text">В 1912 году в Порт-Мроун прибыл человек, которого звали <strong>Чэнь Баолун</strong> — в документах он значился как «торговец шёлком». На родине он занимал высокое положение в шанхайской ветви Красного Лотоса. Его приезд не был случайным: братство решило, что восточное побережье Америки нуждается в организованном присутствии.<br><br>
+        Чэнь провёл два года, тихо наблюдая. Он не торопился. Изучал людей, связи, деньги, слабости. Только в 1914 году он собрал первое официальное собрание братства в подвале прачечной на Восточной улице. Присутствовало девятнадцать человек. Они произнесли клятву, прокалывая пальцы над чашей с рисовым вином и кровью.<br><br>
+        Чэнь стал первым Горным Господином — верховным лидером — Порт-Мроунского отделения. Он управлял им до своей смерти в 1931 году, не оставив прямых наследников. Только систему, которая работала без него.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1914–1922 — Тихое строительство</div>
+        <div class="timeline-title">Фундамент, который никто не видел.</div>
+        <div class="timeline-text">Первые годы братство занималось исключительно внутренними делами общины: разрешало споры, давало займы, защищало торговцев от уличных банд. Никакой внешней экспансии — только укрепление позиций внутри.<br><br>
+        Источником дохода были три вещи: «налог на защиту» с торговцев квартала, азартные игры в закрытых клубах и опиум — который к тому времени уже был под контролем братства, хотя и в скромных масштабах. Чэнь относился к опиуму прагматично: он понимал, что это ресурс, и использовал его аккуратно, не допуская зависимости внутри самой общины.<br><br>
+        К 1920 году у братства было семь точек опиума, два игорных дома и разветвлённая сеть информаторов по всему городу — от портовых рабочих до горничных в гостиницах Хиллсайда. Последнее Чэнь считал важнейшим: «Тот, кто слушает, знает больше того, кто действует».</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1923 — Первый внешний конфликт</div>
+        <div class="timeline-title">Ирландцы пришли не туда.</div>
+        <div class="timeline-text">В 1923 году банда Кэхилов — тогда ещё сильная — решила обложить данью китайских торговцев. Это была обычная практика: слабые платят сильным. Они не знали, что квартал уже под защитой.<br><br>
+        Трое людей Кэхилов зашли в лавку торговца специями <strong>Ляо Чэня</strong> и потребовали денег. На следующий день двоих из них нашли в переулке — живых, но со сломанными руками. Третий не нашёлся вовсе. Кэхилы прислали людей разобраться — те вернулись ни с чем: никто в квартале ничего не видел, не слышал, не знал.<br><br>
+        Это был первый публичный сигнал: Чайна-стрит — не безоружная территория. Кэхилы не стали проверять дальше. У них хватало других забот.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1925–1930 — Экспансия в порт</div>
+        <div class="timeline-title">Тихий захват самого важного места в городе.</div>
+        <div class="timeline-text">Порт — сердце Порт-Мроуна. Через него проходит всё. Чэнь понял это раньше остальных. Начиная с 1925 года братство начало планомерно внедряться в портовую рабочую среду — не силой, а деньгами и связями.<br><br>
+        Китайские докеры получали лучшие условия, чем остальные, — но взамен обязаны были сообщать о грузах, указывать на нужные ящики, иногда смотреть в другую сторону. К 1928 году братство знало о каждом третьем грузе, проходящем через южные причалы. К 1930-му — держало под контролем два склада через подставных владельцев.<br><br>
+        Это была долгая, скучная, невидимая работа. Именно такая, которую Чэнь любил больше всего.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1931 — Смерть Чэня и кризис наследования</div>
+        <div class="timeline-title">Первый разлом.</div>
+        <div class="timeline-text"><strong>Чэнь Баолун</strong> умер в марте 1931 года от пневмонии. Ему было шестьдесят восемь. Он не назначил преемника — считал, что система сама выберет сильнейшего. Это был единственный серьёзный просчёт в его жизни.<br><br>
+        На протяжении восьми месяцев братство жило без формального лидера. Три человека претендовали на власть: <strong>У Минфэн</strong> — старший Красный Шест, боевой командир; <strong>Хуан Дэвэй</strong> — финансист и Белый Веер; и <strong>Линь Цзяхао</strong> — посредник, контролировавший внешние связи.<br><br>
+        Напряжение едва не переросло в открытый конфликт. В ноябре 1931 года У Минфэн был найден мёртвым в своей комнате. Официально — сердечный приступ. В братстве никто не сомневался, что это было убийство. Но никто не сказал этого вслух, потому что следующим утром Хуан Дэвэй объявил себя временным руководителем. Линь принял это молча.<br><br>
+        Хуан управлял три года — эффективно, но без харизмы Чэня. В 1934 году он добровольно передал власть человеку, которого привёз из Гонконга специально для этой роли. Человека звали <strong>Лян Вэньчэн</strong>. Мир знает его как Мистера Ляна.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1934 — Мистер Лян</div>
+        <div class="timeline-title">Тень, которая управляет.</div>
+        <div class="timeline-text"><strong>Лян Вэньчэн</strong> прибыл в Порт-Мроун в январе 1934 года. Никто из внешнего мира не видел его лица — он появился однажды, провёл закрытую встречу с руководством, и с тех пор существует только как имя, голос по телефону и решения, которые исполняются.<br><br>
+        Внутри братства его видели единицы. Даже старшие офицеры общаются с ним через посредников. Это не параноя — это система безопасности, возведённая в абсолют. Если тебя нельзя описать, тебя нельзя арестовать. Если тебя нельзя найти, тебя нельзя устранить.<br><br>
+        О Ляне известно следующее: он говорит на кантонском, мандаринском, английском и, предположительно, французском. Он принимает решения быстро и никогда их не отменяет. Он не терпит потерь информации. И он никогда не наказывает дважды за одно и то же — потому что второго раза просто не бывает.<br><br>
+        Полиция Порт-Мроуна имеет на него досье толщиной в три страницы. Две из них — предположения. Одна — имя, которое может быть ненастоящим.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1935–1939 — Рост при Ляне</div>
+        <div class="timeline-title">Братство становится силой.</div>
+        <div class="timeline-text">Под руководством Ляна братство изменилось — стало более жёстким, более организованным и значительно богаче. Три направления получили особое развитие.<br><br>
+        <strong>Информационная сеть</strong> выросла вдвое. Лян ввёл систему «слоёв» — каждый информатор знает только своего куратора, и никого больше. Это делает сеть практически невозможной для инфильтрации: арест одного человека не раскрывает следующего звена.<br><br>
+        <strong>Портовые операции</strong> вышли на новый уровень. К 1937 году братство контролировало уже не отдельные склады, а целые цепочки поставок — от точки отправки до конечного получателя. Через Порт-Мроун шёл опиум из Юго-Восточной Азии, незадекларированный шёлк и произведения искусства сомнительного происхождения.<br><br>
+        <strong>Легализация</strong> стала приоритетом. Лян активно вкладывал деньги в легальный бизнес — рестораны, прачечные, ювелирные мастерские. Каждый доллар грязных денег проходил через несколько слоёв бизнеса, прежде чем стать чистым. Это была финансовая архитектура высочайшего класса.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1937 — Разграничение с Моретти</div>
+        <div class="timeline-title">Мир, который никто не подписывал.</div>
+        <div class="timeline-text">К 1937 году братство достаточно окрепло, чтобы Витторио Моретти обратил на него внимание — и достаточно умно, чтобы старый Дон захотел договориться, а не воевать.<br><br>
+        Переговоры длились почти три месяца. Лян не присутствовал — прислал Линь Цзяхао, своего посредника. Моретти приходил лично. Это само по себе говорило о многом: итальянец уважал невидимого противника достаточно, чтобы приходить самому.<br><br>
+        Результат — устное разграничение сфер влияния. Чайна-стрит и восточные причалы — за братством. Литтл-Палермо, Даунтаун и западные доки — за Моретти. Серый пояс и Хиллсайд — нейтральная зона с правом работы обеих сторон при соблюдении негласных правил.<br><br>
+        Договор существует только в головах тех, кто его заключил. Нет бумаг, нет свидетелей, нет гарантий. Только взаимное понимание: нарушение будет стоить дороже соблюдения. Пока это работает.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1941–1945 — Военное время</div>
+        <div class="timeline-title">Война изменила всё. Братство использовало это.</div>
+        <div class="timeline-text">Когда Япония атаковала Пёрл-Харбор, положение китайской общины в Америке парадоксальным образом улучшилось — Китай стал союзником, японцы — врагом, и антиазиатские настроения частично переориентировались. Лян воспользовался этим мгновенно.<br><br>
+        Братство демонстративно поддержало военные облигации, организовало сбор средств для китайских беженцев и добилось того, чтобы несколько членов общины получили медали за службу в армии. Всё это — публичная витрина, за которой шла совершенно другая работа.<br><br>
+        Военное время означало дефицит. Дефицит означал чёрный рынок. Братство контролировало поставки нейлона, сахара, табака и резины — товаров, которые были нормированы для гражданского населения, но каким-то образом оседали в нужных местах. Прибыль от военного чёрного рынка позволила братству утроить капитал за четыре года.<br><br>
+        В 1943 году произошёл единственный серьёзный инцидент: троих членов братства арестовали по обвинению в уклонении от призыва. Лян урегулировал ситуацию за шесть дней — через нужного прокурора и нужного судью. Двое вышли на следующий день. Третий отсидел две недели — для видимости.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1943 — Инцидент с Моретти</div>
+        <div class="timeline-title">Граница была проверена. Устояла.</div>
+        <div class="timeline-text">Подробно описано в разделе конфликтов. Краткий итог: Моретти попытались давить экономически, братство ответило симметрично. Никто не погиб. Граница восстановлена. Для Ляна это была демонстрация принципа: победа без боя ценнее победы в бою.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1945–1947 — Послевоенный Порт-Мроун</div>
+        <div class="timeline-title">Город изменился. Братство — тоже.</div>
+        <div class="timeline-text">После войны в город хлынули деньги, ветераны и новые возможности. Братство готовилось к этому заранее. К 1947 году Триада Красного Лотоса — самая богатая и наименее видимая организованная структура в Порт-Мроуне.<br><br>
+        Основные активы: семь ресторанов, четыре прачечные, две ювелирные мастерские, три склада в доках (официально принадлежащих разным подставным лицам), разветвлённая сеть опиумных точек и информационная сеть, покрывающая весь город.<br><br>
+        Угрозы на 1947 год: новый молодой детектив в уголовном розыске по имени <strong>Джек Уоллес</strong>, который слишком много интересуется доками. Растущие амбиции Моретти в связи с болезнью Витторио. И внутреннее напряжение — молодые члены братства хотят действовать агрессивнее, старые офицеры помнят уроки Чэня и Ляна.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- КЛЮЧЕВЫЕ ПЕРСОНЫ -->
+  <section class="lore-section" id="persons">
+    <p class="section-eyebrow">Действующие лица</p>
+    <h2 class="section-title">Ключевые персоны</h2>
+    <div class="section-rule"></div>
+
+    <div class="persons-grid">
+
+      <div class="person-card">
+        <div class="person-name">Мистер Лян</div>
+        <div class="person-chinese">梁文誠</div>
+        <div class="person-role">Горный Господин — верховный лидер</div>
+        <div class="person-bio">Возраст неизвестен. Предположительно — около пятидесяти. Никто из людей, не принадлежащих к самому высшему кругу братства, не видел его лично. Связь — только через посредников или по телефону. Голос спокойный, без акцента, почти без интонаций.<br><br>
+        Стиль управления: полная децентрализация исполнения при абсолютной централизации решений. Каждый офицер знает свой участок в деталях — но общую картину видит только Лян. Это делает организацию устойчивой к любым попыткам инфильтрации: арест одного офицера не открывает следующего уровня.<br><br>
+        Лян никогда не угрожает. Он просто сообщает о последствиях — спокойно, как прогноз погоды. И последствия всегда наступают.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Линь Цзяхао</div>
+        <div class="person-chinese">林家豪</div>
+        <div class="person-role">Соломенная Сандалия — старший посредник</div>
+        <div class="person-bio">Шестьдесят лет. Один из немногих, кто помнит ещё Чэня. Маленький, невзрачный человек с тихим голосом и привычкой смотреть мимо собеседника — как будто видит что-то за его спиной. Говорит на семи языках, включая итальянский и польский.<br><br>
+        Именно Линь вёл переговоры с Моретти в 1937-м. Именно он поддерживает контакты с нейтральными фигурами города — адвокатами, чиновниками, журналистами, которые не знают, на кого работают. Линь — самый опасный человек в братстве именно потому, что выглядит безобидно.<br><br>
+        Он живёт над маленьким чайным магазином на углу Чайна-стрит. Каждое утро открывает магазин в семь ровно. Каждый вечер закрывает в восемь. Он никогда не опаздывает и никогда не уходит раньше. Это его единственная видимая привычка.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Чэнь Гоцян</div>
+        <div class="person-chinese">陳國強</div>
+        <div class="person-role">Красный Шест — командир операций</div>
+        <div class="person-bio">Тридцать восемь лет. Уроженец Порт-Мроуна — один из немногих офицеров, выросших здесь, а не приехавших с родины. Его отец был докером. Сам Гоцян в восемнадцать лет вошёл в братство через рекомендацию отца, прошёл все ступени снизу вверх.<br><br>
+        Физически крепкий, немногословный. Командует тремя оперативными группами. Его люди преданы ему лично — что создаёт некоторое напряжение с Ляном, который предпочитает, чтобы преданность была организации, а не офицеру.<br><br>
+        Гоцян единственный в братстве, кто иногда позволяет себе спорить с решениями. Лян терпит это — пока результаты оправдывают строптивость. Оба знают, что этот баланс хрупок.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Мэй Сюлань</div>
+        <div class="person-chinese">梅秀蘭</div>
+        <div class="person-role">Белый Веер — финансовый советник</div>
+        <div class="person-bio">Сорок пять лет. Единственная женщина в высшем руководстве братства — и первая за всю историю организации. Её назначение в 1939 году вызвало внутренний скандал, который Лян погасил одной фразой: «Она зарабатывает вдвое больше, чем её предшественник. Возражения?» Возражений не было.<br><br>
+        Мэй управляет финансовой архитектурой братства: отмыванием денег через сеть легального бизнеса, займами, инвестициями и бухгалтерией, которую ни один внешний аудитор никогда не найдёт. Образование получила в Гонконге и Лондоне. Говорит по-английски без акцента.<br><br>
+        Внешне — владелица ювелирной мастерской в Даунтауне. Принимает клиентов, разговаривает о бриллиантах и любит чай с жасмином. Ни один клиент не догадывается, кем она является на самом деле.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Ван Дэшэн</div>
+        <div class="person-chinese">王德生</div>
+        <div class="person-role">Старший 49-й — командир уличных операций</div>
+        <div class="person-bio">Двадцать девять лет. Самый молодой из старших офицеров. Вырос в Сером поясе — не в китайском квартале. Его мать работала в прачечной, отец исчез, когда Ван было пять. Братство дало ему то, чего не было нигде: структуру, принадлежность, смысл.<br><br>
+        Его специализация — уличный уровень: вербовка, мелкие операции, поддержание порядка в квартале. Он знает каждого подростка в Чайна-стрит по имени. Одни боятся его, другие хотят быть им. Ван умело использует и то, и другое.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- СТРУКТУРА -->
+  <section class="lore-section" id="structure">
+    <p class="section-eyebrow">Организация</p>
+    <h2 class="section-title">Структура братства</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Структура Триады Красного Лотоса основана на традиционной триадной иерархии, адаптированной Ляном под условия американского города. Главное отличие от западных криминальных организаций — функциональное разделение власти. Никто, кроме Горного Господина, не знает всей картины целиком.</p>
+      <p>Система построена на принципе <strong>«слоёв незнания»</strong>: каждый знает только то, что необходимо для его работы. Даже офицеры высшего ранга не знают всех оперативников. Это делает братство практически неуязвимым для инфильтрации: даже если один уровень скомпрометирован, он не открывает доступ к следующему.</p>
+    </div>
+
+    <div class="pull-quote">«Тот, кто знает всё — единственный, кого нужно защищать. Остальные защищены своим незнанием.»<br><span style="font-size:14px; color:var(--text-dim)">— Мистер Лян</span></div>
+
+    <div class="rule-cards">
+      <div class="rule-card gold">
+        <div class="rule-title">489 — Горный Господин (Шань Чжу)</div>
+        <div class="rule-desc">Абсолютная власть. Стоит вне структуры — над ней. Принимает все стратегические решения. В Порт-Мроуне этот ранг занимает Мистер Лян. Число 489 — сумма цифр символического числа братства.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">438 — Заместитель Горного Господина</div>
+        <div class="rule-desc">В Порт-Мроуне эта позиция формально вакантна. Лян не назначает заместителя намеренно — это часть его системы безопасности.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">426 — Красный Шест (Хун Кун)</div>
+        <div class="rule-desc">Боевой командир. Отвечает за все силовые операции, охрану руководства, дисциплину. Подчиняется только Горному Господину. В Порт-Мроуне — Чэнь Гоцян.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">415 — Белый Веер (Бай Шань Шэнь)</div>
+        <div class="rule-desc">Финансовый и стратегический советник. Не командует людьми, но влияет на все решения через анализ и рекомендации. В Порт-Мроуне — Мэй Сюлань.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">432 — Соломенная Сандалия (Цао Хай Тянь)</div>
+        <div class="rule-desc">Посредник между братством и внешним миром. Ведёт переговоры, поддерживает связи, управляет информаторами в других организациях. В Порт-Мроуне — Линь Цзяхао.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">49 — Рядовой брат (Сы Кун Цзай)</div>
+        <div class="rule-desc">Базовый уровень членства. Выполняют оперативные задания, обслуживают бизнес, собирают информацию. Знают своего непосредственного куратора и нескольких коллег. Не знают офицеров выше среднего звена.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- РАНГИ -->
+  <section class="lore-section" id="ranks">
+    <p class="section-eyebrow">Карьера</p>
+    <h2 class="section-title">Система рангов и продвижения</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Продвижение в братстве — медленный, непрозрачный процесс. Нет объявленных критериев, нет сроков, нет формальных аттестаций. Есть только наблюдение — постоянное, незаметное, многоуровневое. Кто-то всегда смотрит. Кто-то всегда оценивает. Человек может годами не знать, что его рассматривают на повышение — или что его уже давно списали.</p>
+    </div>
+
+    <table class="rank-table">
+      <thead>
+        <tr>
+          <th>Ранг</th>
+          <th>Число</th>
+          <th>Путь к рангу</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Сочувствующий</td>
+          <td>—</td>
+          <td>Человек, полезный братству, но не принятый в него. Может не знать, что работает на триаду. Информаторы, мелкие поставщики, коррумпированные чиновники.</td>
+        </tr>
+        <tr>
+          <td>Новый брат</td>
+          <td>49</td>
+          <td>Прошёл церемонию инициации. Рекомендован действующим братом. Имеет куратора. Первый год — испытательный: наблюдают за реакцией в стрессе, проверяют молчание, тестируют лояльность.</td>
+        </tr>
+        <tr>
+          <td>Старший брат</td>
+          <td>49+</td>
+          <td>Неформальный статус. Несколько лет безупречной службы. Может иметь одного-двух новых братьев под опекой. Признаётся старшими, но официально не объявляется.</td>
+        </tr>
+        <tr>
+          <td>Соломенная Сандалия</td>
+          <td>432</td>
+          <td>Назначается Горным Господином. Требует исключительных коммуникативных способностей, знания языков, умения читать людей. Таких людей единицы.</td>
+        </tr>
+        <tr>
+          <td>Белый Веер</td>
+          <td>415</td>
+          <td>Назначается Горным Господином. Требует глубокого понимания финансов, стратегического мышления и абсолютной честности перед братством.</td>
+        </tr>
+        <tr>
+          <td>Красный Шест</td>
+          <td>426</td>
+          <td>Назначается Горным Господином. Боевой опыт, лидерские качества, способность принимать решения в условиях опасности. Личная физическая сила приветствуется, но не обязательна.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warning-box" style="margin-top: 20px;">
+      <div class="warning-title">⚠ Важно для игроков</div>
+      <div class="warning-text">Ранги Горного Господина и его заместителя недоступны. Ранги офицеров (Красный Шест, Белый Веер, Соломенная Сандалия) требуют согласования с администрацией. При создании персонажа укажите, как и когда он вошёл в братство, кто был его куратором.</div>
+    </div>
+  </section>
+
+  <!-- ЗАКОНЫ -->
+  <section class="lore-section" id="laws">
+    <p class="section-eyebrow">Кодекс</p>
+    <h2 class="section-title">Законы братства</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>В отличие от западной мафии, законы триады существуют в письменном виде — в виде «36 клятв», которые произносит каждый новый член при инициации. Полный текст клятв знают только офицеры. Рядовые братья произносят их однажды и запоминают суть, но не букву.</p>
+      <p>В Порт-Мроунском отделении Лян адаптировал традиционные клятвы под местную реальность. Часть из них носит ритуальный характер, часть — абсолютно практическая.</p>
+    </div>
+
+    <div class="pull-quote">«Клятва — не контракт. Контракт можно расторгнуть. Клятва — часть тебя. Её нельзя вернуть.»</div>
+
+    <div class="rule-cards">
+      <div class="rule-card gold">
+        <div class="rule-title">Первая клятва: Молчание</div>
+        <div class="rule-desc">Никогда, ни при каких обстоятельствах не раскрывать информацию о братстве посторонним. Под пытками, под угрозой смерти, под давлением властей — молчать. Это не просто правило. Это то, что отделяет братство от остального мира.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Вторая клятва: Братство важнее крови</div>
+        <div class="rule-desc">Если интересы братства противоречат интересам семьи — братство важнее. Это не означает причинять вред семье. Это означает, что в случае выбора — выбор уже сделан заранее. При вступлении каждый должен понимать это.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Третья клятва: Не поднимай руку на брата</div>
+        <div class="rule-desc">Конфликты между членами братства разрешаются через офицеров. Самостоятельная расправа над братом — тяжкое нарушение, даже если брат виноват. Только старший имеет право наказывать младшего.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Не трогай семьи брата</div>
+        <div class="rule-desc">Жёны, дети, родители членов братства неприкосновенны. Это правило соблюдается строже, чем любое другое — возможно, потому что его нарушение провоцирует худшую из возможных реакций.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Не воруй у братства</div>
+        <div class="rule-desc">Деньги, которые принадлежат братству, нельзя удерживать, скрывать или использовать в личных целях. Финансовая нечестность — наиболее часто раскрываемое нарушение, потому что Мэй Сюлань проверяет каждую цифру.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Уважай старших</div>
+        <div class="rule-desc">Публичное неуважение к офицеру — нарушение, даже если офицер неправ. Несогласие выражается в установленном порядке, через каналы, а не на улице и не в присутствии посторонних.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Не работай на врагов братства</div>
+        <div class="rule-desc">Запрещено принимать деньги, задания или покровительство от организаций, враждебных братству, без ведома руководства. Это включает полицию, конкурирующие группировки и любых внешних нанимателей.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- НАКАЗАНИЯ -->
+  <section class="lore-section" id="punishment">
+    <p class="section-eyebrow">Последствия</p>
+    <h2 class="section-title">Наказания</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Система наказаний в братстве значительно отличается от западных аналогов. Триада предпочитает тихие, точечные меры — шумные наказания привлекают внимание, которое Лян считает недопустимой роскошью. Идеальное наказание — то, о котором знают только те, кому нужно знать.</p>
+      <p>Важный принцип: наказание всегда соразмерно не тяжести нарушения, а его последствиям для братства. Маленькая ошибка, повлёкшая большие потери — наказывается жёстче, чем серьёзное нарушение без последствий.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rule-title">Финансовое взыскание</div>
+        <div class="rule-desc">Самое частое наказание. Нарушитель выплачивает определённую сумму в казну братства — сверх обычных отчислений. Размер устанавливается офицером, может быть оспорен через куратора, но не через самого офицера.</div>
+        <div class="rule-verdict">Уровень: мелкое нарушение</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Понижение статуса</div>
+        <div class="rule-desc">Человека отстраняют от определённых операций или связей. Это не объявляется публично — просто перестают приглашать, перестают доверять определённую работу. Унижение тихое, но заметное тем, кто в теме.</div>
+        <div class="rule-verdict">Уровень: повторное или дисциплинарное нарушение</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">«Три удара»</div>
+        <div class="rule-desc">Физическое наказание, применяемое за трусость, неповиновение или нарушение правил в ситуации, требовавшей действия. Трое братьев бьют нарушителя — ритуально, но по-настоящему. После этого нарушитель встаёт сам, без помощи. Это часть ритуала.</div>
+        <div class="rule-verdict">Уровень: нарушение чести или трусость</div>
+      </div>
+      <div class="rule-card severe">
+        <div class="rule-title">Допрос</div>
+        <div class="rule-desc">При подозрении в предательстве или серьёзной утечке информации проводится допрос. Братство использует методы, отточенные поколениями: длительная изоляция, лишение сна, психологическое давление. Физические методы применяются, но редко — Лян считает их менее эффективными, чем терпеливое давление на психику. Допросом руководит специально назначенный офицер.</div>
+        <div class="rule-verdict">Уровень: подозрение в предательстве</div>
+      </div>
+      <div class="rule-card severe">
+        <div class="rule-title">«Ножницы» — исключение из братства</div>
+        <div class="rule-desc">Человека исключают. Церемония обратная инициации: клятва аннулируется, кольцо (если было) возвращается, все связи с братством официально разрываются. Исключённый больше не под защитой. Это само по себе — наказание в мире, где врагов достаточно. Применяется за нарушения, которые не тянут на смерть, но делают человека ненадёжным.</div>
+        <div class="rule-verdict">Уровень: серьёзное нарушение без прямого предательства</div>
+      </div>
+      <div class="rule-card severe">
+        <div class="rule-title">Тихое устранение</div>
+        <div class="rule-desc">Никакой демонстративности. Никаких знаков. Человек просто исчезает — или умирает по причине, которую сложно связать с братством. Несчастный случай, болезнь, ограбление. Исполнение поручается специальному оперативнику, который никогда не пересекался с жертвой лично. Тело обычно не находят. Это принципиально: исчезновение без тела означает отсутствие дела.</div>
+        <div class="rule-verdict">Уровень: предательство братства или угроза безопасности</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ВЫХОД -->
+  <section class="lore-section" id="exit">
+    <p class="section-eyebrow">Выход</p>
+    <h2 class="section-title">Можно ли покинуть братство</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Теоретически — да. Практически — это редкость, требующая исключительных обстоятельств и официального разрешения. Братство не держит людей из принципа «нельзя»: оно держит их потому, что выгоднее держать, чем отпускать.</p>
+      <p>Официальный выход возможен в трёх случаях: тяжёлая болезнь, исключительное обстоятельство с разрешения Горного Господина, или почётная отставка для очень старых братьев с многолетней безупречной службой.</p>
+      <p>В любом случае — вышедший молчит. Навсегда. Это не обсуждается. Это единственное условие, которое не смягчается ни при каких обстоятельствах.</p>
+    </div>
+
+    <div class="pull-quote">«Из воды нельзя выйти сухим. Но иногда позволяют выйти — если пообещаешь больше не подходить к берегу.»</div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rule-title">Почётная отставка</div>
+        <div class="rule-desc">Для братьев с двадцатью и более годами безупречной службы. Человек «уходит на покой» — получает небольшое содержание, живёт в Чайна-стрит или уезжает куда захочет. Единственное условие — абсолютное молчание. Братство периодически «проверяет» отставников — просто чтобы убедиться, что они помнят правила.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Исключение по болезни</div>
+        <div class="rule-desc">Если человек физически не способен выполнять обязанности — Мэй Сюлань оценивает экономическую целесообразность его содержания. Обычно братство помогает с лечением — но если человек неизлечим и беспомощен, его «отпускают», назначая минимальное содержание. Молчание обязательно.</div>
+      </div>
+      <div class="rule-card severe">
+        <div class="rule-title">Самовольный уход</div>
+        <div class="rule-desc">Если человек уходит без разрешения — братство не объявляет охоту немедленно. Сначала ждут. Иногда — несколько месяцев. Беглец живёт в ожидании и не знает, нашли его или нет. Это психологически невыносимо для большинства людей. Четверо за всю историю Порт-Мроунского отделения ушли без разрешения. Двое сами вернулись. Одного нашли. Четвёртый — неизвестно. Братство говорит, что он просто ещё не знает, что его уже нашли.</div>
+        <div class="rule-verdict">Почти всегда — фатальный исход</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- РИТУАЛЫ -->
+  <section class="lore-section" id="rituals">
+    <p class="section-eyebrow">Традиции</p>
+    <h2 class="section-title">Ритуалы и обычаи</h2>
+    <div class="section-rule"></div>
+
+    <div class="ritual-box">
+      <div class="ritual-title">Церемония инициации — «Пройти через ворота»</div>
+      <div class="ritual-text">Проводится ночью, в закрытом помещении. Только братья — никаких посторонних. Кандидат входит через «арку» из двух скрещенных мечей, которые держат двое старших братьев. Он произносит клятвы — все тридцать шесть, одну за другой. Затем надрезает палец и смешивает кровь с рисовым вином в чаше. Каждый присутствующий делает то же. Все пьют из одной чаши.<br><br>
+      Это не метафора. Это буквальное создание кровного братства. После этой ночи человек принадлежит братству физически — его кровь смешана с кровью других. Изменить это невозможно.</div>
+    </div>
+
+    <div class="ritual-box">
+      <div class="ritual-title">Праздник Красного Лотоса</div>
+      <div class="ritual-text">Раз в год, в день основания организации, все братья Порт-Мроунского отделения собираются на закрытый ужин. Место меняется каждый год. Приглашения передаются лично, через куратора. На ужине не обсуждаются дела — только братство, история, память об ушедших. Начинается с минуты молчания в честь тех, кто погиб за братство. Заканчивается тостом, который произносит Горный Господин — единственный раз в году, когда его голос слышат все присутствующие одновременно. Лян всегда говорит по-кантонски. Даже те, кто не понимает языка, молчат и слушают.</div>
+    </div>
+
+    <div class="ritual-box">
+      <div class="ritual-title">Числа как язык</div>
+      <div class="ritual-text">Члены братства используют числа как код. «Четыре-девять» означает рядового брата. «Четыре-два-шесть» — Красного Шеста. Это не просто шифр — это язык, который позволяет говорить открыто о закрытых вещах. Фраза «я встретил сегодня четыре-девять» означает «я контактировал с рядовым членом братства». Посторонние слышат числа и не понимают ничего.</div>
+    </div>
+
+    <div class="ritual-box">
+      <div class="ritual-title">Траур</div>
+      <div class="ritual-text">Когда умирает член братства — от болезни, в бою или по приказу — его хоронят с уважением. Даже если он был исключён незадолго до смерти. Смерть примиряет. На похоронах братья носят красный лотос — маленький, скромный, приколотый изнутри к лацкану пиджака. Снаружи не видно. Это только для своих.</div>
+    </div>
+  </section>
+
+  <!-- БИЗНЕС -->
+  <section class="lore-section" id="business">
+    <p class="section-eyebrow">Экономика</p>
+    <h2 class="section-title">Бизнес и источники дохода</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Финансовая архитектура братства — главная гордость Мэй Сюлань. Каждый доллар нелегального дохода проходит через несколько слоёв легального бизнеса, прежде чем оказаться в «чистой» форме. Внешний аудитор, проверяя любое из предприятий, найдёт только аккуратную бухгалтерию и законопослушный бизнес.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card gold">
+        <div class="rule-title">Опиум — главный продукт</div>
+        <div class="rule-desc">Опиум поступает из Юго-Восточной Азии через Гонконг и Сан-Франциско. В Порт-Мроуне братство контролирует семь точек — от элитных «курилен» для состоятельных клиентов в замаскированных помещениях до дешёвых закутков в глубине Чайна-стрит. Клиентура разнообразна: докеры, мелкие служащие, но также несколько судей и один политик, чьё пристрастие является ценнейшим инструментом давления.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Портовый транзит</div>
+        <div class="rule-desc">Братство контролирует «тихий» коридор через восточные причалы — грузы, которые проходят мимо таможенной проверки. Схема сложная: официальный груз декларируется правильно, внутри него — незадекларированный товар. Таможенный офицер, знающий об этом, получает конверт каждый месяц. Регулярность и предсказуемость — основа доверия.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Азартные игры</div>
+        <div class="rule-desc">Два закрытых игорных дома в Чайна-стрит. Только по рекомендации. Игры традиционные и западные. Кредиты выдаются на месте — под процент, который братство считает справедливым, а должники — не очень. Долги никогда не прощаются, но иногда конвертируются в услуги.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Информационный бизнес</div>
+        <div class="rule-desc">Братство продаёт информацию — осторожно, избирательно, дорого. Не всем и не всегда. Иногда информацию используют как инструмент давления, не продавая. Кто знает, что о нём знает братство — становится управляемым. Это ценнее прямых денег.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Легальный бизнес (прикрытие)</div>
+        <div class="rule-desc">Семь ресторанов, четыре прачечные, две ювелирные мастерские, один цветочный магазин и чайный дом Линь Цзяхао. Все работают честно — хорошая еда, качественные украшения, приятный чай. Это не просто прикрытие: Лян считает, что легальный бизнес должен быть хорошим бизнесом, иначе он привлекает ненужное внимание своей очевидной убыточностью.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- КОНФЛИКТЫ -->
+  <section class="lore-section" id="conflicts">
+    <p class="section-eyebrow">История конфликтов</p>
+    <h2 class="section-title">Ключевые конфликты</h2>
+    <div class="section-rule"></div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1923 — Инцидент с Кэхилами</div>
+        <div class="timeline-title">Первый урок для города.</div>
+        <div class="timeline-text">Описан выше. Значение этого события выходит за рамки конкретного случая: это был момент, когда Чайна-стрит перестал быть «мягкой целью» для внешних банд. Слух разошёлся быстро — не через угрозы и заявления, а через тихое знание: туда лучше не лезть.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1929 — Война с Тонг Цзинем</div>
+        <div class="timeline-title">Внутренняя угроза оказалась опаснее внешней.</div>
+        <div class="timeline-text"><strong>Тонг Цзинь</strong> был старшим братом, одним из первых членов братства в Порт-Мроуне. В 1929 году он попытался создать параллельную структуру — небольшую группу лично преданных ему людей, работавших помимо официальных каналов и утаивавших часть доходов.<br><br>
+        Чэнь узнал об этом через три месяца после начала. Он не торопился. Позволил схеме расшириться — чтобы понять полный масштаб и всех участников. Когда картина стала полной — действовал за одну ночь. Тонг Цзинь исчез. Четверо его ближайших людей явились с извинениями и компенсацией. Двое просто исчезли вслед за Тонгом.<br><br>
+        После этого случая Чэнь ввёл систему перекрёстных проверок: каждый офицер знает часть финансовых потоков другого офицера. Полной картины не знает никто, кроме руководства. Но утаить что-то системно — стало практически невозможным.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1936 — Дело детектива Коннора</div>
+        <div class="timeline-title">Когда закон пришёл слишком близко.</div>
+        <div class="timeline-text">Детектив <strong>Пат Коннор</strong> из отдела нравов провёл шесть месяцев под прикрытием в китайском квартале. Он был достаточно умён, чтобы не выдавать себя явно, и достаточно настойчив, чтобы подобраться близко к одному из опиумных притонов.<br><br>
+        Братство обнаружило его на четвёртом месяце. Лян принял нестандартное решение: не устранять, не запугивать. Вместо этого — дать детективу «увидеть» то, что братство хотело показать. Коннор получил информацию о мелком независимом торговце, который не имел к братству никакого отношения. Арестовал его, получил благодарность начальства, закрыл дело.<br><br>
+        Через год Коннор стал информатором братства — не зная об этом. Его регулярно «подкармливали» информацией о конкурентах и мелких преступниках. Он считал, что имеет источник в китайском квартале. На самом деле — источник имел его.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1943 — Конфликт с Моретти из-за доков</div>
+        <div class="timeline-title">Война без единого выстрела.</div>
+        <div class="timeline-text">Когда Моретти начали давить на легальный бизнес братства в Даунтауне — пожарные инспекции, проблемы с поставщиками, судебные решения — Лян не ответил симметрично немедленно. Он подождал две недели, дав итальянцам укрепиться в уверенности, что давление работает.<br><br>
+        Затем ответил сразу по нескольким направлениям одновременно: информация о коррупционной схеме одного из капо Моретти оказалась на столе у честного прокурора (который не знал источника). Ключевой поставщик Моретти неожиданно поднял цены. Двое докеров, работавших на итальянцев, нашли более выгодное предложение.<br><br>
+        Ни одно из этих событий не было явно связано с братством. Но их совпадение было слишком очевидным для тех, кто понимал. Через три недели Линь получил звонок от посредника Моретти с предложением «встретиться и поговорить». Встреча прошла. Граница была восстановлена.<br><br>
+        Лян назвал это «ответом пустоты на силу» — термин из китайской военной философии, означающий: не противодействуй силе напрямую, направь её в пустоту, где она не найдёт опоры.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1945 — Инцидент на Пирсе 7</div>
+        <div class="timeline-title">Единственный случай открытого насилия при Ляне.</div>
+        <div class="timeline-text">В ноябре 1945 года группа ветеранов — бывших солдат, вернувшихся с войны и не нашедших себе места — попыталась захватить один из складов братства в доках. Они не знали, кому принадлежит склад. Просто увидели возможность.<br><br>
+        Это был единственный случай при управлении Ляна, когда ответ последовал немедленно и открыто. Чэнь Гоцян взял шестерых людей и разобрался за одну ночь. Троих ветеранов увезли в неизвестном направлении. Двое оказались в больнице. Один — не пострадал физически, но ушёл сам, не произнеся ни слова.<br><br>
+        Лян был недоволен публичностью этого ответа. Гоцян настаивал, что демонстрация силы была необходима — послевоенное время принесло в город слишком много отчаянных людей, и пример должен был быть ясным. Они спорили об этом несколько недель. В итоге оба оказались правы: после инцидента попыток захватить имущество братства не было — но и полиция обратила на доки повышенное внимание.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1947 — Детектив Уоллес</div>
+        <div class="timeline-title">Угроза, которая ещё не разрешена.</div>
+        <div class="timeline-text">Молодой детектив <strong>Джек Уоллес</strong> из уголовного розыска начал интересоваться нарушениями на таможне в начале 1947 года. Он умный, настойчивый и, что хуже всего, — честный. Таких сложнее всего нейтрализовать через обычные каналы.<br><br>
+        Братство наблюдает за ним уже четыре месяца. Три варианта рассматриваются: компрометация (найти слабость), перевод (через нужных людей добиться его перевода в другой отдел или город), или — в крайнем случае — несчастный случай. Лян пока выбирает наблюдение. Уоллес ещё не знает достаточно, чтобы быть опасным. Но направление его работы вызывает беспокойство.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ЧАЙНА-СТРИТ -->
+  <section class="lore-section" id="chinastreet">
+    <p class="section-eyebrow">Территория</p>
+    <h2 class="section-title">Чайна-стрит — крепость братства</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Чайна-стрит — это не просто район. Это государство в государстве, со своими законами, иерархией и системой самозащиты. Большинство жителей квартала не являются членами братства и никогда с ним напрямую не контактировали. Но все они — осознанно или нет — существуют в системе, которую братство создало и поддерживает.</p>
+      <p>Квартал охраняется без видимой охраны. Нет людей с оружием на углах. Нет очевидных постов. Вместо этого — сеть наблюдателей: лавочники, которые замечают незнакомцев. Дети, которые играют на улице и видят всё. Соседи, которые знают, кто приходил и когда ушёл.</p>
+      <p>Чужой, зашедший в квартал без приглашения, почти наверняка будет замечен в течение нескольких минут. Информация уйдёт вверх по цепочке. Решение о том, что с ним делать, придёт сверху. Обычно — ничего. Просто наблюдение. Иногда — вежливый вопрос от случайного прохожего. В редких случаях — более прямое вмешательство.</p>
+    </div>
+
+    <div class="pull-quote">«Чайна-стрит не враждебен чужим. Он просто знает о них всё, пока они не знают ничего.»</div>
+
+    <div class="rule-cards">
+      <div class="rule-card gold">
+        <div class="rule-title">Чайный дом Линь — центр информации</div>
+        <div class="rule-desc">Чайный магазин Линь Цзяхао на углу Восточной и Лотосовой — неофициальный центр квартала. Сюда приходят поговорить, получить новости, разрешить споры. Линь слушает всё. Запоминает всё. Никогда не записывает — только в голову.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Храм — нейтральная территория</div>
+        <div class="rule-desc">Небольшой буддийский храм в глубине квартала — единственное место, где братство гарантирует абсолютную безопасность всем, включая врагов. Это традиция, которую Лян соблюдает принципиально. Нарушение неприкосновенности храма стало бы репутационной катастрофой внутри общины.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Система взаимопомощи</div>
+        <div class="rule-desc">Братство финансирует негласный фонд взаимопомощи общины: займы без процентов для своих торговцев в трудные времена, оплата лечения, помощь семьям погибших. Это не благотворительность — это инвестиция в лояльность. Человек, которому помогли в трудный момент, не донесёт на братство никогда.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Школа</div>
+        <div class="rule-desc">Братство финансирует небольшую школу китайского языка для детей общины. Официально — культурный проект. На деле — место, где братство видит следующее поколение и начинает формировать к нему отношение задолго до того, как дети вырастут.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="page-footer">
+  Port-Mroun Fandom ✦ Триада Красного Лотоса ✦ 紅蓮三合會
+</div>
+
+</body>
+</html>
