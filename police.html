@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Полицейское управление — Port-Mroun</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a;
+      --gold-dim: #8a7a3a;
+      --cream: #e8ddb8;
+      --navy: #0a1520;
+      --blue: #2a4a7a;
+      --blue-dim: #1a3050;
+      --blue-bright: #4a6aaa;
+      --blue-glow: rgba(42,74,122,0.15);
+      --text: #c8c0a0;
+      --text-dim: #7a7060;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    .hero {
+      position: relative;
+      height: 60vh;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('police.png');
+      background-size: cover;
+      background-position: center 20%;
+      filter: brightness(0.25) saturate(0.5);
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10,21,32,0.2) 0%, rgba(10,21,32,0.97) 100%);
+    }
+
+    .hero-blue {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 40% 50%, rgba(42,74,122,0.1) 0%, transparent 60%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Crimson Text', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--blue-bright);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(24px, 5vw, 54px);
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 5px;
+      text-shadow: 0 0 40px rgba(196,168,74,0.25), 0 0 80px rgba(42,74,122,0.2);
+      line-height: 1.15;
+    }
+
+    .hero-badge {
+      font-size: clamp(14px, 2.5vw, 20px);
+      color: var(--blue-bright);
+      letter-spacing: 5px;
+      margin-top: 8px;
+      opacity: 0.7;
+      font-family: 'Cinzel', serif;
+    }
+
+    .hero-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-top: 12px;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    .page-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,21,32,0.97);
+      border-bottom: 1px solid rgba(42,74,122,0.25);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .page-nav::-webkit-scrollbar { display: none; }
+
+    .page-nav ul {
+      display: flex;
+      list-style: none;
+      min-width: max-content;
+      padding: 0 16px;
+    }
+
+    .page-nav a {
+      display: block;
+      padding: 14px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .page-nav a:hover { color: var(--gold); border-bottom-color: var(--blue-bright); }
+
+    .page-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    .lore-section {
+      padding: 60px 0 20px;
+      border-bottom: 1px solid rgba(42,74,122,0.1);
+    }
+
+    .lore-section:last-child { border-bottom: none; }
+
+    .section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .section-rule {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, var(--blue-bright), transparent);
+      margin-bottom: 28px;
+    }
+
+    .prose p { margin-bottom: 18px; color: var(--text); }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose strong { color: var(--cream); font-weight: 600; }
+
+    .pull-quote {
+      border-left: 3px solid var(--blue);
+      padding: 16px 20px;
+      margin: 28px 0;
+      background: var(--blue-glow);
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+      margin-top: 10px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px; top: 8px; bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--blue-bright), rgba(42,74,122,0.05));
+    }
+
+    .timeline-item { position: relative; margin-bottom: 36px; }
+    .timeline-item:last-child { margin-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -25px; top: 6px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--blue-bright);
+      border: 2px solid var(--navy);
+      box-shadow: 0 0 8px rgba(74,106,170,0.6);
+    }
+
+    .timeline-year {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .timeline-title {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .timeline-text {
+      font-size: 16px;
+      color: var(--text-dim);
+      line-height: 1.75;
+    }
+
+    .rule-cards { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+
+    .rule-card {
+      background: rgba(13,21,32,0.8);
+      border: 1px solid rgba(196,168,74,0.08);
+      border-left: 3px solid var(--blue-dim);
+      padding: 18px 20px;
+      transition: border-left-color 0.2s;
+    }
+
+    .rule-card:hover { border-left-color: var(--blue-bright); }
+    .rule-card.corrupt { border-left-color: #5a3010; }
+    .rule-card.corrupt:hover { border-left-color: #8a5020; }
+    .rule-card.gold { border-left-color: var(--gold-dim); }
+    .rule-card.gold:hover { border-left-color: var(--gold); }
+    .rule-card.danger { border-left-color: #5a1515; }
+    .rule-card.danger:hover { border-left-color: #8a2020; }
+
+    .rule-title {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 7px;
+    }
+
+    .rule-desc { font-size: 15px; color: var(--text-dim); line-height: 1.65; }
+
+    .rule-verdict {
+      display: inline-block;
+      margin-top: 9px;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--blue-dim);
+      color: var(--blue-bright);
+    }
+
+    .rule-verdict.bad { border-color: #5a3010; color: #aa7040; }
+
+    .dept-block {
+      margin-bottom: 40px;
+    }
+
+    .dept-block:last-child { margin-bottom: 0; }
+
+    .dept-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(42,74,122,0.2);
+    }
+
+    .dept-icon { font-size: 24px; }
+
+    .dept-name {
+      font-family: 'Cinzel', serif;
+      font-size: 16px;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    .dept-tag {
+      margin-left: auto;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid rgba(42,74,122,0.4);
+      color: var(--blue-bright);
+      white-space: nowrap;
+    }
+
+    .dept-tag.corrupt-tag { border-color: rgba(138,80,32,0.4); color: #aa7040; }
+
+    .dept-desc { font-size: 15px; color: var(--text-dim); line-height: 1.65; margin-bottom: 16px; }
+
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    .rank-table th {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(196,168,74,0.2);
+      text-align: left;
+    }
+
+    .rank-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(42,74,122,0.08);
+      vertical-align: top;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+
+    .rank-table td:first-child {
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      width: 32%;
+    }
+
+    .rank-table tr:last-child td { border-bottom: none; }
+    .rank-table tr:hover td { background: rgba(42,74,122,0.05); }
+
+    .persons-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 10px; }
+
+    .person-card {
+      background: rgba(13,21,32,0.7);
+      border: 1px solid rgba(42,74,122,0.2);
+      padding: 22px;
+    }
+
+    .person-card.corrupt-card { border-color: rgba(138,80,32,0.25); }
+
+    .person-name {
+      font-family: 'Cinzel', serif;
+      font-size: 17px;
+      color: var(--gold);
+      margin-bottom: 3px;
+    }
+
+    .person-role {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .person-role.corrupt-role { color: #aa7040; }
+
+    .person-bio { font-size: 15px; color: var(--text-dim); line-height: 1.75; }
+
+    .warning-box {
+      background: rgba(42,74,122,0.1);
+      border: 1px solid rgba(42,74,122,0.3);
+      padding: 20px 22px;
+      margin: 24px 0;
+    }
+
+    .warning-box.danger-box {
+      background: rgba(80,20,20,0.15);
+      border-color: rgba(138,32,32,0.3);
+    }
+
+    .warning-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .warning-title.danger-title { color: #cc4040; }
+
+    .warning-text { font-size: 15px; color: #8899bb; line-height: 1.6; }
+    .warning-text.danger-text { color: #bb8888; }
+
+    .corrupt-meter {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .corrupt-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .corrupt-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(196,168,74,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .corrupt-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    .corrupt-fill.low { width: 20%; background: #4a8a4a; }
+    .corrupt-fill.mid { width: 50%; background: #8a6a2a; }
+    .corrupt-fill.high { width: 80%; background: #8a3a1a; }
+    .corrupt-fill.max { width: 95%; background: #7a1a1a; }
+
+    .page-footer {
+      text-align: center;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(42,74,122,0.15);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .lore-section { padding: 40px 0 16px; }
+      .pull-quote { font-size: 16px; }
+      .dept-tag { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="index.html">← Назад</a>
+  <div class="hero-bg"></div>
+  <div class="hero-blue"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Досье фракции</p>
+    <h1 class="hero-title">ПОЛИЦЕЙСКОЕ УПРАВЛЕНИЕ<br>ПОРТ-МРОУНА</h1>
+    <p class="hero-badge">BADGE № 1 — SERVE & PROTECT</p>
+    <p class="hero-sub">«Закон — это то, что написано. Справедливость — то, что возможно.»</p>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <ul>
+    <li><a href="#history">История</a></li>
+    <li><a href="#persons">Люди</a></li>
+    <li><a href="#departments">Отделы</a></li>
+    <li><a href="#ranks">Ранги</a></li>
+    <li><a href="#corruption">Коррупция</a></li>
+    <li><a href="#steelfist">Стальной кулак</a></li>
+    <li><a href="#rules">Устав</a></li>
+    <li><a href="#cases">Громкие дела</a></li>
+    <li><a href="#life">Служба</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <!-- ИСТОРИЯ -->
+  <section class="lore-section" id="history">
+    <p class="section-eyebrow">1889 — 1947</p>
+    <h2 class="section-title">История управления</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Полицейское управление Порт-Мроуна существует с 1889 года — почти столько же, сколько сам город в его нынешних границах. За шесть десятилетий оно прошло путь от дюжины констеблей с дубинками до структуры почти в триста человек с несколькими специализированными отделами, тактическим подразделением и собственной тюрьмой предварительного заключения.</p>
+      <p>Это путь не только роста, но и постепенного разложения — медленного, почти незаметного в каждый отдельный момент, но очевидного, если смотреть на всю дугу. Управление 1947 года — это не то, чем задумывалось управление 1889-го. Это что-то другое, носящее то же название и тот же значок.</p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1889 — Основание</div>
+        <div class="timeline-title">Двенадцать человек и один участок.</div>
+        <div class="timeline-text">Городской совет Порт-Мроуна учредил полицейское управление в марте 1889 года. Первый начальник — <strong>Генри Брэдфорд</strong> — бывший шериф из Огайо, приглашённый специально. Двенадцать констеблей, один участок в деревянном здании на углу Мэйн-стрит, и полное отсутствие представления о том, что делать с растущим портовым городом.<br><br>
+        Первые годы были хаотичными. Портовые города — особая порода: постоянный поток приезжих, моряков, иммигрантов, авантюристов. Пьяные драки, ограбления, контрабанда — всё это с первого дня. Брэдфорд был честным человеком, но понимал, что с двенадцатью людьми не навести порядок в портовом городе. Он принял решение, которое аукается до сих пор: договорился с местными «авторитетами» о негласном разграничении. Полиция не трогает то, что слишком сложно. Взамен — спокойствие на улицах. Этот первый компромисс задал тон на десятилетия вперёд.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1895–1910 — Рост и первые скандалы</div>
+        <div class="timeline-title">Управление растёт. Проблемы — тоже.</div>
+        <div class="timeline-text">К 1900 году в управлении было уже сорок человек. Появился первый детективный отдел — трое сыщиков, которые занимались серьёзными преступлениями. Построили новый участок — кирпичный, с камерами.<br><br>
+        В 1903 году разразился первый публичный скандал: выяснилось, что несколько констеблей регулярно получали деньги от владельцев нелегальных игорных домов. Начальник управления <strong>Томас Уолш</strong> уволил виновных и объявил о «полном очищении». Газеты написали хвалебные статьи. Через три года всё вернулось на круги своя — просто конверты стали передаваться аккуратнее.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1915 — Убийство Патрульного Хёрли</div>
+        <div class="timeline-title">Первый офицер, погибший при исполнении.</div>
+        <div class="timeline-text">Патрульный <strong>Деклан Хёрли</strong> — ирландец, двадцать три года, три года на службе — был застрелен в январе 1915 года во время попытки остановить ограбление ювелирного магазина. Первый офицер управления, погибший при исполнении.<br><br>
+        Его похороны собрали весь город. Управление объявило о создании фонда помощи семьям погибших офицеров — фонд существует до сих пор, хотя большинство сотрудников не знают, что деньги в него уже давно не поступают. Убийц Хёрли поймали через неделю. Оба повешены. Это был последний раз, когда управление раскрыло громкое дело с такой скоростью.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1920–1933 — Сухой закон</div>
+        <div class="timeline-title">Годы, которые всё изменили.</div>
+        <div class="timeline-text">Введение сухого закона в 1920 году стало переломным моментом для управления. Формально полиция обязана была бороться с нелегальной торговлей алкоголем. На практике — портовый город с развитой контрабандой и растущей итальянской мафией превратил эту обязанность в фикцию.<br><br>
+        Деньги от виски текли рекой. Часть шла в карманы офицеров, часть — к начальникам отделов, часть — ещё выше. К 1925 году коррупция в управлении перестала быть исключением и стала нормой. Честный офицер был скорее аномалией, которую терпели, пока она не мешала.<br><br>
+        Именно тогда сформировалась та двухуровневая структура, которая существует в 1947-м: внешний слой — официальный закон, протоколы, значки, устав. Внутренний слой — негласные договорённости, конверты, закрытые глаза. Большинство новобранцев узнавали о втором слое в течение первого года службы. Реагировали по-разному. Большинство — адаптировались.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1928 — Начальник Дункан</div>
+        <div class="timeline-title">Человек, который сделал коррупцию системой.</div>
+        <div class="timeline-text"><strong>Артур Дункан</strong> стал начальником полиции в 1928 году — в возрасте сорока двух лет, через двадцать лет службы. Умный, обаятельный, внешне безупречный. Газеты писали о нём как о «новом лице городского закона».<br><br>
+        На деле Дункан был первым начальником, который не просто терпел коррупцию, но выстроил её в рабочую систему. До него взятки брали хаотично, каждый для себя. Дункан ввёл порядок: определённый процент с каждого района шёл наверх по чёткой цепочке. Моретти получили надёжного партнёра в управлении. Управление получило финансовую стабильность, которую бюджет города никогда не обеспечивал.<br><br>
+        Дункан до сих пор в своём кресле в 1947-м. Ему шестьдесят один год. Он знает всё, что происходит в управлении. Именно поэтому он опасен — не как инструмент закона, а как человек с информацией, которая устраивает слишком многих.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1933 — Конец сухого закона и реформы</div>
+        <div class="timeline-title">Закон изменился. Управление — нет.</div>
+        <div class="timeline-text">Отмена сухого закона убрала один источник нелегального дохода. Но система, построенная под него, никуда не делась. Просто переориентировалась: ставки, проституция, контрабанда через порт. Потоки изменились — механизм остался.<br><br>
+        В 1934 году городской совет инициировал «реформу управления». Дункан принял реформу с видимым энтузиазмом, создал несколько новых должностей, провёл показательные увольнения двух офицеров (оба к тому моменту уже были бесполезны), и отчитался об успехах. Газеты снова написали хвалебные статьи.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1938 — Создание отдела нравов</div>
+        <div class="timeline-title">Официально — борьба с пороком. Неофициально — его регулирование.</div>
+        <div class="timeline-text">Отдел нравов был создан под давлением городских реформаторов — групп, требовавших борьбы с проституцией и нелегальными азартными заведениями. Дункан согласился и назначил начальником отдела <strong>Рэя Пирса</strong> — человека, которому доверял лично и которого проверил лично.<br><br>
+        Отдел нравов стал самым коррумпированным подразделением управления. Его задача — не уничтожать нелегальный бизнес, а регулировать его: обеспечивать «безопасность» нужным заведениям, проводить показательные рейды на конкурентов Моретти, собирать дань с тех, кто работает без «крыши». Это работает безупречно — если смотреть на результаты, а не на методы.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1945 — Создание «Стального кулака»</div>
+        <div class="timeline-title">Ветераны вернулись. И получили значки.</div>
+        <div class="timeline-text">После войны в город вернулись сотни ветеранов. Часть из них пошла в полицию — люди с боевым опытом, привычкой к структуре и отсутствием страха. Дункан увидел в этом возможность.<br><br>
+        Тактический отряд «Стальной кулак» был создан в мае 1945 года. Официально — для борьбы с организованной преступностью и тяжёлыми вооружёнными преступниками. Двенадцать человек, лучшее снаряжение, особые полномочия. Реально — инструмент давления, который Дункан использует избирательно: против тех, кого нужно устрашить, и никогда против тех, кто платит.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1946 — Убийство детектива Мартина</div>
+        <div class="timeline-title">Рана, которая не закрылась.</div>
+        <div class="timeline-text">Детектив первого класса <strong>Рой Мартин</strong> вёл расследование по делу о подозрительном пожаре на одном из складов в доках. Он копал слишком глубоко — вышел на схему отмывания денег, связанную с Моретти, и обнаружил следы, ведущие в сам отдел нравов.<br><br>
+        В январе 1946 года Мартина нашли в его машине у Доков. Два выстрела. Дело официально открыто, официально расследуется и официально зашло в тупик. Его напарник — молодой детектив второго класса <strong>Эдди Коул</strong> — продолжает расследование неофициально, в свободное время, постепенно понимая, что враг может быть не снаружи.<br><br>
+        Смерть Мартина разделила управление на тех, кто помнит, и тех, кто предпочитает не помнить. Обе группы существуют в тихом напряжении.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1947 — Настоящее время</div>
+        <div class="timeline-title">Управление на переломе.</div>
+        <div class="timeline-text">В 1947 году Полицейское управление Порт-Мроуна насчитывает около двухсот восьмидесяти человек, включая административный персонал. Структурно — одно из лучших на восточном побережье для города такого размера. По существу — организация, давно потерявшая единство цели.<br><br>
+        Примерно треть офицеров — честные люди, которые пришли на службу с намерением делать работу правильно и продолжают делать это, несмотря ни на что. Ещё треть — люди, которые адаптировались: берут не много, закрывают глаза на не слишком очевидное, живут в состоянии вечного компромисса. Оставшаяся треть — активные участники системы, сознательно работающие на Моретти или на собственное обогащение.<br><br>
+        Эти три группы ежедневно работают бок о бок, делают вид, что не знают о существовании друг друга, и иногда спасают жизни — независимо от того, к какой группе принадлежат.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- КЛЮЧЕВЫЕ ПЕРСОНЫ -->
+  <section class="lore-section" id="persons">
+    <p class="section-eyebrow">Действующие лица</p>
+    <h2 class="section-title">Ключевые персоны</h2>
+    <div class="section-rule"></div>
+
+    <div class="persons-grid">
+
+      <div class="person-card corrupt-card">
+        <div class="person-name">Артур Дункан</div>
+        <div class="person-role corrupt-role">Начальник полиции — куплен Моретти</div>
+        <div class="person-bio">Шестьдесят один год. Крупный, седой, с тяжёлыми руками и привычкой смотреть на собеседника чуть дольше, чем нужно. Форму носит всегда — даже на неофициальных встречах. Это часть образа: человек закона, преданный службе. Образ работает безупречно — большинство горожан искренне уважают его.<br><br>
+        Дункан умён, осторожен и давно перестал разделять «закон» и «порядок» в своей голове. Для него порядок в городе — это когда каждый знает своё место и не нарушает договорённостей. Моретти обеспечивают определённый порядок на улицах, платят исправно и не устраивают войн без предупреждения. Это устраивает Дункана больше, чем абстрактный закон.<br><br>
+        Его слабое место — тщеславие. Он хочет войти в историю как хороший начальник полиции. Это создаёт парадокс: человек, систематически разрушающий управление, искренне заботится о его репутации.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Фрэнк Каллахан</div>
+        <div class="person-role">Заместитель начальника — честный человек в нечестной системе</div>
+        <div class="person-bio">Пятьдесят четыре года. Тридцать лет в управлении. Каллахан знает о коррупции всё — и не знает, что с этим делать, потому что доказательства есть только у тех, кто никогда их не даст. Он не берёт денег. Никогда. Это знают все — именно поэтому его не убирают: честный заместитель создаёт иллюзию баланса и снижает давление реформаторов.<br><br>
+        Каллахан занимается реальной работой: разборы происшествий, дисциплинарные дела, координация патрульной службы. Дункан даёт ему достаточно полномочий, чтобы заместитель был занят — и недостаточно, чтобы докопаться до главного.<br><br>
+        Среди честных офицеров Каллахан — негласный лидер. Они не говорят об этом вслух. Просто знают, к кому идти, когда всё остальное не работает.</div>
+      </div>
+
+      <div class="person-card corrupt-card">
+        <div class="person-name">Рэй Пирс</div>
+        <div class="person-role corrupt-role">Начальник отдела нравов — главный коррупционер</div>
+        <div class="person-bio">Сорок восемь лет. Невысокий, аккуратный, с вечной полуулыбкой. Говорит тихо и никогда не заканчивает угрозы прямо — только намекает, и все понимают. Двадцать лет в управлении, последние восемь — в отделе нравов.<br><br>
+        Пирс — архитектор системы «регулирования» нелегального бизнеса. Его отдел собирает деньги с борделей, игорных домов и нелегальных баров, обеспечивает им защиту от конкурентов и проводит показательные рейды на тех, кто не платит. Всё это происходит без единого записанного приказа — только устные договорённости и наличные в конвертах.<br><br>
+        Личная слабость Пирса — карточный долг. Он играет сам, и не всегда успешно. Этот долг известен определённым людям. Это делает его управляемым — что устраивает Дункана.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Виктор Гарсия</div>
+        <div class="person-role">Детектив первого класса — лучший следак управления</div>
+        <div class="person-bio">Сорок два года. Мексиканец по происхождению — что делало карьеру вдвое сложнее. Добился первого класса за двенадцать лет, когда большинству белых коллег хватало восьми. Это воспитало в нём холодное упрямство, которое теперь его главный инструмент.<br><br>
+        Гарсия не берёт денег принципиально — не из идеализма, а потому что понимает: взяв однажды, ты теряешь возможность делать работу. А работа — единственное, что у него есть. Ведёт дела, от которых другие отказываются. Раскрываемость выше средней по управлению в полтора раза.<br><br>
+        Его проблема — он знает слишком много и молчит. Это безопаснее, чем говорить. Но молчание имеет свою цену.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Эдди Коул</div>
+        <div class="person-role">Детектив второго класса — напарник Мартина</div>
+        <div class="person-bio">Двадцать восемь лет. Три года в детективном отделе, до этого — два года патрульным. Когда убили Мартина, Коул был на больничном после простуды. Это спасло ему жизнь и сломало её одновременно — он не был рядом, когда это случилось, и не может себе этого простить.<br><br>
+        С тех пор он ведёт неофициальное расследование. Тихо, в нерабочее время, без записей в официальных папках. Он уже знает больше, чем безопасно знать. Пока не знает, что его наблюдают.<br><br>
+        Коул — тот человек, который ещё не сломался и ещё не выбрал окончательно. В нём есть что-то от каждой из трёх групп — честность, которая пока не стала слабостью, и сомнения, которые пока не стали компромиссом.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Лейтенант Дорис Харт</div>
+        <div class="person-role">Начальник патрульной службы — железная женщина</div>
+        <div class="person-bio">Сорок шесть лет. Единственная женщина-офицер в управлении выше ранга констебля. Получила должность в 1942-м, когда большинство мужчин ушли на войну. Когда они вернулись — просто отказалась уходить, и отстояла своё место в трёх разных инстанциях.<br><br>
+        Харт командует патрульной службой жёстко и справедливо. Её люди её уважают и боятся примерно в равных пропорциях. Она не берёт денег и не позволяет этого своим офицерам — в той мере, в которой может контролировать. Дункан её терпит, потому что патрульная служба под её руководством работает — что снижает количество публичных жалоб.</div>
+      </div>
+
+      <div class="person-card">
+        <div class="person-name">Сержант Билл Краузе</div>
+        <div class="person-role">Командир отряда «Стальной кулак»</div>
+        <div class="person-bio">Тридцать пять лет. Ветеран Тихоокеанского театра военных действий — Гуадалканал, Иводзима. Вернулся в 1945-м с тремя наградами и ночными кошмарами, о которых никому не говорит. Присоединился к управлению через три месяца после демобилизации — не потому что хотел быть копом, а потому что не умел делать ничего другого.<br><br>
+        Краузе руководит «Стальным кулаком» с момента создания. Его люди — такие же ветераны, и он понимает их так, как не понимает никто в управлении. Лично Краузе — честный человек. Но он выполняет приказы, а приказы приходят от Дункана. Это внутреннее противоречие он пока держит под контролем. Пока.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ОТДЕЛЫ -->
+  <section class="lore-section" id="departments">
+    <p class="section-eyebrow">Структура</p>
+    <h2 class="section-title">Отделы управления</h2>
+    <div class="section-rule"></div>
+
+    <!-- УГОЛОВНЫЙ РОЗЫСК -->
+    <div class="dept-block">
+      <div class="dept-header">
+        <div class="dept-icon">🔍</div>
+        <div class="dept-name">Уголовный розыск</div>
+        <div class="dept-tag">Частично честный</div>
+      </div>
+      <div class="corrupt-meter">
+        <span class="corrupt-label">Коррупция</span>
+        <div class="corrupt-bar"><div class="corrupt-fill mid"></div></div>
+      </div>
+      <div class="dept-desc" style="margin-top:12px;">Самый разнородный отдел управления. Здесь работают как лучшие детективы города, так и люди, давно продавшиеся Моретти. Они сидят за соседними столами, пьют кофе из одного кофейника и официально работают на одну организацию. Реально — на разные. Негласный раздел дел: «политические» дела уходят к нужным детективам, рядовая уголовщина — к остальным. Система работает — пока дело не задевает интересы семьи.</div>
+      <div class="rule-cards">
+        <div class="rule-card">
+          <div class="rule-title">Чем занимается</div>
+          <div class="rule-desc">Убийства, ограбления, похищения, тяжкие телесные повреждения. Работа с уликами, свидетелями, информаторами. Взаимодействие с прокуратурой. Расследование может длиться от нескольких дней до нескольких лет.</div>
+        </div>
+        <div class="rule-card corrupt">
+          <div class="rule-title">Тёмная сторона</div>
+          <div class="rule-desc">Ряд детективов регулярно «теряет» улики по делам, связанным с Моретти. Некоторые предупреждают подозреваемых о готовящихся обысках. Дела могут намеренно затягиваться или заводиться в тупик. Всё это делается профессионально — так, чтобы снаружи выглядело как обычная полицейская работа.</div>
+          <div class="rule-verdict bad">Коррупция: средняя</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ПАТРУЛЬНАЯ СЛУЖБА -->
+    <div class="dept-block">
+      <div class="dept-header">
+        <div class="dept-icon">🚔</div>
+        <div class="dept-name">Патрульная служба</div>
+        <div class="dept-tag">Наиболее честный</div>
+      </div>
+      <div class="corrupt-meter">
+        <span class="corrupt-label">Коррупция</span>
+        <div class="corrupt-bar"><div class="corrupt-fill low"></div></div>
+      </div>
+      <div class="dept-desc" style="margin-top:12px;">Самый большой отдел — около ста двадцати патрульных, разделённых на три смены и шесть районных участков. Под командованием лейтенанта Харт патрульная служба — наиболее функциональная и наименее коррумпированная часть управления. Не потому что патрульные не имеют соблазнов — а потому что Харт создала культуру, в которой взяточничество рискованнее, чем честная служба.</div>
+      <div class="rule-cards">
+        <div class="rule-card">
+          <div class="rule-title">Чем занимается</div>
+          <div class="rule-desc">Охрана общественного порядка, ответ на вызовы, первичное реагирование, составление протоколов, дорожный контроль, охрана мест преступлений до прихода детективов. Каждый патрульный знает свой маршрут как собственный карман — или должен знать.</div>
+        </div>
+        <div class="rule-card corrupt">
+          <div class="rule-title">Тёмная сторона</div>
+          <div class="rule-desc">Мелкие взятки за нарушения — скорее всего, каждый третий. «Не замечать» определённые машины или определённые адреса — около половины. Но это индивидуальные соглашения, не система. Харт периодически проводит чистки — аккуратно, без скандалов.</div>
+          <div class="rule-verdict bad">Коррупция: низкая-средняя</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ОТДЕЛ НРАВОВ -->
+    <div class="dept-block">
+      <div class="dept-header">
+        <div class="dept-icon">🎰</div>
+        <div class="dept-name">Отдел нравов</div>
+        <div class="dept-tag corrupt-tag">Системно коррумпирован</div>
+      </div>
+      <div class="corrupt-meter">
+        <span class="corrupt-label">Коррупция</span>
+        <div class="corrupt-bar"><div class="corrupt-fill max"></div></div>
+      </div>
+      <div class="dept-desc" style="margin-top:12px;">Официально отдел нравов борется с проституцией, нелегальными азартными играми и другими «преступлениями против нравственности». На практике — это регулятор нелегального рынка, работающий в интересах Дункана и Моретти. Под руководством Рэя Пирса отдел превратился в образцовый пример институциональной коррупции: каждое звено встроено в систему, выйти из которой сложнее, чем остаться в ней.</div>
+      <div class="rule-cards">
+        <div class="rule-card corrupt">
+          <div class="rule-title">Реальная работа отдела</div>
+          <div class="rule-desc">Сбор «налога на защиту» с заведений, работающих под крышей Моретти. Проведение рейдов на незащищённые заведения — конкурентов или тех, кто отказывается платить. Агенты под прикрытием следят за теми, кого нужно скомпрометировать, а не за теми, кого нужно арестовать.</div>
+          <div class="rule-verdict bad">Коррупция: критическая</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-title">Честный агент в отделе нравов</div>
+          <div class="rule-desc">Редкость, но не невозможность. Такой человек либо не понимает системы (ненадолго), либо понимает — и принимает решение, что с этим делать. Варианты: адаптироваться, уйти в другой отдел, попытаться что-то изменить изнутри (опасно) или донести (очень опасно).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ПОРТОВАЯ ПОЛИЦИЯ -->
+    <div class="dept-block">
+      <div class="dept-header">
+        <div class="dept-icon">⚓</div>
+        <div class="dept-name">Портовая полиция</div>
+        <div class="dept-tag corrupt-tag">Высокая коррупция</div>
+      </div>
+      <div class="corrupt-meter">
+        <span class="corrupt-label">Коррупция</span>
+        <div class="corrupt-bar"><div class="corrupt-fill high"></div></div>
+      </div>
+      <div class="dept-desc" style="margin-top:12px;">Двадцать восемь человек, отвечающих за порядок в доках, на причалах и в Карго-ярде. Это наиболее финансово привлекательное место для коррупции: через порт проходит контрабанда обеих крупных организаций — Моретти и Триады. Оба платят. Часто — одним и тем же офицерам.</div>
+      <div class="rule-cards">
+        <div class="rule-card">
+          <div class="rule-title">Легальная работа</div>
+          <div class="rule-desc">Контроль за безопасностью в доках, проверка документов на суда, реагирование на инциденты в портовой зоне, взаимодействие с таможней. Официальная статистика выглядит неплохо — инциденты фиксируются, отчёты пишутся.</div>
+        </div>
+        <div class="rule-card corrupt">
+          <div class="rule-title">Тёмная сторона</div>
+          <div class="rule-desc">Примерно две трети офицеров портовой полиции получают регулярные выплаты — от Моретти, от Триады или от обоих. Их задача проста: не видеть определённые грузы, не проверять определённые суда, не задавать вопросов определённым докерам. Это не требует активного участия в преступлении — только пассивного согласия.</div>
+          <div class="rule-verdict bad">Коррупция: высокая</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- РАНГИ -->
+  <section class="lore-section" id="ranks">
+    <p class="section-eyebrow">Иерархия</p>
+    <h2 class="section-title">Звания и карьера</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Карьера в управлении официально строится на выслуге лет, экзаменах и рекомендациях командира. На практике — ещё и на отношениях с нужными людьми. Честный офицер может достичь сержанта за те же годы, что нечестный — лейтенанта. Это знают все. Это никогда не произносится вслух.</p>
+    </div>
+
+    <table class="rank-table">
+      <thead>
+        <tr>
+          <th>Звание</th>
+          <th>Путь к нему</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Констебль / Патрульный</td>
+          <td>Начальный ранг. Полицейская академия — шесть месяцев обучения. Экзамен. Распределение в отдел. Первый год — под наблюдением старшего офицера.</td>
+        </tr>
+        <tr>
+          <td>Старший патрульный</td>
+          <td>Минимум три года службы, положительная оценка командира. Небольшая прибавка к жалованью, право работать без напарника.</td>
+        </tr>
+        <tr>
+          <td>Детектив второго класса</td>
+          <td>Перевод из патрульной службы — по рекомендации или заявлению. Экзамен по криминалистике и процессуальному праву. Часто — связи важнее экзамена.</td>
+        </tr>
+        <tr>
+          <td>Детектив первого класса</td>
+          <td>Минимум пять лет в детективном отделе, показатели раскрываемости, одобрение начальника отдела. Это уже уровень, где личные связи решают больше, чем статистика.</td>
+        </tr>
+        <tr>
+          <td>Сержант</td>
+          <td>Экзамен на звание сержанта — один из немногих формализованных этапов. Открытый конкурс, письменный и устный экзамен. Но список допущенных к экзамену формирует командование.</td>
+        </tr>
+        <tr>
+          <td>Лейтенант</td>
+          <td>Назначается начальником управления. Никаких публичных экзаменов. Полное усмотрение Дункана. На этом уровне уже почти невозможно быть одновременно честным и продвигаться.</td>
+        </tr>
+        <tr>
+          <td>Капитан / Начальник отдела</td>
+          <td>Назначается начальником с одобрения городского совета. На практике — личный выбор Дункана, согласованный формально. Все действующие начальники отделов прошли его проверку на лояльность.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warning-box" style="margin-top:20px;">
+      <div class="warning-title">Для игроков</div>
+      <div class="warning-text">Звания начальника управления и его заместителя недоступны. Начальники отделов требуют согласования с администрацией. При создании персонажа укажите отдел, звание, сколько лет в управлении и как он относится к коррупции — это важно для отыгрыша.</div>
+    </div>
+  </section>
+
+  <!-- КОРРУПЦИЯ -->
+  <section class="lore-section" id="corruption">
+    <p class="section-eyebrow">Внутренняя жизнь</p>
+    <h2 class="section-title">Коррупция: как это работает</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Коррупция в управлении — не случайность и не исключение. Это система, выстроенная десятилетиями и поддерживаемая не страхом, а логикой: участвовать выгоднее, чем сопротивляться. Новый офицер сталкивается с ней примерно через год службы — иногда раньше.</p>
+    </div>
+
+    <div class="pull-quote">«Я не беру взяток. Я принимаю выражение признательности от граждан, которые ценят мою работу.»<br><span style="font-size:14px; color:var(--text-dim)">— Офицер управления, пожелавший остаться анонимным</span></div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rule-title">Первое предложение</div>
+        <div class="rule-desc">Обычно — небольшое, почти незаметное. Владелец лавки «благодарит» за быстрый ответ на вызов. Конверт оставлен на столе — «на кофе». Это не угроза и не давление. Это проверка. Если взял — следующий конверт будет чуть больше. Если вернул — запомнят. Может быть, больше не предложат. Может быть, предложат иначе.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Система «крыши»</div>
+        <div class="rule-desc">Часть офицеров имеет постоянных «клиентов» — заведения или людей, которым они обеспечивают защиту. Это регулярный доход: ежемесячный конверт в обмен на то, что определённые адреса не проверяются, определённые жалобы теряются. Суммы небольшие — чтобы не бросаться в глаза. Но регулярные.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Информация как валюта</div>
+        <div class="rule-desc">Не всегда речь о деньгах. Иногда офицер сообщает о готовящемся обыске. Иногда — о том, кто ведёт расследование. Иногда — просто имя информатора, которого нужно «нейтрализовать». За это платят по-разному: деньгами, услугами, молчанием о чём-то, что офицер хотел бы скрыть.</div>
+      </div>
+      <div class="rule-card corrupt">
+        <div class="rule-title">Цена честности</div>
+        <div class="rule-desc">Честный офицер в управлении платит реальную цену. Не физическую — как правило, к нему не применяют насилия. Но карьера идёт медленнее. Лучшие дела уходят другим. Хорошие напарники избегают работы с ним — чтобы не нажить проблем. Иногда — намеренно саботируется его работа: улики «теряются», свидетели «не могут вспомнить». Это давление, рассчитанное на постепенное истощение.</div>
+        <div class="rule-verdict bad">Реальное последствие честности</div>
+      </div>
+      <div class="rule-card danger">
+        <div class="rule-title">Когда честный офицер заходит слишком далеко</div>
+        <div class="rule-desc">Рой Мартин — не первый и, вероятно, не последний. История управления знает несколько случаев, когда офицер начинал копать слишком глубоко. Обычно — его переводили, иногда — увольняли по формальному поводу. В очень редких случаях — происходило что-то хуже. Ни одно из этих дел официально не связано с управлением.</div>
+        <div class="rule-verdict bad">Высший уровень опасности</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- СТАЛЬНОЙ КУЛАК -->
+  <section class="lore-section" id="steelfist">
+    <p class="section-eyebrow">Спецподразделение</p>
+    <h2 class="section-title">Отряд «Стальной кулак»</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>«Стальной кулак» — тактическое подразделение управления, созданное в мае 1945 года. Двенадцать человек, все ветераны Второй мировой, отобранные лично сержантом Краузе. Официально — элита городской полиции, предназначенная для операций, с которыми не справится обычный патруль.</p>
+      <p>Снаряжение лучшее в управлении: помповые ружья, автоматические пистолеты, бронежилеты военного образца (списанные армейские), радиостанции последнего поколения. Отряд базируется в отдельном крыле участка — с собственным арсеналом, тренировочным залом и комнатой для брифингов.</p>
+      <p>Реальное использование отряда делится на три категории, которые публично признаётся только первая.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card gold">
+        <div class="rule-title">Официальное применение</div>
+        <div class="rule-desc">Захват вооружённых преступников, освобождение заложников, подавление тюремных беспорядков, охрана особо важных свидетелей. Это реальная работа, которую отряд выполняет хорошо — и которая создаёт ему репутацию.</div>
+        <div class="rule-verdict">Публичная функция</div>
+      </div>
+      <div class="rule-card corrupt">
+        <div class="rule-title">Давление и запугивание</div>
+        <div class="rule-desc">Иногда отряд появляется там, где его присутствие — само по себе сообщение. Рейд на заведение, которое отказалось платить. Обыск в офисе журналиста, публикующего неудобные статьи. Задержание человека, которого нужно «немного проучить». Приказы такого рода никогда не записываются.</div>
+        <div class="rule-verdict bad">Неофициальное применение</div>
+      </div>
+      <div class="rule-card danger">
+        <div class="rule-title">Операции в интересах Моретти</div>
+        <div class="rule-desc">В редких случаях — очень редких, Краузе об этом не знает — один-два члена отряда выполняют задания в прямых интересах семьи. Не весь отряд, не как организация. Отдельные люди, отдельные задания. Это самый тёмный угол управления, о котором знает минимальное число людей.</div>
+        <div class="rule-verdict bad">Критический уровень</div>
+      </div>
+    </div>
+
+    <div class="pull-quote" style="margin-top:28px;">«Мы не воюем с городом. Мы держим в нём порядок. Разница в том, кто устанавливает, что такое порядок.»<br><span style="font-size:14px; color:var(--text-dim)">— Сержант Краузе, неофициально</span></div>
+
+    <div class="rule-cards" style="margin-top:20px;">
+      <div class="rule-card">
+        <div class="rule-title">Внутренняя культура отряда</div>
+        <div class="rule-desc">Двенадцать ветеранов — это не просто коллеги. Это люди, прошедшие через одно и то же, хотя и на разных театрах военных действий. Они доверяют друг другу так, как не доверяют никому в управлении. Краузе поддерживает эту сплочённость намеренно: сплочённый отряд работает лучше и меньше задаёт вопросов. Последнее особенно важно.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Травмы и их последствия</div>
+        <div class="rule-desc">Почти каждый в отряде несёт что-то с войны. Ночные кошмары, вспышки агрессии, невозможность находиться в закрытых помещениях, алкоголь. Управление никак не работает с этим — нет ни программ, ни специалистов. Краузе справляется с этим неформально: знает, кому дать выходной, кому — сложное задание для разрядки, кому — просто поговорить.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- УСТАВ И ЖИЗНЬ -->
+  <section class="lore-section" id="rules">
+    <p class="section-eyebrow">Кодекс</p>
+    <h2 class="section-title">Официальный устав и реальная жизнь</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>У управления есть официальный устав — документ 1921 года с поправками 1935-го. Он регулирует всё: форму одежды, обращение с задержанными, применение силы, ведение документации, взаимодействие с прессой. Устав неплохой. Проблема в том, что его выполнение — по усмотрению командования.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card gold">
+        <div class="rule-title">Правила применения силы</div>
+        <div class="rule-desc">Согласно уставу — минимально необходимая. На практике интерпретируется широко. Особенно в случаях с подозреваемыми, у которых нет влиятельных друзей. С теми, у кого есть — максимальная вежливость и аккуратно составленный протокол.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Жалованье и условия</div>
+        <div class="rule-desc">Патрульный получает около сорока пяти долларов в неделю — по меркам 1947 года умеренно. Достаточно для скромной жизни, недостаточно для комфортной. Детектив — около шестидесяти пяти. Именно этот разрыв между жалованьем и реальной стоимостью жизни является главным структурным фактором коррупции.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Рабочий день</div>
+        <div class="rule-desc">Официально — восемь часов, три смены. На практике детективы работают столько, сколько требует дело. Это не оплачивается дополнительно. Переработки — норма, особенно в уголовном розыске. Часть офицеров компенсирует это ранним уходом или «рабочими» визитами в заведения, где им рады.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Взаимодействие с прессой</div>
+        <div class="rule-desc">Официально — через пресс-секретаря. На практике — детективы часто имеют свои отношения с репортёрами: одни сливают информацию за деньги или услуги, другие — из идеализма или личной симпатии. Пресс-секретарь управления контролирует официальную картину. То, что выходит за её пределы, управление не контролирует — и очень этим недовольно.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Солидарность голубой стены</div>
+        <div class="rule-desc">Негласный закон: офицеры не свидетельствуют против офицеров. Это не записано нигде, но соблюдается повсеместно. Даже честный офицер, видевший что-то нехорошее, десять раз подумает, прежде чем говорить. Потому что после этого он перестаёт быть своим — для всех, а не только для виновных.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ГРОМКИЕ ДЕЛА -->
+  <section class="lore-section" id="cases">
+    <p class="section-eyebrow">Резонансные события</p>
+    <h2 class="section-title">Громкие дела и провалы</h2>
+    <div class="section-rule"></div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1924 — Война Моретти и Кэхилов</div>
+        <div class="timeline-title">Управление смотрело в другую сторону.</div>
+        <div class="timeline-text">Когда разгорелась война между итальянской мафией и ирландским кланом Кэхилов, управление официально провело расследование по каждому эпизоду. Ни одно дело не дошло до суда. Ни один арест не состоялся. Детектив, который вёл эти дела, — <strong>Генри Лэнг</strong> — вышел на пенсию через два года с неплохим домом на окраине и лодкой. Официально — накопил.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1931 — Дело Карло Марини</div>
+        <div class="timeline-title">Единственный арест в истории семьи Моретти. Ненадолго.</div>
+        <div class="timeline-text"><strong>Карло Марини</strong> — капо семьи Моретти — был арестован в 1931 году по обвинению в вымогательстве. Детектив <strong>Уолтер Джонс</strong> собрал хорошую доказательную базу. Дело дошло до суда — что само по себе было редкостью.<br><br>
+        Судья <strong>Харолд Уинтерс</strong> признал большинство улик недопустимыми по процессуальным основаниям. Марини вышел через два дня после ареста. Джонс был переведён в архивный отдел. Через год он уволился и уехал из города.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1936 — Резня на Пирсе 4</div>
+        <div class="timeline-title">Самое кровавое происшествие в истории доков.</div>
+        <div class="timeline-text">В августе 1936 года на четвёртом причале были обнаружены тела пятерых мужчин — предположительно, участников конфликта между независимыми бандами за контроль над складом. Никаких документов, никаких свидетелей — только тела.<br><br>
+        Дело вёл детектив <strong>Фрэнк Диас</strong> — один из немногих действительно честных людей в уголовном розыске того времени. Он установил связь с Моретти. Его доклад был «переработан» начальником отдела. Диас подал жалобу в городской совет. Жалоба была рассмотрена комиссией, в которую входил Дункан. Комиссия пришла к выводу, что жалоба «не содержит достаточных оснований». Диас работает в управлении до сих пор — ведёт незначительные дела и старается не высовываться.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1939 — Операция «Чистый город»</div>
+        <div class="timeline-title">Показательная акция с предсказуемым результатом.</div>
+        <div class="timeline-text">По требованию городского совета управление провело масштабную операцию против нелегальных азартных заведений. Сорок рейдов за две недели. Двести тридцать задержанных. Газеты вышли с заголовками о «победе закона над пороком».<br><br>
+        Из двухсот тридцати задержанных восемь получили реальные сроки — все мелкие игроки без связей. Ни одно из заведений, платящих Пирсу, не было тронуто. Операция планировалась заранее — организаторы получили предупреждение за неделю. Это знали все участники операции, кроме нескольких молодых патрульных, которым никто ничего не объяснял.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1946 — Убийство детектива Мартина</div>
+        <div class="timeline-title">Незакрытая рана.</div>
+        <div class="timeline-text">Подробно описано в разделе истории. Официальное расследование зашло в тупик в течение двух месяцев. Формально дело открыто. Реально — никто не ищет.<br><br>
+        Детектив Коул продолжает неофициальное расследование. К середине 1947 года он установил, что Мартин незадолго до смерти встречался с информатором из отдела нравов. Информатор исчез через неделю после убийства. Его до сих пор не нашли.<br><br>
+        Коул не знает, что его папка с заметками была скопирована три недели назад — человеком, которого он считает коллегой.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1947 — Дело о пожарах в доках</div>
+        <div class="timeline-title">Текущее расследование. Исход неизвестен.</div>
+        <div class="timeline-text">Три склада в доках сгорели за последние восемь месяцев. Официальная версия — несчастные случаи. Детектив Гарсия, занимающийся делом, уже знает, что это поджоги — но не может установить чёткую связь. Следы ведут в двух направлениях одновременно: и к Моретти, и к кому-то внутри самого управления.<br><br>
+        Параллельно детектив Уоллес расследует нарушения на таможне — и постепенно подбирается к той же схеме с другой стороны. Оба не знают о работе друг друга. Если бы знали — это могло бы что-то изменить.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ЖИЗНЬ В УПРАВЛЕНИИ -->
+  <section class="lore-section" id="life">
+    <p class="section-eyebrow">Изнутри</p>
+    <h2 class="section-title">Служба: каково это на самом деле</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Служба в управлении — это не романтика детективных романов. Это усталость, бумажная работа, холодный кофе и постоянное ощущение, что система работает не так, как должна. Но это также — моменты, когда действительно удаётся помочь. Раскрытое дело. Спасённый человек. Правда, которая иногда всё-таки выходит наружу.</p>
+      <p>Именно это удерживает честных офицеров в управлении — не деньги, не карьера, а периодически подтверждаемая вера в то, что работа имеет смысл.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rule-title">Участок как второй дом</div>
+        <div class="rule-desc">Большинство офицеров проводят на участке больше времени, чем дома. Здесь складываются отношения — дружба, соперничество, негласные альянсы. Здесь узнают новости раньше, чем они выходят в газеты. Здесь понимают, кому доверять, а кому — нет. Иногда это понимание приходит слишком поздно.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Информаторы</div>
+        <div class="rule-desc">У каждого хорошего детектива есть сеть информаторов. Это люди, работающие на полицию за деньги, снисхождение по уголовным делам или из личных мотивов. Информатор — ценный ресурс и постоянная головная боль: никогда не знаешь, кому ещё он продаёт ту же информацию. В Порт-Мроуне несколько человек одновременно работают на полицию, Моретти и Триаду — искренне считая, что никто другой об этом не знает.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Взаимодействие с прокуратурой</div>
+        <div class="rule-desc">Детектив раскрывает дело — прокурор его ведёт в суде. Теоретически. На практике часть прокуроров куплена так же, как часть полицейских. Собрать доказательства — это одно. Довести дело до обвинительного приговора — другое. Честный детектив в системе с коррумпированной прокуратурой работает в Сизифовом режиме: камень докатывается до вершины и снова падает.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Ночные дежурства</div>
+        <div class="rule-desc">Порт-Мроун ночью — другой город. Тише, темнее, опаснее. Ночной патрульный видит то, что дневной не видит: кто куда идёт, какие машины стоят там, где их не должно быть, какие огни горят в складах в три ночи. Ночное знание — ценный ресурс. И тяжёлый груз.</div>
+      </div>
+      <div class="rule-card danger">
+        <div class="rule-title">Когда приходится выбирать</div>
+        <div class="rule-desc">Рано или поздно каждый офицер оказывается в ситуации, где нейтральная позиция невозможна. Это может быть мелочь — закрыть глаза на что-то или написать правду в протоколе. Или крупнее — помочь замести след или сообщить о коллеге. Таких моментов не объявляют заранее. Они просто случаются. И то, как человек реагирует, определяет, кем он будет дальше.</div>
+        <div class="rule-verdict bad">Точка невозврата</div>
+      </div>
+    </div>
+
+    <div class="pull-quote" style="margin-top:28px;">«Я не знаю, хороший я коп или нет. Я знаю только, что каждое утро надеваю значок и иду на работу. Может, этого достаточно. Может, нет.»<br><span style="font-size:14px; color:var(--text-dim)">— Детектив Эдди Коул</span></div>
+
+  </section>
+
+</div>
+
+<div class="page-footer">
+  Port-Mroun Fandom ✦ Полицейское управление ✦ Badge №1
+</div>
+
+</body>
+</html>
