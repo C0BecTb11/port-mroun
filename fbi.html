@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Операция «Чистый замок» — Port-Mroun</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a;
+      --gold-dim: #8a7a3a;
+      --cream: #e8ddb8;
+      --navy: #0a1520;
+      --blue: #2a4a7a;
+      --blue-dim: #1a3050;
+      --blue-bright: #4a6aaa;
+      --blue-glow: rgba(42,74,122,0.12);
+      --text: #c8c0a0;
+      --text-dim: #7a7060;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    .hero {
+      position: relative;
+      height: 60vh;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('fbi.png');
+      background-size: cover;
+      background-position: center 30%;
+      filter: brightness(0.2) saturate(0.4);
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10,21,32,0.3) 0%, rgba(10,21,32,0.98) 100%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 40%, rgba(42,74,122,0.1) 0%, transparent 60%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(22px, 5vw, 52px);
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 5px;
+      line-height: 1.15;
+      text-shadow: 0 0 40px rgba(196,168,74,0.2);
+    }
+
+    .hero-codename {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(14px, 2.5vw, 20px);
+      color: var(--blue-bright);
+      letter-spacing: 6px;
+      margin-top: 10px;
+      opacity: 0.8;
+    }
+
+    .hero-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-top: 12px;
+    }
+
+    /* CLASSIFIED STAMP */
+    .stamp {
+      position: absolute;
+      top: 30px;
+      right: 24px;
+      z-index: 3;
+      border: 3px solid rgba(180,30,30,0.6);
+      padding: 6px 12px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: rgba(180,30,30,0.7);
+      text-transform: uppercase;
+      transform: rotate(12deg);
+    }
+
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    .page-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,21,32,0.97);
+      border-bottom: 1px solid rgba(42,74,122,0.25);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .page-nav::-webkit-scrollbar { display: none; }
+
+    .page-nav ul {
+      display: flex;
+      list-style: none;
+      min-width: max-content;
+      padding: 0 16px;
+    }
+
+    .page-nav a {
+      display: block;
+      padding: 14px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .page-nav a:hover { color: var(--gold); border-bottom-color: var(--blue-bright); }
+
+    .page-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    .lore-section {
+      padding: 60px 0 20px;
+      border-bottom: 1px solid rgba(42,74,122,0.1);
+    }
+
+    .lore-section:last-child { border-bottom: none; }
+
+    .section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .section-rule {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, var(--blue-bright), transparent);
+      margin-bottom: 28px;
+    }
+
+    .prose p { margin-bottom: 18px; color: var(--text); }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose strong { color: var(--cream); font-weight: 600; }
+
+    .pull-quote {
+      border-left: 3px solid var(--blue);
+      padding: 16px 20px;
+      margin: 28px 0;
+      background: var(--blue-glow);
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    /* REDACTED */
+    .redacted {
+      background: #1a1a1a;
+      color: #1a1a1a;
+      user-select: none;
+      border-radius: 2px;
+      padding: 0 4px;
+      cursor: default;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .redacted:hover {
+      background: rgba(42,74,122,0.3);
+      color: var(--blue-bright);
+    }
+
+    /* FILE CARD */
+    .file-card {
+      background: rgba(10,18,28,0.9);
+      border: 1px solid rgba(42,74,122,0.2);
+      border-top: 3px solid var(--blue-dim);
+      padding: 22px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .file-card::before {
+      content: 'ДОСЬЕ';
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 3px;
+      color: rgba(42,74,122,0.4);
+    }
+
+    .file-number {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: 0.7;
+    }
+
+    .file-name {
+      font-family: 'Cinzel', serif;
+      font-size: 17px;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .file-role {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .file-bio { font-size: 15px; color: var(--text-dim); line-height: 1.75; }
+
+    /* TIMELINE */
+    .timeline { position: relative; padding-left: 28px; margin-top: 10px; }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px; top: 8px; bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--blue-bright), rgba(42,74,122,0.05));
+    }
+
+    .timeline-item { position: relative; margin-bottom: 36px; }
+    .timeline-item:last-child { margin-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -25px; top: 6px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--blue-bright);
+      border: 2px solid var(--navy);
+      box-shadow: 0 0 8px rgba(74,106,170,0.5);
+    }
+
+    .timeline-year {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .timeline-title {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .timeline-text { font-size: 16px; color: var(--text-dim); line-height: 1.75; }
+
+    /* TARGET CARDS */
+    .rule-cards { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+
+    .rule-card {
+      background: rgba(13,21,32,0.8);
+      border: 1px solid rgba(196,168,74,0.08);
+      border-left: 3px solid var(--blue-dim);
+      padding: 18px 20px;
+      transition: border-left-color 0.2s;
+    }
+
+    .rule-card:hover { border-left-color: var(--blue-bright); }
+    .rule-card.priority { border-left-color: #6a1515; }
+    .rule-card.priority:hover { border-left-color: #aa2020; }
+    .rule-card.gold { border-left-color: var(--gold-dim); }
+    .rule-card.gold:hover { border-left-color: var(--gold); }
+
+    .rule-title {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 7px;
+    }
+
+    .rule-desc { font-size: 15px; color: var(--text-dim); line-height: 1.65; }
+
+    .rule-verdict {
+      display: inline-block;
+      margin-top: 9px;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--blue-dim);
+      color: var(--blue-bright);
+    }
+
+    .rule-verdict.red { border-color: #6a1515; color: #cc4040; }
+
+    /* WARNING */
+    .warning-box {
+      background: rgba(42,74,122,0.08);
+      border: 1px solid rgba(42,74,122,0.25);
+      padding: 20px 22px;
+      margin: 24px 0;
+    }
+
+    .warning-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .warning-text { font-size: 15px; color: #8899bb; line-height: 1.6; }
+
+    /* OPERATION STATUS */
+    .op-status {
+      background: rgba(10,18,28,0.95);
+      border: 1px solid rgba(42,74,122,0.3);
+      padding: 28px;
+      margin-top: 10px;
+    }
+
+    .op-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(42,74,122,0.08);
+      font-size: 15px;
+      gap: 20px;
+    }
+
+    .op-row:last-child { border-bottom: none; }
+
+    .op-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .op-value { color: var(--cream); text-align: right; }
+    .op-value.classified { color: #6a1515; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; }
+
+    .page-footer {
+      text-align: center;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(42,74,122,0.15);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .lore-section { padding: 40px 0 16px; }
+      .pull-quote { font-size: 16px; }
+      .stamp { display: none; }
+      .op-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .op-value { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="index.html">← Назад</a>
+  <div class="stamp">Совершенно секретно</div>
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Федеральное бюро расследований</p>
+    <h1 class="hero-title">ОПЕРАЦИЯ<br>«ЧИСТЫЙ ЗАМОК»</h1>
+    <p class="hero-codename">OPERATION CLEAN CASTLE</p>
+    <p class="hero-sub">«Терпение — не слабость. Это стратегия.»</p>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <ul>
+    <li><a href="#overview">Обзор</a></li>
+    <li><a href="#history">Предыстория</a></li>
+    <li><a href="#persons">Агенты</a></li>
+    <li><a href="#targets">Цели</a></li>
+    <li><a href="#methods">Методы</a></li>
+    <li><a href="#risks">Угрозы</a></li>
+    <li><a href="#rules">Кодекс</a></li>
+    <li><a href="#timeline">Хронология</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <!-- ОБЗОР -->
+  <section class="lore-section" id="overview">
+    <p class="section-eyebrow">Статус операции</p>
+    <h2 class="section-title">Операция «Чистый замок»</h2>
+    <div class="section-rule"></div>
+
+    <div class="op-status">
+      <div class="op-row">
+        <span class="op-label">Кодовое название</span>
+        <span class="op-value">«Чистый замок» / Clean Castle</span>
+      </div>
+      <div class="op-row">
+        <span class="op-label">Статус</span>
+        <span class="op-value">Активна — фаза наблюдения</span>
+      </div>
+      <div class="op-row">
+        <span class="op-label">Начало операции</span>
+        <span class="op-value">Январь 1947</span>
+      </div>
+      <div class="op-row">
+        <span class="op-label">Руководитель</span>
+        <span class="op-value">Специальный агент У. Хёрн</span>
+      </div>
+      <div class="op-row">
+        <span class="op-label">Число агентов</span>
+        <span class="op-value classified">ЗАСЕКРЕЧЕНО</span>
+      </div>
+      <div class="op-row">
+        <span class="op-label">Агент под прикрытием</span>
+        <span class="op-value classified">ЗАСЕКРЕЧЕНО</span>
+      </div>
+      <div class="op-row">
+        <span class="op-label">Осведомлена местная полиция?</span>
+        <span class="op-value">Нет</span>
+      </div>
+      <div class="op-row">
+        <span class="op-label">Первичные цели</span>
+        <span class="op-value">Моретти, Триада, Управление полиции</span>
+      </div>
+      <div class="op-row">
+        <span class="op-label">Ожидаемый переход к арестам</span>
+        <span class="op-value classified">ЗАСЕКРЕЧЕНО</span>
+      </div>
+    </div>
+
+    <div class="warning-box" style="margin-top:24px;">
+      <div class="warning-title">Примечание для игроков</div>
+      <div class="warning-text">ФБР — особая фракция. Их присутствие в городе официально неизвестно никому. Ваш персонаж-агент живёт под легендой и не может раскрывать принадлежность к Бюро. Взаимодействие с другими фракциями происходит строго через прикрытие. Ошибка — провал операции.</div>
+    </div>
+  </section>
+
+  <!-- ПРЕДЫСТОРИЯ -->
+  <section class="lore-section" id="history">
+    <p class="section-eyebrow">Предыстория</p>
+    <h2 class="section-title">Почему Порт-Мроун</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Бюро знало о Порт-Мроуне давно. Небольшой портовый город, достаточно удалённый от крупных центров, чтобы оставаться вне постоянного внимания — и достаточно связанный с основными торговыми маршрутами, чтобы через него проходило всё, что не должно проходить через официальные каналы.</p>
+      <p>Первые сигналы пришли в конце тридцатых — финансовые отчёты, которые не сходились, таможенные декларации с несовпадениями, несколько информаторов в других городах, упоминавших Порт-Мроун как транзитную точку. Ничего конкретного. Много косвенного.</p>
+      <p>Решение открыть операцию было принято в ноябре 1946 года — после того как один из агентов Бюро в Нью-Йорке вышел на след денежного потока, уходящего в Порт-Мроун. Поток был слишком большим для города такого размера. Это означало либо крупную операцию по отмыванию, либо транзитный хаб для нескольких организаций. Или — и это оказалось верным — и то, и другое.</p>
+    </div>
+
+    <div class="pull-quote">«Порт-Мроун — не просто коррумпированный город. Это система. А системы не ломают арестами. Их демонтируют.»<br><span style="font-size:14px; color:var(--text-dim)">— Специальный агент У. Хёрн, внутренний меморандум, декабрь 1946</span></div>
+
+    <div class="prose">
+      <p>Операция «Чистый замок» получила название по личной метафоре Хёрна: замок — это структура власти в городе. Прежде чем штурмовать замок, нужно знать, где ворота, где слабые стены, кто стоит на башнях. Сначала — разведка. Потом — удар.</p>
+      <p>Особый акцент Хёрн сделал с самого начала: операция ведётся без уведомления местного полицейского управления. Причина проста — Бюро имеет достаточно оснований подозревать системную коррупцию в управлении. Уведомить полицию означает предупредить Моретти.</p>
+    </div>
+  </section>
+
+  <!-- АГЕНТЫ -->
+  <section class="lore-section" id="persons">
+    <p class="section-eyebrow">Личный состав</p>
+    <h2 class="section-title">Известные агенты</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Точный состав группы засекречен. Даже агенты знают только тех коллег, с которыми работают напрямую. Это стандартная ячеистая структура — провал одного звена не раскрывает других.</p>
+    </div>
+
+    <div class="file-card">
+      <div class="file-number">Агент № 001 — Руководитель операции</div>
+      <div class="file-name">Уолтер Хёрн</div>
+      <div class="file-role">Специальный агент — старший следователь</div>
+      <div class="file-bio">Пятьдесят два года. Двадцать пять лет в Бюро — начинал ещё при Гувере в двадцатых. Участвовал в операции против Аль Капоне в Чикаго: именно тогда понял, что организованную преступность нельзя сломать силой — только терпеливой доказательной работой и финансовыми обвинениями.<br><br>
+      Хёрн живёт в Порт-Мроуне под легендой страхового инспектора из Бостона — <strong>«Уолтер Хант»</strong>. Снимает скромную квартиру в Даунтауне. Каждый день пьёт кофе в одном и том же кафе на углу. Делает заметки в блокнот. Выглядит как скучный человек на скучной работе. Это идеальное прикрытие.<br><br>
+      Лично руководит только стратегическим планированием. В поле почти не выходит — слишком опытен, чтобы рисковать собой без необходимости. Его главный инструмент — терпение. Он готов ждать столько, сколько нужно.</div>
+    </div>
+
+    <div class="file-card">
+      <div class="file-number">Агент № 002 — Полевой координатор</div>
+      <div class="file-name">Мэрилин Эш</div>
+      <div class="file-role">Специальный агент — координатор полевых операций</div>
+      <div class="file-bio">Тридцать шесть лет. Одна из немногих женщин-агентов Бюро — что само по себе является отличным прикрытием: женщину в этой роли никто не ищет. Работает под легендой владелицы небольшого ателье в Даунтауне. Заведение реально функционирует — у неё есть клиентки среди жён чиновников и бизнесменов.<br><br>
+      Эш координирует связь между агентами в поле. Никогда не использует телефон для оперативных переговоров. Только личные встречи, только шифрованные записки через мёртвые ящики. Педантична до предела — и требует того же от других.<br><br>
+      Лично знает троих агентов операции. Кто остальные — не знает и не спрашивает.</div>
+    </div>
+
+    <div class="file-card">
+      <div class="file-number">Агент № <span class="redacted">███</span> — Под прикрытием</div>
+      <div class="file-name"><span class="redacted">████████████</span></div>
+      <div class="file-role">Специальный агент — внедрён во фракцию</div>
+      <div class="file-bio">Личность засекречена. Внедрён в одну из основных фракций города. Фракция не раскрывается даже внутри операции — знает только Хёрн.<br><br>
+      Агент работает в городе уже <span class="redacted">██</span> месяцев под полноценной легендой. Регулярные встречи с куратором — раз в <span class="redacted">██</span> недели, через мёртвый ящик. Прямого контакта с Хёрном не имеет.<br><br>
+      <em style="color:var(--blue-bright); font-size:14px;">Наведите на чёрные полосы чтобы увидеть скрытый текст — если хватит допуска.</em></div>
+    </div>
+
+    <div class="file-card">
+      <div class="file-number">Агент № 004 — Аналитик</div>
+      <div class="file-name">Джордж Финч</div>
+      <div class="file-role">Финансовый аналитик — работает удалённо</div>
+      <div class="file-bio">Сорок один год. Никогда не был в Порт-Мроуне лично. Работает из Вашингтона, получая документы через курьерскую цепочку. Специализация — финансовые схемы отмывания денег.<br><br>
+      Именно Финч первым обнаружил нью-йоркский денежный след, приведший в Порт-Мроун. С тех пор он строит финансовую карту операций Моретти и Триады — используя официальные данные о легальном бизнесе, налоговые декларации и утечки через информаторов.<br><br>
+      По его расчётам, через Порт-Мроун ежегодно проходит не менее <span class="redacted">██████</span> долларов нелегальных средств. Это цифра, достаточная для федерального обвинения по статьям об организованной преступности.</div>
+    </div>
+  </section>
+
+  <!-- ЦЕЛИ -->
+  <section class="lore-section" id="targets">
+    <p class="section-eyebrow">Приоритеты</p>
+    <h2 class="section-title">Цели операции</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Операция «Чистый замок» не ставит целью арест рядовых преступников. Цель — системная: доказательная база для федерального обвинения руководства организаций и коррумпированных должностных лиц. Это требует времени, терпения и железных доказательств.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card priority">
+        <div class="rule-title">Приоритет I — Семья Моретти</div>
+        <div class="rule-desc">Главная цель операции. Бюро хочет доказать связь между легальным бизнесом семьи и нелегальными доходами — это открывает возможность для конфискации активов и обвинения по закону RICO (организованная преступная деятельность). Особый интерес: связь Дона с начальником полиции Дунканом. Если удастся доказать её — это удвоит масштаб обвинений.</div>
+        <div class="rule-verdict red">Приоритет: критический</div>
+      </div>
+      <div class="rule-card priority">
+        <div class="rule-title">Приоритет I — Начальник полиции Дункан</div>
+        <div class="rule-desc">Коррумпированный начальник городской полиции — федеральное дело. Доказательства его связи с Моретти собираются параллельно с основным расследованием. Хёрн считает Дункана важнейшей целью: арест действующего начальника полиции сломает психологический хребет всей системе.</div>
+        <div class="rule-verdict red">Приоритет: критический</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Приоритет II — Триада Красного Лотоса</div>
+        <div class="rule-desc">Сложная цель. Закрытость организации и отсутствие видимых лидеров делают доказательную работу исключительно трудной. Основное направление — финансовые потоки через портовый транзит и схемы отмывания через легальный бизнес. Мистер Лян как персональная цель пока недостижим — нет даже подтверждённого имени.</div>
+        <div class="rule-verdict">Приоритет: высокий</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Приоритет II — Начальник отдела нравов Пирс</div>
+        <div class="rule-desc">Рэй Пирс — наиболее доступная «высокая» цель. Его операции менее тщательно скрыты, чем у Моретти. Несколько информаторов уже дали показания против него — но их надёжность и безопасность требуют проверки.</div>
+        <div class="rule-verdict">Приоритет: высокий</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Приоритет III — Коррумпированные судьи и прокуроры</div>
+        <div class="rule-desc">Судья Харолд Уинтерс и несколько прокуроров находятся в поле зрения Бюро. Судья на федеральном обвинении — это не только приговор конкретному человеку, но и пересмотр десятков дел, в которых он принимал участие.</div>
+        <div class="rule-verdict">Приоритет: средний</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- МЕТОДЫ -->
+  <section class="lore-section" id="methods">
+    <p class="section-eyebrow">Тактика</p>
+    <h2 class="section-title">Методы работы</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Хёрн строит операцию по принципу, проверенному в Чикаго: не торопиться, не рисковать, не светиться. Каждое действие взвешивается с точки зрения того, не раскроет ли оно операцию раньше времени. Лучше упустить улику, чем спалить агента.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card gold">
+        <div class="rule-title">Наружное наблюдение</div>
+        <div class="rule-desc">Несколько агентов ведут систематическое наблюдение за ключевыми локациями: рестораны Моретти, портовые склады, участок полиции, частные адреса фигурантов. Фотофиксация встреч, запись номеров автомобилей, составление карты передвижений. Всё тщательно документируется.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Финансовый мониторинг</div>
+        <div class="rule-desc">Финч в Вашингтоне отслеживает всё, что доступно через официальные каналы: налоговые декларации, регистрационные документы компаний, банковские операции (в той мере, в которой это возможно без ордера). Аномалии — сигнал для полевых агентов.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Мёртвые ящики</div>
+        <div class="rule-desc">Связь между агентами — только через заранее оговорённые места обмена сообщениями. Никаких телефонных переговоров по оперативным вопросам. Никаких прямых встреч без крайней необходимости. Сообщения — в шифре, который меняется еженедельно.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Работа с информаторами</div>
+        <div class="rule-desc">Бюро аккуратно разрабатывает потенциальных информаторов — людей с обидами на фракции, финансовыми проблемами или моральными сомнениями. Это долгая работа: нельзя торопить, нельзя давить, нельзя предлагать слишком много сразу. Информатор должен прийти к сотрудничеству сам.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Агент под прикрытием</div>
+        <div class="rule-desc">Наиболее ценный и наиболее уязвимый инструмент операции. Агент внедрён, собирает информацию изнутри. Риск — постоянный. Правило одно: легенда важнее любой улики. Если нужно выбирать между доказательством и прикрытием — прикрытие всегда первично.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- УГРОЗЫ -->
+  <section class="lore-section" id="risks">
+    <p class="section-eyebrow">Уязвимости</p>
+    <h2 class="section-title">Угрозы операции</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>«Чистый замок» — сложная операция в враждебной среде. Хёрн чётко понимает, что может пойти не так — и планирует с учётом этого.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card priority">
+        <div class="rule-title">Провал агента под прикрытием</div>
+        <div class="rule-desc">Главный риск. Если агент будет раскрыт — операция провалена, агент в опасности, и все фракции уйдут в глухую оборону. Хёрн поддерживает минимальный контакт с агентом именно по этой причине: чем меньше точек соприкосновения, тем меньше риск.</div>
+        <div class="rule-verdict red">Критический риск</div>
+      </div>
+      <div class="rule-card priority">
+        <div class="rule-title">Утечка внутри Бюро</div>
+        <div class="rule-desc">Хёрн не исключает, что у Моретти или Триады есть контакты на федеральном уровне. Именно поэтому число людей, знающих о «Чистом замке» в Вашингтоне, сведено к минимуму. Даже внутри Бюро большинство не знает об операции.</div>
+        <div class="rule-verdict red">Критический риск</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Детектив Коул</div>
+        <div class="rule-desc">Молодой честный детектив ведёт собственное расследование убийства Мартина — и движется в направлении, которое может пересечься с операцией Бюро. Хёрн наблюдает за Коулом. Пока решение не принято: то ли осторожно использовать его как союзника, то ли аккуратно отвести в сторону.</div>
+        <div class="rule-verdict">Риск: средний</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Информационная сеть Триады</div>
+        <div class="rule-desc">Братство располагает разветвлённой системой наблюдения по всему городу. Агенты Бюро работают крайне осторожно — но гарантии, что их не заметила Триада, нет. Лян — непредсказуемый противник именно потому, что его логика не всегда очевидна.</div>
+        <div class="rule-verdict">Риск: средний</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Давление из Вашингтона</div>
+        <div class="rule-desc">Операция не может длиться вечно. Бюро требует результатов. Хёрн знает: если в ближайшие месяцы не будет конкретного прогресса — операцию закроют или заменят его на кого-то менее терпеливого. Менее терпеливый агент сделает ошибку.</div>
+        <div class="rule-verdict">Риск: средний</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- КОДЕКС -->
+  <section class="lore-section" id="rules">
+    <p class="section-eyebrow">Внутренние правила</p>
+    <h2 class="section-title">Кодекс операции</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Хёрн установил жёсткие внутренние правила для всех участников операции. Они передаются устно при вводе агента в операцию и никогда не записываются.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card gold">
+        <div class="rule-title">Легенда — это ты</div>
+        <div class="rule-desc">Агент не «играет роль». Агент живёт своей легендой полностью. Нет разницы между работой и личной жизнью — в Порт-Мроуне всё время работа. Любое нарушение легенды — даже мелкое, даже наедине с собой — повышает риск.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Никаких несанкционированных контактов</div>
+        <div class="rule-desc">Агенты не контактируют друг с другом напрямую без санкции Хёрна. Даже если узнали друг друга случайно — никакого признания. Прошли мимо. Посторонние люди.</div>
+      </div>
+      <div class="rule-card gold">
+        <div class="rule-title">Документируй всё</div>
+        <div class="rule-desc">Каждое наблюдение, каждый разговор, каждая деталь — фиксируется. Не в тот момент (это опасно), но как можно скорее после. Память ненадёжна. Только документ имеет юридическую силу.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Не вмешивайся в преступление</div>
+        <div class="rule-desc">Если агент стал свидетелем преступления — он не вмешивается, если это не угрожает жизни. Это жёстко. Это необходимо. Вмешательство раскрывает агента и разрушает месяцы работы. Хёрн сам с этим борется внутри — и требует того же от других.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Экстренный выход</div>
+        <div class="rule-desc">У каждого агента есть протокол экстренного выхода — на случай раскрытия. Слово-сигнал, маршрут эвакуации, место встречи. Использование протокола означает конец операции для этого агента. Хёрн не осудит за это. Мёртвый агент не даёт показаний.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ХРОНОЛОГИЯ -->
+  <section class="lore-section" id="timeline">
+    <p class="section-eyebrow">Хронология</p>
+    <h2 class="section-title">Ход операции</h2>
+    <div class="section-rule"></div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Ноябрь 1946</div>
+        <div class="timeline-title">Финч обнаруживает след.</div>
+        <div class="timeline-text">Аналитик Джордж Финч в Вашингтоне прослеживает нью-йоркский денежный поток до Порт-Мроуна. Масштаб аномалии — достаточный для открытия операции. Хёрн назначен руководителем.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Декабрь 1946</div>
+        <div class="timeline-title">Подготовка. Хёрн прибывает в город.</div>
+        <div class="timeline-text">Хёрн въезжает в Порт-Мроун под легендой страхового инспектора. Три недели — только наблюдение. Никаких контактов, никаких операций. Изучение города, маршрутов, лиц.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Январь 1947</div>
+        <div class="timeline-title">Операция официально открыта.</div>
+        <div class="timeline-text">Прибывают остальные агенты — поодиночке, с интервалами в несколько дней. Каждый приезжает по своей легенде, занимает заранее подготовленную позицию. Агент под прикрытием уже в городе — внедрение началось раньше официального старта операции.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Февраль — Март 1947</div>
+        <div class="timeline-title">Первичная разведка. Карта начинает складываться.</div>
+        <div class="timeline-text">Агенты устанавливают маршруты, ключевые точки встреч, фигурантов. Финч получает первые полевые данные и начинает сопоставлять их с финансовой картиной. Агент под прикрытием выходит на первый прямой контакт с целевой фракцией.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Апрель 1947</div>
+        <div class="timeline-title">Первый кризис.</div>
+        <div class="timeline-text">Агент наружного наблюдения замечает, что за ним, возможно, следят — предположительно люди Триады. Хёрн приостанавливает его активность на две недели. Угроза не подтверждается, но это первый сигнал: невидимость операции не абсолютна.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">Май — настоящее время</div>
+        <div class="timeline-title">Фаза углублённого наблюдения. Операция продолжается.</div>
+        <div class="timeline-text">Доказательная база растёт, но до уровня, достаточного для федерального обвинения, — ещё далеко. Хёрн давит на темп. Вашингтон хочет результатов. Агент под прикрытием углубляется всё дальше — и всё сложнее поддерживать дистанцию между легендой и реальностью.</div>
+      </div>
+
+    </div>
+
+    <div class="pull-quote" style="margin-top:36px;">«Замок стоит. Но мы уже видим его стены. Осталось найти трещины.»<br><span style="font-size:14px; color:var(--text-dim)">— У. Хёрн, внутренний рапорт, май 1947</span></div>
+
+  </section>
+
+</div>
+
+<div class="page-footer">
+  Port-Mroun Fandom ✦ ФБР ✦ Операция «Чистый замок» ✦ Совершенно секретно
+</div>
+
+</body>
+</html>
