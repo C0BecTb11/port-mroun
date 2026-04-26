@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Правила — Port-Mroun</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a;
+      --gold-dim: #8a7a3a;
+      --cream: #e8ddb8;
+      --navy: #0a1520;
+      --navy-mid: #0d1f2d;
+      --text: #c8c0a0;
+      --text-dim: #7a7060;
+      --red: #8a2020;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      height: 45vh;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 40px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0a1520 0%, #0f1e30 50%, #0a1520 100%);
+    }
+
+    .hero-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 40px,
+          rgba(196,168,74,0.02) 40px,
+          rgba(196,168,74,0.02) 41px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 40px,
+          rgba(196,168,74,0.02) 40px,
+          rgba(196,168,74,0.02) 41px
+        );
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(10,21,32,0.8) 100%);
+    }
+
+    .hero-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--navy));
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(30px, 6vw, 58px);
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 8px;
+      text-shadow: 0 0 40px rgba(196,168,74,0.2);
+    }
+
+    .hero-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 20px; left: 20px;
+      z-index: 10;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    /* NAV */
+    .page-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,21,32,0.97);
+      border-bottom: 1px solid rgba(196,168,74,0.15);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .page-nav::-webkit-scrollbar { display: none; }
+
+    .page-nav ul {
+      display: flex;
+      list-style: none;
+      min-width: max-content;
+      padding: 0 16px;
+    }
+
+    .page-nav a {
+      display: block;
+      padding: 14px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .page-nav a:hover { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* CONTENT */
+    .page-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* SECTION */
+    .rules-section {
+      padding: 56px 0 16px;
+      border-bottom: 1px solid rgba(196,168,74,0.08);
+    }
+
+    .rules-section:last-child { border-bottom: none; }
+
+    .section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(18px, 3.5vw, 26px);
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .section-rule {
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin-bottom: 24px;
+    }
+
+    /* RULE ITEMS */
+    .rules-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .rule-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: rgba(13,21,32,0.6);
+      border: 1px solid rgba(196,168,74,0.07);
+      border-left: 3px solid var(--gold-dim);
+      padding: 16px 18px;
+      transition: border-left-color 0.2s, background 0.2s;
+    }
+
+    .rule-item:hover {
+      border-left-color: var(--gold);
+      background: rgba(196,168,74,0.04);
+    }
+
+    .rule-item.strict {
+      border-left-color: var(--red);
+    }
+
+    .rule-item.strict:hover {
+      border-left-color: #cc3030;
+      background: rgba(138,32,32,0.05);
+    }
+
+    .rule-num {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold-dim);
+      flex-shrink: 0;
+      width: 28px;
+      padding-top: 1px;
+    }
+
+    .rule-item.strict .rule-num { color: #aa4040; }
+
+    .rule-body { flex: 1; }
+
+    .rule-title {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    .rule-item.strict .rule-title { color: #cc7070; }
+
+    .rule-desc {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    .rule-desc strong { color: var(--cream); font-weight: 600; }
+
+    .rule-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border: 1px solid rgba(196,168,74,0.2);
+      color: var(--gold-dim);
+    }
+
+    .rule-tag.red { border-color: rgba(138,32,32,0.4); color: #aa4040; }
+
+    .rule-item.gold {
+      border-left-color: var(--gold-dim);
+    }
+
+    .rule-item.gold:hover {
+      border-left-color: var(--gold);
+      background: rgba(196,168,74,0.05);
+    }
+
+    .rule-item.gold .rule-title { color: var(--gold); }
+
+    /* EXAMPLE BOX */
+    .example-box {
+      background: rgba(196,168,74,0.04);
+      border: 1px solid rgba(196,168,74,0.12);
+      border-left: 3px solid rgba(196,168,74,0.3);
+      padding: 14px 16px;
+      margin-top: 10px;
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .example-box .ex-label {
+      font-family: 'Cinzel', serif;
+      font-style: normal;
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* POST FORMAT BOX */
+    .format-box {
+      background: rgba(10,18,28,0.9);
+      border: 1px solid rgba(196,168,74,0.2);
+      padding: 20px 22px;
+      margin-top: 16px;
+      font-family: 'Crimson Text', monospace;
+    }
+
+    .format-box .format-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .format-line {
+      font-size: 15px;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+
+    .format-line span.tag { color: #6a9a6a; }
+    .format-line span.loc { color: #6a8aaa; }
+    .format-line span.mention { color: #9a7a4a; }
+    .format-line span.text { color: var(--text-dim); }
+
+    /* PULL QUOTE */
+    .pull-quote {
+      border-left: 3px solid var(--gold-dim);
+      padding: 14px 18px;
+      margin: 24px 0;
+      background: rgba(196,168,74,0.04);
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    /* WARNING */
+    .warn-box {
+      background: rgba(80,15,15,0.2);
+      border: 1px solid rgba(138,32,32,0.3);
+      padding: 18px 20px;
+      margin: 20px 0;
+    }
+
+    .warn-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #cc4040;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .warn-text {
+      font-size: 15px;
+      color: #bb8888;
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    .page-footer {
+      text-align: center;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(196,168,74,0.1);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .rules-section { padding: 40px 0 12px; }
+      .rule-item { padding: 14px 14px; gap: 12px; }
+      .rule-num { width: 22px; font-size: 12px; }
+      .rule-title { font-size: 12px; }
+      .rule-desc { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="index.html">← Назад</a>
+  <div class="hero-pattern"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-bottom"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Port-Mroun — 1947</p>
+    <h1 class="hero-title">ПРАВИЛА</h1>
+    <p class="hero-sub">Прочитай один раз. Запомни навсегда.</p>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <ul>
+    <li><a href="#roleplay">Отыгрыш</a></li>
+    <li><a href="#format">Оформление</a></li>
+    <li><a href="#world">Мир и логика</a></li>
+    <li><a href="#admin">Администрация</a></li>
+    <li><a href="#community">Сообщество</a></li>
+    <li><a href="#forbidden">Запреты</a></li>
+    <li><a href="#characters">Персонажи</a></li>
+    <li><a href="#opportunities">Возможности</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <!-- ОТЫГРЫШ -->
+  <section class="rules-section" id="roleplay">
+    <p class="section-eyebrow">Раздел I</p>
+    <h2 class="section-title">Отыгрыш персонажа</h2>
+    <div class="section-rule"></div>
+
+    <div class="rules-list">
+
+      <div class="rule-item">
+        <div class="rule-num">1.1</div>
+        <div class="rule-body">
+          <div class="rule-title">Третье лицо и литературный стиль</div>
+          <div class="rule-desc">Весь отыгрыш ведётся от <strong>третьего лица</strong> в литературном стиле. Никаких «я пошёл» и «я сказал». Пишите так, как пишут книги — с описаниями, действиями, репликами в кавычках.</div>
+          <div class="example-box">
+            <div class="ex-label">Пример</div>
+            Джек поднял воротник пальто и шагнул в дождь. Мокрая мостовая отражала неоновые вывески — красное и синее плясало у него под ногами. «Снова доки», — пробормотал он себе под нос.
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">1.2</div>
+        <div class="rule-body">
+          <div class="rule-title">Чтение мыслей запрещено</div>
+          <div class="rule-desc">Ваш персонаж не умеет читать мысли других персонажей. Он знает только то, что <strong>видит, слышит и может логично предположить</strong> исходя из поведения собеседника. Никакого «он понял, что тот лжёт» без видимых признаков.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">1.3</div>
+        <div class="rule-body">
+          <div class="rule-title">Телепортация запрещена</div>
+          <div class="rule-desc">Персонаж не может мгновенно переместиться из одной точки города в другую. Передвижение должно быть <strong>логично по времени</strong>. Доки от Даунтауна — не меньше двадцати минут пешком, меньше на машине. Учитывайте это в постах.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">1.4</div>
+        <div class="rule-body">
+          <div class="rule-title">Условное время и свободное перемещение</div>
+          <div class="rule-desc">В ролевой идёт условное время. Если вы не писали какой-то период — ваш персонаж всё равно жил своей жизнью. <strong>Вернувшись в игру, вы можете начать пост в другой локации</strong> — объяснив это в тексте или просто написав пост оттуда. Не нужно «отыгрывать» переход если он не несёт смысла.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">1.5</div>
+        <div class="rule-body">
+          <div class="rule-title">Реалистичность действий</div>
+          <div class="rule-desc">Отыгрывайте персонажа реалистично. Учитывайте его физические возможности, знания, положение. Клерк из газеты не одолеет в рукопашной трёх вооружённых бандитов. Новый член семьи не знает всех её секретов с первого дня. <strong>Сила персонажа — это его логика, связи и информация, а не умение всё решить кулаками.</strong></div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">1.6</div>
+        <div class="rule-body">
+          <div class="rule-title">Разделение игрока и персонажа</div>
+          <div class="rule-desc">То, что знает игрок — не знает персонаж. Вы можете читать чужие посты в других локациях, но ваш персонаж <strong>не мог там присутствовать и не обладает этой информацией</strong>. Использование внеигровых знаний в игре — мета-гейминг, строго запрещён.</div>
+          <div class="rule-tag red">Строгое правило</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">1.7</div>
+        <div class="rule-body">
+          <div class="rule-title">Отыгрыш последствий</div>
+          <div class="rule-desc">Если ваш персонаж получил ранение, пережил стресс или потерпел поражение — <strong>отыгрывайте это честно</strong>. Не нужно делать вид, что ничего не случилось. Последствия — часть истории персонажа и делают её живой.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ОФОРМЛЕНИЕ -->
+  <section class="rules-section" id="format">
+    <p class="section-eyebrow">Раздел II</p>
+    <h2 class="section-title">Оформление поста</h2>
+    <div class="section-rule"></div>
+
+    <div class="rules-list">
+
+      <div class="rule-item">
+        <div class="rule-num">2.1</div>
+        <div class="rule-body">
+          <div class="rule-title">Обязательная структура поста</div>
+          <div class="rule-desc">Каждый пост в ролевом чате начинается с тегов персонажа и локации, и заканчивается тегом соролика если вы отыгрываете с кем-то.</div>
+          <div class="format-box">
+            <div class="format-label">Структура поста</div>
+            <div class="format-line"><span class="tag">#Имя #Фамилия</span> <span class="loc">#локация</span></div>
+            <div class="format-line" style="margin-top:8px; margin-bottom:8px;"><span class="text">...текст поста...</span></div>
+            <div class="format-line"><span class="mention">@Соролик</span> <span class="text">— если отыгрываете вместе</span></div>
+          </div>
+          <div class="example-box" style="margin-top:10px;">
+            <div class="ex-label">Пример</div>
+            <span style="color:#6a9a6a">#Джек #Коул</span> <span style="color:#6a8aaa">#даунтаун_участок</span><br><br>
+            Коул перелистнул страницу и снова уставился в схему. Три поджога. Три склада. Один человек, который всё видел — и исчез. Совпадений не бывает.<br><br>
+            <span style="color:#9a7a4a">@Виктор_Гарсия</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">2.2</div>
+        <div class="rule-body">
+          <div class="rule-title">Минимальный объём поста</div>
+          <div class="rule-desc">Пост должен содержать <strong>не менее трёх предложений</strong>. Односложные «Он кивнул» и «Она ушла» — не пост, это реплика. Давайте соролику материал для ответа: опишите окружение, внутреннее состояние персонажа, его действия.</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">2.3</div>
+        <div class="rule-body">
+          <div class="rule-title">Чистота ролевого чата</div>
+          <div class="rule-desc">В ролевом чате — <strong>исключительно ролевые посты</strong> и информация, необходимая для игры, которую публикует лично администрация или доверенные лица. Обсуждения, вопросы, комментарии — только в ООС чат. Если нужно обратиться к соролику вне игры прямо в ролевом — используйте скобки: <strong>((текст))</strong>.</div>
+          <div class="rule-tag red">Строгое правило</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">2.4</div>
+        <div class="rule-body">
+          <div class="rule-title">Грамотность и читаемость</div>
+          <div class="rule-desc">Стремитесь к грамотному тексту. Абсолютной идеальности не требуется — все люди разные. Но <strong>пост должен быть читаемым</strong>: заглавные буквы, знаки препинания, абзацы. Сплошная стена текста без разбивки — некомфортна для чтения.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">2.5</div>
+        <div class="rule-body">
+          <div class="rule-title">Время ответа</div>
+          <div class="rule-desc">Если вы начали сцену с другим игроком — <strong>старайтесь отвечать в разумные сроки</strong>. Если не можете ответить — предупредите в ООС. Молчание дольше трёх суток без предупреждения даёт соролику право завершить сцену или уйти из неё.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- МИР И ЛОГИКА -->
+  <section class="rules-section" id="world">
+    <p class="section-eyebrow">Раздел III</p>
+    <h2 class="section-title">Мир и игровая логика</h2>
+    <div class="section-rule"></div>
+
+    <div class="rules-list">
+
+      <div class="rule-item">
+        <div class="rule-num">3.1</div>
+        <div class="rule-body">
+          <div class="rule-title">НПС и ключевые персонажи</div>
+          <div class="rule-desc">Игрокам <strong>запрещено отыгрывать НПС-чиновников, глав фракций и других ключевых персонажей</strong> без разрешения администрации. Мелких НПС — случайных прохожих, безымянных барменов, рядовых докеров — использовать можно. Если хотите ввести в сцену важного НПС — уточните у администрации.</div>
+          <div class="rule-tag red">Строгое правило</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">3.2</div>
+        <div class="rule-body">
+          <div class="rule-title">Масштабные события</div>
+          <div class="rule-desc"><strong>Любые крупные события</strong> — перестрелки с большим числом участников, поджоги, захваты территорий, убийства важных персонажей — <strong>обсуждаются с администрацией заранее</strong>. Самовольно организованные масштабные события могут быть отменены или скорректированы.</div>
+          <div class="rule-tag red">Строгое правило</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">3.3</div>
+        <div class="rule-body">
+          <div class="rule-title">Смерть и ранения</div>
+          <div class="rule-desc">Администратор вправе <strong>ранить или убить вашего персонажа</strong> если тот действует нелогично, совершает поступки несовместимые с реальностью мира или намеренно нарушает игровой баланс. Это не наказание — это следствие ваших игровых решений. Мир живёт по своим законам.</div>
+          <div class="rule-tag red">Право администрации</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">3.4</div>
+        <div class="rule-body">
+          <div class="rule-title">Эпоха и атмосфера</div>
+          <div class="rule-desc">Действие происходит в <strong>1947 году</strong>. Отыгрывайте соответственно: нет мобильных телефонов, нет синтетических тканей, нет современного оружия. Информация передаётся лично, по телефону или через записки. Машины — довоенные. Это часть атмосферы, не ограничение.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">3.5</div>
+        <div class="rule-body">
+          <div class="rule-title">Тема наркотиков, алкоголя и курения</div>
+          <div class="rule-desc">В ролевом чате <strong>запрещена пропаганда наркотических веществ</strong>. Контекстные упоминания — приемлемы: выпить виски в баре, закурить сигарету, почувствовать похмелье — это реализм 1947 года. <strong>Романтизация и смакование</strong> употребления — нет.</div>
+          <div class="example-box">
+            <div class="ex-label">Приемлемо</div>
+            Рой достал мятую пачку и закурил прямо под дождём. Первая затяжка после восьми часов в участке — лучшее, что случилось за день.
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">3.6</div>
+        <div class="rule-body">
+          <div class="rule-title">Насилие и жестокость</div>
+          <div class="rule-desc">Мир нуара предполагает насилие — это часть жанра. <strong>Умеренные описания насилия допустимы</strong>. Детальные садистские описания пыток, смаковanie жестокости ради жестокости — нет. Если сомневаетесь — лаконичнее.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- АДМИНИСТРАЦИЯ -->
+  <section class="rules-section" id="admin">
+    <p class="section-eyebrow">Раздел IV</p>
+    <h2 class="section-title">Администрация</h2>
+    <div class="section-rule"></div>
+
+    <div class="pull-quote">«Мы хозяева этого дома. Вы — гости. Уважение взаимно, пока взаимно.»</div>
+
+    <div class="rules-list">
+
+      <div class="rule-item strict">
+        <div class="rule-num">4.1</div>
+        <div class="rule-body">
+          <div class="rule-title">Слово администратора — закон</div>
+          <div class="rule-desc">Решения администрации по игровым вопросам <strong>не оспариваются публично</strong>. Если вы не согласны — напишите ведущему администратору в личные сообщения. Публичные споры с администрацией в общих чатах недопустимы.</div>
+          <div class="rule-tag red">Обязательно</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">4.2</div>
+        <div class="rule-body">
+          <div class="rule-title">Хедканон запрещён</div>
+          <div class="rule-desc"><strong>Запрещено приходить с собственными правилами и условиями</strong> — своей трактовкой лора, своими «договорённостями» которых не было, попытками навязать проекту направление без согласования. Идеи — только через конструктивный разговор с ведущим администратором. Самовольные «договорённости» не действуют.</div>
+          <div class="rule-tag red">Обязательно</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">4.3</div>
+        <div class="rule-body">
+          <div class="rule-title">Идеи и предложения</div>
+          <div class="rule-desc">Хотите предложить что-то для проекта — <strong>приветствуется</strong>. Обращайтесь к ведущему администратору. Хорошие идеи рассматриваются и могут быть реализованы. Это ваш способ влиять на проект — конструктивно и через правильные каналы.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">4.4</div>
+        <div class="rule-body">
+          <div class="rule-title">Критика проекта</div>
+          <div class="rule-desc">Критика <strong>исключительно в конструктивном формате</strong>. «Это плохо» — не критика. «Вот что именно не работает и вот почему, вот возможное решение» — это разговор. Мы открыты к нему.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">4.5</div>
+        <div class="rule-body">
+          <div class="rule-title">Анкета и вступление</div>
+          <div class="rule-desc">Игра начинается <strong>только после одобрения анкеты администрацией</strong>. Писать в ролевых чатах до одобрения нельзя. Анкету, отклонённую без объяснений, можно переспросить — вежливо и один раз.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- СООБЩЕСТВО -->
+  <section class="rules-section" id="community">
+    <p class="section-eyebrow">Раздел V</p>
+    <h2 class="section-title">Сообщество и общение</h2>
+    <div class="section-rule"></div>
+
+    <div class="rules-list">
+
+      <div class="rule-item">
+        <div class="rule-num">5.1</div>
+        <div class="rule-body">
+          <div class="rule-title">Уважение к игрокам</div>
+          <div class="rule-desc"><strong>Запрещено намеренно высмеивать игроков и их посты.</strong> Все мы на разном уровне — кто-то пишет первый месяц, кто-то годами. Если видите слабый пост — молчите или помогите. Насмешки за счёт чужого опыта недопустимы.</div>
+          <div class="rule-tag red">Обязательно</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">5.2</div>
+        <div class="rule-body">
+          <div class="rule-title">Разграничение игры и реальности</div>
+          <div class="rule-desc"><strong>Конфликты между персонажами остаются в игре.</strong> Переносить игровую вражду в реальное общение — нельзя. Ваш персонаж может ненавидеть персонажа другого игрока. Вы сами — общаетесь нормально.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">5.3</div>
+        <div class="rule-body">
+          <div class="rule-title">Флуд и офтоп</div>
+          <div class="rule-desc">Общение — в ООС чате. Флуд в других чатах не приветствуется. В ООС — <strong>запрещена пропаганда наркотических веществ, политические манифесты, оскорбления по национальному или любому другому признаку.</strong> Разговоры о том что выпил/покурил в контексте жизни — норма.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">5.4</div>
+        <div class="rule-body">
+          <div class="rule-title">Спойлеры и сюжетные договорённости</div>
+          <div class="rule-desc">Если вы планируете сцену с другим игроком — <strong>договаривайтесь заранее в личных сообщениях</strong>. Не устраивайте игрокам сюрпризов вроде внезапной смерти их персонажа без согласования. Это неуважение к чужому персонажу.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">5.5</div>
+        <div class="rule-body">
+          <div class="rule-title">Выход из игры</div>
+          <div class="rule-desc">Если вы уходите из проекта — <strong>предупредите администрацию</strong> и по возможности завершите активные сцены или договоритесь с соролами. Просто бросить сцену на полуслове — некрасиво по отношению к тем, с кем вы играли.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ЗАПРЕТЫ -->
+  <section class="rules-section" id="forbidden">
+    <p class="section-eyebrow">Раздел VI</p>
+    <h2 class="section-title">Жёсткие запреты</h2>
+    <div class="section-rule"></div>
+
+    <div class="warn-box">
+      <div class="warn-title">⚠ Нарушение любого из пунктов ниже — немедленный бан без предупреждения</div>
+      <div class="warn-text">Эти правила не обсуждаются, не смягчаются и не имеют исключений.</div>
+    </div>
+
+    <div class="rules-list">
+
+      <div class="rule-item strict">
+        <div class="rule-num">6.1</div>
+        <div class="rule-body">
+          <div class="rule-title">Дискриминация</div>
+          <div class="rule-desc">Запрещены оскорбления, унижения и дискриминация по национальности, полу, возрасту, религии или любому другому признаку — как в чатах, так и в постах (вне игрового контекста эпохи).</div>
+          <div class="rule-tag red">Бан</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">6.2</div>
+        <div class="rule-body">
+          <div class="rule-title">Реальные угрозы и преследование</div>
+          <div class="rule-desc">Реальные угрозы в адрес игроков или администрации — немедленный и постоянный бан с передачей информации модераторам Telegram при необходимости.</div>
+          <div class="rule-tag red">Бан</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">6.3</div>
+        <div class="rule-body">
+          <div class="rule-title">Эротический контент</div>
+          <div class="rule-desc">Эротические сцены запрещены полностью. Намёки и нуаровое напряжение — да. Явный контент — нет, без исключений.</div>
+          <div class="rule-tag red">Бан</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">6.4</div>
+        <div class="rule-body">
+          <div class="rule-title">Слив информации</div>
+          <div class="rule-desc">Намеренный слив внутренней информации проекта (сюжетные планы, анкеты других игроков, административные решения) на сторону — немедленный бан.</div>
+          <div class="rule-tag red">Бан</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">6.5</div>
+        <div class="rule-body">
+          <div class="rule-title">Мультиаккаунты для обхода бана</div>
+          <div class="rule-desc">Создание новых аккаунтов для обхода бана — автоматический постоянный бан всех аккаунтов без возможности апелляции.</div>
+          <div class="rule-tag red">Бан</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pull-quote" style="margin-top: 32px;">«Эти правила созданы не для того, чтобы ограничивать — а для того, чтобы игра была комфортной для всех. Соблюдай их, и тебе здесь будет хорошо.»</div>
+
+  </section>
+
+  <!-- ПЕРСОНАЖИ -->
+  <section class="rules-section" id="characters">
+    <p class="section-eyebrow">Раздел VII</p>
+    <h2 class="section-title">Несколько персонажей</h2>
+    <div class="section-rule"></div>
+
+    <div class="rules-list">
+
+      <div class="rule-item">
+        <div class="rule-num">7.1</div>
+        <div class="rule-body">
+          <div class="rule-title">Лимит персонажей</div>
+          <div class="rule-desc">Один игрок может создать <strong>до трёх персонажей</strong>. Четвёртый и последующие — только с разрешения администрации. Каждый персонаж проходит стандартную процедуру одобрения анкеты.</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">7.2</div>
+        <div class="rule-body">
+          <div class="rule-title">Разные фракции</div>
+          <div class="rule-desc">Все персонажи одного игрока <strong>обязаны принадлежать к разным фракциям</strong>. Запрещено иметь двух и более персонажей в одной и той же фракции.</div>
+          <div class="rule-tag red">Обязательно</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">7.3</div>
+        <div class="rule-body">
+          <div class="rule-title">Запрет на использование преимущества</div>
+          <div class="rule-desc">Запрещено использовать своих персонажей для помощи самому себе. Если идёт конфликт между двумя игроками — <strong>нельзя спавнить второго персонажа и бежать себе на помощь</strong>. Нельзя передавать информацию или ресурсы между своими персонажами в обход логики игры. Каждый персонаж живёт независимо.</div>
+          <div class="example-box">
+            <div class="ex-label">Пример нарушения</div>
+            Персонаж игрока А попал в перестрелку с персонажем игрока Б. Игрок А заходит вторым персонажем и приходит на помощь первому. <strong>Это запрещено.</strong>
+          </div>
+          <div class="rule-tag red">Строгое правило</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">7.4</div>
+        <div class="rule-body">
+          <div class="rule-title">Информационная изоляция персонажей</div>
+          <div class="rule-desc">Ваши персонажи <strong>не делятся информацией друг с другом</strong> просто потому, что вы один игрок. То, что знает один — второй узнаёт только если они встретились в игре и поговорили. Иначе — это мета-гейминг.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ВОЗМОЖНОСТИ ИГРОКОВ -->
+  <section class="rules-section" id="opportunities">
+    <p class="section-eyebrow">Раздел VIII</p>
+    <h2 class="section-title">Возможности и рост</h2>
+    <div class="section-rule"></div>
+
+    <div class="rules-list">
+
+      <div class="rule-item gold">
+        <div class="rule-num">8.1</div>
+        <div class="rule-body">
+          <div class="rule-title">Роль ивентолога</div>
+          <div class="rule-desc">Любой участник может взять на себя роль <strong>ивентолога</strong> — человека, который создаёт контент и организует события в игре. Для этого нужны: фантазия, умение писать внушительные посты и способность одновременно отыгрывать нескольких персонажей. Если хотите попробовать — обратитесь к администрации.</div>
+        </div>
+      </div>
+
+      <div class="rule-item gold">
+        <div class="rule-num">8.2</div>
+        <div class="rule-body">
+          <div class="rule-title">Ведущий фракции</div>
+          <div class="rule-desc">Игрок, <strong>проявивший себя в ролевой</strong> — активный, грамотный, ответственный — может получить статус ведущего фракции. Это позволяет отыгрывать верхушку своей фракции и влиять на её судьбу. Статус присваивается администрацией по итогам наблюдения за игроком — просить его нельзя, можно только заслужить.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+<div class="page-footer">
+  Port-Mroun Fandom ✦ Правила ✦ 1947
+</div>
+
+</body>
+</html>

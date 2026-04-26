@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Боевая система — Port-Mroun</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a;
+      --gold-dim: #8a7a3a;
+      --cream: #e8ddb8;
+      --navy: #0a1520;
+      --text: #c8c0a0;
+      --text-dim: #7a7060;
+      --red: #8a2020;
+      --red-dim: #5a1010;
+      --green: #2a5a2a;
+      --green-bright: #4a8a4a;
+      --blue: #2a4a7a;
+      --blue-bright: #4a6aaa;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      height: 45vh;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 40px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0a1520 0%, #0f1e2e 50%, #0a1520 100%);
+    }
+
+    .hero-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(196,168,74,0.015) 30px, rgba(196,168,74,0.015) 31px),
+        repeating-linear-gradient(-45deg, transparent, transparent 30px, rgba(196,168,74,0.015) 30px, rgba(196,168,74,0.015) 31px);
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 20%, rgba(10,21,32,0.85) 100%);
+    }
+
+    .hero-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--navy));
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 6vw, 56px);
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 6px;
+      text-shadow: 0 0 40px rgba(196,168,74,0.2);
+      line-height: 1.1;
+    }
+
+    .hero-sub {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 20px; left: 20px;
+      z-index: 10;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    /* NAV */
+    .page-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,21,32,0.97);
+      border-bottom: 1px solid rgba(138,32,32,0.25);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .page-nav::-webkit-scrollbar { display: none; }
+
+    .page-nav ul {
+      display: flex;
+      list-style: none;
+      min-width: max-content;
+      padding: 0 16px;
+    }
+
+    .page-nav a {
+      display: block;
+      padding: 14px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .page-nav a:hover { color: var(--gold); border-bottom-color: var(--red); }
+
+    /* CONTENT */
+    .page-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    .lore-section {
+      padding: 56px 0 16px;
+      border-bottom: 1px solid rgba(138,32,32,0.08);
+    }
+
+    .lore-section:last-child { border-bottom: none; }
+
+    .section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .section-rule {
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(to right, var(--red), transparent);
+      margin-bottom: 24px;
+    }
+
+    .prose p { margin-bottom: 16px; color: var(--text); }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose strong { color: var(--cream); }
+
+    /* PULL QUOTE */
+    .pull-quote {
+      border-left: 3px solid var(--red);
+      padding: 14px 18px;
+      margin: 24px 0;
+      background: rgba(138,32,32,0.06);
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    /* DICE VISUAL */
+    .dice-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .dice-card {
+      background: rgba(13,21,32,0.9);
+      border: 1px solid rgba(196,168,74,0.15);
+      padding: 16px 20px;
+      text-align: center;
+      min-width: 100px;
+      flex: 1;
+    }
+
+    .dice-face {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .dice-name {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .dice-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    /* STAT CARDS */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(13,21,32,0.8);
+      border: 1px solid rgba(196,168,74,0.1);
+      border-top: 3px solid var(--gold-dim);
+      padding: 16px;
+    }
+
+    .stat-name {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      color: var(--gold);
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+    }
+
+    .stat-range {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      color: var(--red);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .stat-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* RESULT TABLE */
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 15px;
+    }
+
+    .result-table th {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(196,168,74,0.2);
+      text-align: left;
+    }
+
+    .result-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid rgba(196,168,74,0.06);
+      vertical-align: top;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .result-table td:first-child {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      white-space: nowrap;
+      width: 100px;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+
+    .result-table td.critical { color: #cc8080; }
+    .result-table td.fail { color: #aa6060; }
+    .result-table td.partial { color: #aa9040; }
+    .result-table td.success { color: #6a9a6a; }
+    .result-table td.perfect { color: #4aaa4a; }
+
+    .roll-badge {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 2px;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .rb-critical { background: rgba(80,10,10,0.6); color: #cc6060; border: 1px solid #6a1010; }
+    .rb-fail     { background: rgba(80,30,10,0.5); color: #bb7040; border: 1px solid #5a3010; }
+    .rb-partial  { background: rgba(80,70,10,0.4); color: #ccaa40; border: 1px solid #6a6010; }
+    .rb-success  { background: rgba(20,60,20,0.5); color: #6aaa6a; border: 1px solid #2a5a2a; }
+    .rb-perfect  { background: rgba(10,70,10,0.5); color: #4acc4a; border: 1px solid #1a6a1a; }
+
+    /* WEAPON TABLE */
+    .weapon-block {
+      margin-bottom: 32px;
+    }
+
+    .weapon-block:last-child { margin-bottom: 0; }
+
+    .weapon-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: rgba(13,21,32,0.9);
+      border: 1px solid rgba(196,168,74,0.12);
+      border-left: 4px solid var(--gold-dim);
+      margin-bottom: 2px;
+    }
+
+    .weapon-icon { font-size: 22px; }
+
+    .weapon-type {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--gold);
+      flex: 1;
+    }
+
+    .weapon-dice {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--red);
+      padding: 4px 10px;
+      border: 1px solid rgba(138,32,32,0.4);
+    }
+
+    .weapon-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .weapon-item {
+      display: flex;
+      gap: 14px;
+      padding: 12px 18px;
+      background: rgba(10,18,28,0.7);
+      border: 1px solid rgba(196,168,74,0.05);
+      border-left: 2px solid rgba(196,168,74,0.08);
+      align-items: flex-start;
+      font-size: 14px;
+    }
+
+    .weapon-item-name {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      color: var(--gold);
+      min-width: 150px;
+      flex-shrink: 0;
+    }
+
+    .weapon-item-bonus {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      color: var(--red);
+      min-width: 60px;
+      flex-shrink: 0;
+    }
+
+    .weapon-item-desc { color: var(--text-dim); line-height: 1.5; }
+
+    /* HP / STATUS */
+    .hp-visual {
+      display: flex;
+      gap: 3px;
+      margin: 12px 0;
+      flex-wrap: wrap;
+    }
+
+    .hp-pip {
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(196,168,74,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      color: var(--gold-dim);
+    }
+
+    .hp-pip.full { background: rgba(74,138,74,0.3); border-color: #4a8a4a; color: #6aaa6a; }
+    .hp-pip.wound { background: rgba(138,100,20,0.3); border-color: #8a6414; color: #aa8030; }
+    .hp-pip.heavy { background: rgba(138,40,20,0.3); border-color: #8a2814; color: #cc5030; }
+    .hp-pip.empty { background: rgba(80,10,10,0.3); border-color: #500a0a; color: #882020; }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .status-item {
+      padding: 12px 14px;
+      border: 1px solid rgba(196,168,74,0.08);
+      border-left: 3px solid;
+      background: rgba(10,18,28,0.7);
+    }
+
+    .status-name {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .status-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+
+    .s-healthy  { border-left-color: #4a8a4a; }
+    .s-healthy .status-name  { color: #6aaa6a; }
+    .s-wound    { border-left-color: #8a6414; }
+    .s-wound .status-name    { color: #ccaa40; }
+    .s-heavy    { border-left-color: #8a3010; }
+    .s-heavy .status-name    { color: #cc6040; }
+    .s-ko       { border-left-color: #6a1010; }
+    .s-ko .status-name       { color: #cc4040; }
+    .s-dead     { border-left-color: #3a0808; }
+    .s-dead .status-name     { color: #aa3030; }
+
+    /* FACTION BONUS */
+    .faction-bonus-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .fb-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      background: rgba(13,21,32,0.7);
+      border: 1px solid rgba(196,168,74,0.08);
+    }
+
+    .fb-faction {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      color: var(--gold);
+      min-width: 160px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .fb-bonus { font-size: 14px; color: var(--text-dim); line-height: 1.55; }
+    .fb-bonus strong { color: var(--cream); }
+
+    /* EXAMPLE COMBAT */
+    .combat-example {
+      background: rgba(10,18,28,0.9);
+      border: 1px solid rgba(196,168,74,0.15);
+      border-top: 3px solid var(--gold-dim);
+      padding: 22px;
+      margin-top: 16px;
+    }
+
+    .ce-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .ce-step {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+
+    .ce-step:last-child { margin-bottom: 0; }
+
+    .ce-num {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--red);
+      flex-shrink: 0;
+      width: 24px;
+      padding-top: 1px;
+    }
+
+    .ce-text { font-size: 15px; color: var(--text-dim); line-height: 1.6; }
+    .ce-text strong { color: var(--cream); }
+    .ce-text em { color: var(--gold-dim); font-style: italic; }
+
+    /* WARNING */
+    .warn-box {
+      background: rgba(80,15,15,0.2);
+      border: 1px solid rgba(138,32,32,0.3);
+      padding: 18px 20px;
+      margin: 20px 0;
+    }
+
+    .warn-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #cc4040;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .warn-text { font-size: 15px; color: #bb8888; line-height: 1.6; }
+
+    /* INFO BOX */
+    .info-box {
+      background: rgba(42,74,122,0.1);
+      border: 1px solid rgba(42,74,122,0.25);
+      padding: 18px 20px;
+      margin: 20px 0;
+    }
+
+    .info-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--blue-bright);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .info-text { font-size: 15px; color: #8899bb; line-height: 1.6; }
+
+    /* RULE CARDS */
+    .rule-cards { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+
+    .rule-card {
+      display: flex;
+      gap: 14px;
+      background: rgba(13,21,32,0.7);
+      border: 1px solid rgba(196,168,74,0.08);
+      border-left: 3px solid var(--gold-dim);
+      padding: 16px 18px;
+      transition: border-left-color 0.2s;
+      align-items: flex-start;
+    }
+
+    .rule-card:hover { border-left-color: var(--gold); }
+    .rule-card.red-card { border-left-color: var(--red-dim); }
+    .rule-card.red-card:hover { border-left-color: var(--red); }
+
+    .rc-num {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      color: var(--gold-dim);
+      flex-shrink: 0;
+      width: 28px;
+      padding-top: 2px;
+    }
+
+    .rc-body { flex: 1; }
+
+    .rc-title {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 5px;
+    }
+
+    .rc-desc { font-size: 15px; color: var(--text-dim); line-height: 1.6; }
+    .rc-desc strong { color: var(--cream); }
+
+    /* BOT COMMANDS */
+    .bot-commands {
+      background: rgba(10,18,28,0.95);
+      border: 1px solid rgba(196,168,74,0.15);
+      border-top: 3px solid var(--gold-dim);
+      padding: 20px;
+      margin-top: 12px;
+    }
+
+    .bot-commands-title {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .bot-cmd-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bot-cmd-item {
+      display: flex;
+      gap: 16px;
+      align-items: baseline;
+      padding: 8px 12px;
+      background: rgba(196,168,74,0.03);
+      border-left: 2px solid rgba(196,168,74,0.15);
+    }
+
+    .bot-cmd-code {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #6aaa6a;
+      min-width: 150px;
+      flex-shrink: 0;
+    }
+
+    .bot-cmd-desc {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 600px) {
+      .bot-cmd-item { flex-direction: column; gap: 3px; }
+      .bot-cmd-code { min-width: unset; }
+    }
+
+    /* FOOTER */
+    .page-footer {
+      text-align: center;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(138,32,32,0.15);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .lore-section { padding: 40px 0 12px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .weapon-item { flex-direction: column; gap: 4px; }
+      .weapon-item-name { min-width: unset; }
+      .fb-item { flex-direction: column; gap: 6px; }
+      .fb-faction { min-width: unset; }
+      .dice-card { min-width: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="index.html">← Назад</a>
+  <div class="hero-pattern"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-bottom"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Port-Mroun — 1947</p>
+    <h1 class="hero-title">БОЕВАЯ СИСТЕМА</h1>
+    <p class="hero-sub">«Пуля не спрашивает, кто прав.»</p>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <ul>
+    <li><a href="#overview">Основы</a></li>
+    <li><a href="#dice">Кубики</a></li>
+    <li><a href="#stats">Характеристики</a></li>
+    <li><a href="#rolls">Броски</a></li>
+    <li><a href="#weapons">Оружие</a></li>
+    <li><a href="#hp">HP и состояния</a></li>
+    <li><a href="#factions">Фракции</a></li>
+    <li><a href="#arbiter">Арбитр</a></li>
+    <li><a href="#example">Пример боя</a></li>
+    <li><a href="#rules">Правила боя</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <!-- ОСНОВЫ -->
+  <section class="lore-section" id="overview">
+    <p class="section-eyebrow">Введение</p>
+    <h2 class="section-title">Что такое боевая система</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Боевая система Порт-Мроуна — это набор правил, определяющих исход любого физического конфликта между персонажами. Система построена на бросках кубиков через бота <strong>DnD Dice</strong> в Telegram, характеристиках персонажа и решении мастера игры.</p>
+      <p>Цель системы — дать чёткий, честный и атмосферный результат боя. Кубики решают исход, но <strong>нарратив решает детали</strong>. Хороший пост всегда важнее удачного броска.</p>
+      <p>Система работает для любого конфликта: уличная драка, перестрелка в баре, засада в доках, допрос с пристрастием. Принцип один, детали разные.</p>
+    </div>
+
+    <div class="info-box">
+      <div class="info-title">Бот для бросков — @dicer_dnd_bot</div>
+      <div class="info-text">
+        Все броски делаются через бота <strong>@dicer_dnd_bot</strong> в специальной теме ролевого чата, отведённой под кубики. Бросок в другом месте — не считается.<br><br>
+        Бот принимает команды в формате <strong>/roll XdY±Z</strong>. Можно использовать русские буквы <strong>«д»</strong> или <strong>«в»</strong> вместо «d».<br><br>
+        Также работает inline-режим: напишите <strong>@dicer_dnd_bot 2d6+3</strong> прямо в поле ввода любого чата.
+      </div>
+    </div>
+
+    <!-- КОМАНДЫ БОТА -->
+    <div class="bot-commands">
+      <div class="bot-commands-title">Команды бота</div>
+      <div class="bot-cmd-grid">
+        <div class="bot-cmd-item">
+          <div class="bot-cmd-code">/roll 1d10</div>
+          <div class="bot-cmd-desc">Один D10 — основной бросок атаки и защиты</div>
+        </div>
+        <div class="bot-cmd-item">
+          <div class="bot-cmd-code">/roll 1d10+4</div>
+          <div class="bot-cmd-desc">D10 + модификатор характеристики (например Меткость 4)</div>
+        </div>
+        <div class="bot-cmd-item">
+          <div class="bot-cmd-code">/roll 1d6+2</div>
+          <div class="bot-cmd-desc">D6 урона + бонус оружия (пистолет .38 = D6+2)</div>
+        </div>
+        <div class="bot-cmd-item">
+          <div class="bot-cmd-code">/roll 2d6</div>
+          <div class="bot-cmd-desc">Двойной урон — для дробовика</div>
+        </div>
+        <div class="bot-cmd-item">
+          <div class="bot-cmd-code">/roll 1d4</div>
+          <div class="bot-cmd-desc">Слабый урон — голые руки, удар вскользь</div>
+        </div>
+        <div class="bot-cmd-item">
+          <div class="bot-cmd-code">/roll 4d6k3</div>
+          <div class="bot-cmd-desc">Бросить 4D6, оставить 3 лучших — для создания характеристик</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- КУБИКИ -->
+  <section class="lore-section" id="dice">
+    <p class="section-eyebrow">Инструментарий</p>
+    <h2 class="section-title">Кубики системы</h2>
+    <div class="section-rule"></div>
+
+    <div class="dice-row">
+      <div class="dice-card">
+        <span class="dice-face">⬟</span>
+        <div class="dice-name">D10</div>
+        <div class="dice-desc">Основной кубик. Используется для всех атак, защиты и проверок.</div>
+      </div>
+      <div class="dice-card">
+        <span class="dice-face">⬡</span>
+        <div class="dice-name">D6</div>
+        <div class="dice-desc">Кубик урона. Бросается после успешной атаки.</div>
+      </div>
+      <div class="dice-card">
+        <span class="dice-face">△</span>
+        <div class="dice-name">D4</div>
+        <div class="dice-desc">Кубик слабого урона. Для ударов вскользь и лёгкого оружия.</div>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:16px;">
+      <p><strong>Базовый принцип:</strong> бросаешь D10 + модификатор характеристики. Сравниваешь с броском противника или с пороговым значением. Если атакуешь — бросаешь урон отдельным кубиком.</p>
+    </div>
+  </section>
+
+  <!-- ХАРАКТЕРИСТИКИ -->
+  <section class="lore-section" id="stats">
+    <p class="section-eyebrow">Персонаж</p>
+    <h2 class="section-title">Характеристики персонажа</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>При создании персонажа игрок <strong>распределяет 15 очков</strong> между пятью характеристиками. Минимум в каждой — 1, максимум — 5. Характеристики отражают то, кем является персонаж, а не только его боевые навыки.</p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-name">⚔️ Сила</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Рукопашная атака, удержание, выбивание дверей. Прибавляется к броску атаки в ближнем бою.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-name">🎯 Меткость</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Стрельба из огнестрельного оружия. Прибавляется к броску атаки при стрельбе.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-name">🐾 Ловкость</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Уклонение, холодное оружие, скрытность. Прибавляется к броску защиты и атаке ножом.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-name">🛡 Выносливость</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Определяет максимальный HP. Снижает урон при ранениях. HP = 5 + (Выносливость × 2).</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-name">🧠 Интеллект</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Тактика, хитрость, допрос. Даёт бонус в нестандартных боевых ситуациях по решению мастера.</div>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:20px;">
+      <div class="info-title">Пример распределения — Детектив</div>
+      <div class="info-text">Сила 2 · Меткость 4 · Ловкость 3 · Выносливость 3 · Интеллект 3 = 15 очков.<br>HP = 5 + (3×2) = <strong>11 HP</strong>. Хорош со стволом, средняя выносливость, умный.</div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-title">Пример распределения — Enforcer Моретти</div>
+      <div class="info-text">Сила 5 · Меткость 2 · Ловкость 2 · Выносливость 4 · Интеллект 2 = 15 очков.<br>HP = 5 + (4×2) = <strong>13 HP</strong>. Опасен в рукопашной, живучий, но плохо стреляет.</div>
+    </div>
+  </section>
+
+  <!-- БРОСКИ -->
+  <section class="lore-section" id="rolls">
+    <p class="section-eyebrow">Механика</p>
+    <h2 class="section-title">Система бросков</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Каждое действие в бою — это <strong>бросок D10 + модификатор</strong> против броска противника или порогового числа. Кто больше — тот победил в этом обмене.</p>
+    </div>
+
+    <div class="pull-quote">Атака: D10 + характеристика<br>Защита: D10 + Ловкость<br>Урон: кубик урона оружия</div>
+
+    <h3 style="font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin:20px 0 10px;">Шкала результатов D10</h3>
+
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th>Бросок</th>
+          <th>Результат</th>
+          <th>Значение</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="roll-badge rb-critical">1</span></td>
+          <td class="critical">Критический провал</td>
+          <td>Атака не только провалена — что-то идёт совсем не так. Осечка, падение, потеря оружия. Мастер описывает последствие.</td>
+        </tr>
+        <tr>
+          <td><span class="roll-badge rb-fail">2–4</span></td>
+          <td class="fail">Промах</td>
+          <td>Атака не достигла цели. Урон не наносится. Ход переходит к противнику.</td>
+        </tr>
+        <tr>
+          <td><span class="roll-badge rb-partial">5–6</span></td>
+          <td class="partial">Частичный успех</td>
+          <td>Удар вскользь. Наносится урон D4 вместо полного кубика оружия. Противник тоже может контратаковать.</td>
+        </tr>
+        <tr>
+          <td><span class="roll-badge rb-success">7–9</span></td>
+          <td class="success">Успех</td>
+          <td>Чистое попадание. Бросается полный кубик урона оружия. Противник делает бросок защиты.</td>
+        </tr>
+        <tr>
+          <td><span class="roll-badge rb-perfect">10</span></td>
+          <td class="perfect">Критический успех</td>
+          <td>Идеальный удар. Урон максимальный без броска + D6 бонусного урона. Противник теряет следующий ход атаки.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin:24px 0 10px;">Бросок защиты</h3>
+
+    <div class="prose">
+      <p>Когда в тебя попадают — бросаешь <strong>D10 + Ловкость</strong>. Если результат <strong>выше или равен</strong> броску атаки противника — удар отражён или пришёлся вскользь, урон уменьшается вдвое (округление вниз). Если ниже — урон полный.</p>
+      <p>Защитный бросок делается <strong>только при результате 7–9 у атакующего</strong>. Критический успех (10) защиту не позволяет.</p>
+    </div>
+
+    <h3 style="font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin:24px 0 10px;">Инициатива</h3>
+
+    <div class="prose">
+      <p>В начале боя каждый участник бросает <strong>D10 + Ловкость</strong>. Кто выше — действует первым. При равенстве — повторный бросок. Порядок ходов фиксируется мастером и сохраняется до конца боя.</p>
+    </div>
+  </section>
+
+  <!-- ОРУЖИЕ -->
+  <section class="lore-section" id="weapons">
+    <p class="section-eyebrow">Арсенал 1947 года</p>
+    <h2 class="section-title">Типы оружия и урон</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Оружие определяет кубик урона и модификатор к броску атаки. Использование оружия не по профилю персонажа (например, снайпер с ножом) — минус 1 к броску атаки.</p>
+    </div>
+
+    <!-- РУКОПАШНАЯ -->
+    <div class="weapon-block">
+      <div class="weapon-header">
+        <div class="weapon-icon">👊</div>
+        <div class="weapon-type">Рукопашная</div>
+        <div class="weapon-dice">Атака: D10 + Сила</div>
+      </div>
+      <div class="weapon-list">
+        <div class="weapon-item">
+          <div class="weapon-item-name">Голые руки</div>
+          <div class="weapon-item-bonus">D4 урон</div>
+          <div class="weapon-item-desc">Удары кулаком, захваты. Базовая рукопашная без оружия. Критический успех — нокаут (потеря сознания, не смерть).</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Дубинка / кастет</div>
+          <div class="weapon-item-bonus">D6 урон</div>
+          <div class="weapon-item-desc">Усиленный удар. Кастет даёт +1 к броску атаки в ближнем бою. При крите — оглушение на один ход.</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Бутылка / подручные</div>
+          <div class="weapon-item-bonus">D4 урон</div>
+          <div class="weapon-item-desc">Что попалось под руку. После удара предмет разрушается. Внезапная атака из укрытия — +2 к броску атаки.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ХОЛОДНОЕ ОРУЖИЕ -->
+    <div class="weapon-block">
+      <div class="weapon-header">
+        <div class="weapon-icon">🔪</div>
+        <div class="weapon-type">Холодное оружие</div>
+        <div class="weapon-dice">Атака: D10 + Ловкость</div>
+      </div>
+      <div class="weapon-list">
+        <div class="weapon-item">
+          <div class="weapon-item-name">Нож / перочинный</div>
+          <div class="weapon-item-bonus">D6 урон</div>
+          <div class="weapon-item-desc">Стандартный нож. Скрытый — можно спрятать. При атаке со спины — +2 к броску.</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Боевой нож / штык</div>
+          <div class="weapon-item-bonus">D6+1 урон</div>
+          <div class="weapon-item-desc">Военный нож. Тяжелее, заметнее. +1 к броску атаки против незащищённого противника.</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Бритва / стилет</div>
+          <div class="weapon-item-bonus">D4 урон</div>
+          <div class="weapon-item-desc">Лёгкое скрытое оружие. +3 к броску атаки — очень точное. При крите — серьёзное кровотечение (−1 HP в начале каждого хода до перевязки).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ОГНЕСТРЕЛ -->
+    <div class="weapon-block">
+      <div class="weapon-header">
+        <div class="weapon-icon">🔫</div>
+        <div class="weapon-type">Огнестрельное оружие</div>
+        <div class="weapon-dice">Атака: D10 + Меткость</div>
+      </div>
+      <div class="weapon-list">
+        <div class="weapon-item">
+          <div class="weapon-item-name">Малокалиберный пистолет</div>
+          <div class="weapon-item-bonus">D6 урон</div>
+          <div class="weapon-item-desc">Небольшой скрытый пистолет (.25, .32). 6 патронов. Лёгкий, точный на близкой дистанции.</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Пистолет (.38, .45)</div>
+          <div class="weapon-item-bonus">D6+2 урон</div>
+          <div class="weapon-item-desc">Стандартный полицейский или армейский пистолет. 6–8 патронов. Золотой стандарт 1947 года.</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Револьвер</div>
+          <div class="weapon-item-bonus">D6+1 урон</div>
+          <div class="weapon-item-desc">Надёжный, никогда не клинит. 6 патронов. +1 к броску атаки за счёт надёжности механики.</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Дробовик</div>
+          <div class="weapon-item-bonus">2D6 урон</div>
+          <div class="weapon-item-desc">Смертоносен вблизи. На дальней дистанции — −2 к броску атаки. 2 патрона до перезарядки. Не скроешь под пальто.</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Пистолет-пулемёт (ТМП)</div>
+          <div class="weapon-item-bonus">D6+1 × 2 урон</div>
+          <div class="weapon-item-desc">Очередь по двум целям одновременно — или двойной урон по одной. −1 к броску за разброс. Только у военных и спецотряда.</div>
+        </div>
+        <div class="weapon-item">
+          <div class="weapon-item-name">Снайперская винтовка</div>
+          <div class="weapon-item-bonus">D6+4 урон</div>
+          <div class="weapon-item-desc">Только с позиции и заранее занятой. +3 к броску атаки. Противник не может защититься броском если не знает об угрозе.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <div class="warn-title">Перезарядка и патроны</div>
+      <div class="warn-text">Каждое оружие имеет лимит патронов. Перезарядка занимает <strong>один ход</strong> — в это время персонаж не может атаковать. Мастер отслеживает расход патронов. Если патроны кончились в бою — только рукопашная или отступление.</div>
+    </div>
+  </section>
+
+  <!-- HP И СОСТОЯНИЯ -->
+  <section class="lore-section" id="hp">
+    <p class="section-eyebrow">Здоровье</p>
+    <h2 class="section-title">HP и состояния персонажа</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>HP персонажа рассчитывается по формуле: <strong>HP = 5 + (Выносливость × 2)</strong>. Минимум — 7 HP (Выносливость 1), максимум — 15 HP (Выносливость 5).</p>
+      <p>Помимо числового HP, персонаж имеет <strong>состояние</strong> — качественную оценку того, насколько он боеспособен. Состояние меняется автоматически при пересечении порогов HP.</p>
+    </div>
+
+    <div class="status-grid">
+      <div class="status-item s-healthy">
+        <div class="status-name">✅ Здоров</div>
+        <div class="status-desc">HP 76–100%. Никаких штрафов. Полная боеспособность.</div>
+      </div>
+      <div class="status-item s-wound">
+        <div class="status-name">⚠️ Ранен</div>
+        <div class="status-desc">HP 51–75%. −1 к броскам атаки. Персонаж заметно ограничен, но сражается.</div>
+      </div>
+      <div class="status-item s-heavy">
+        <div class="status-name">🩸 Тяжело ранен</div>
+        <div class="status-desc">HP 26–50%. −2 к броскам атаки и защиты. Передвижение замедлено.</div>
+      </div>
+      <div class="status-item s-ko">
+        <div class="status-name">💀 Без сознания</div>
+        <div class="status-desc">HP 1–25%. Персонаж падает. Бой недоступен. Без помощи — состояние ухудшается.</div>
+      </div>
+      <div class="status-item s-dead">
+        <div class="status-name">☠️ Мёртв</div>
+        <div class="status-desc">HP 0 или ниже. Смерть персонажа. Требует решения администрации и согласования.</div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Cinzel',serif; font-size:15px; color:var(--gold); margin:24px 0 10px;">Восстановление HP</h3>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rc-num">🩹</div>
+        <div class="rc-body">
+          <div class="rc-title">Первая помощь в бою</div>
+          <div class="rc-desc">Персонаж с навыком медицины (или перевязочным материалом) может потратить ход на помощь союзнику. Бросок D10 + Интеллект: результат 6+ восстанавливает <strong>D4 HP</strong>. Работает один раз за бой на одного персонажа.</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">🏥</div>
+        <div class="rc-body">
+          <div class="rc-title">Отдых после боя</div>
+          <div class="rc-desc">После завершения боя и полноценного отдыха (несколько часов) персонаж восстанавливает <strong>половину потерянного HP</strong>. Тяжёлые ранения восстанавливаются медленнее — по решению мастера.</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">⚕️</div>
+        <div class="rc-body">
+          <div class="rc-title">Врачебная помощь</div>
+          <div class="rc-desc">Персонаж с ролью врача или в больнице может восстановить <strong>полный HP</strong> за один-два игровых дня. Тяжёлые ранения — дольше. Кровотечение снимается только перевязкой.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФРАКЦИОННЫЕ БОНУСЫ -->
+  <section class="lore-section" id="factions">
+    <p class="section-eyebrow">Принадлежность</p>
+    <h2 class="section-title">Бонусы фракций</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Фракция персонажа даёт пассивный бонус в бою — отражающий подготовку, ресурсы и стиль работы организации. Бонус применяется <strong>автоматически</strong> без объявления.</p>
+    </div>
+
+    <div class="faction-bonus-grid">
+      <div class="fb-item">
+        <div class="fb-faction">⚖️ Полиция</div>
+        <div class="fb-bonus"><strong>+1 к броску атаки с огнестрелом</strong> — регулярные стрельбища. Отряд «Стальной кулак»: дополнительно +1 к защите благодаря тактической подготовке.</div>
+      </div>
+      <div class="fb-item">
+        <div class="fb-faction">🤵 Семья Моретти</div>
+        <div class="fb-bonus"><strong>+1 к броску атаки в рукопашной</strong> — уличная школа. Enforcer и солдаты семьи: +1 к броску на запугивание как боевое действие (мастер решает применимость).</div>
+      </div>
+      <div class="fb-item">
+        <div class="fb-faction">🐉 Триада Красного Лотоса</div>
+        <div class="fb-bonus"><strong>+1 к броску инициативы</strong> — дисциплина и скрытность. Теневые оперативники: дополнительно +1 к атаке с ножом из укрытия.</div>
+      </div>
+      <div class="fb-item">
+        <div class="fb-faction">🔪 Независимые</div>
+        <div class="fb-bonus"><strong>+1 к броску защиты</strong> — выживание в одиночку закаляет. Ветераны войны: +1 к атаке с огнестрелом вместо бонуса к защите.</div>
+      </div>
+      <div class="fb-item">
+        <div class="fb-faction">📰 Пресса и гражданские</div>
+        <div class="fb-bonus"><strong>+2 к броску на переговоры и деэскалацию</strong> вместо боевых бонусов. В прямом бою — нет боевых бонусов. Зато мастер может дать преимущество за нестандартное решение конфликта без оружия.</div>
+      </div>
+      <div class="fb-item">
+        <div class="fb-faction">🕵️ ФБР</div>
+        <div class="fb-bonus"><strong>+1 к броску атаки с огнестрелом</strong> и <strong>+1 к инициативе</strong> — профессиональная подготовка. При работе под прикрытием бонусы не применяются пока не раскрылся.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- АРБИТР -->
+  <section class="lore-section" id="arbiter">
+    <p class="section-eyebrow">Надзор</p>
+    <h2 class="section-title">Мастер игры и арбитраж</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Каждый бой требует <strong>мастера игры</strong> — администратора или доверенного лица, который наблюдает за ходом, фиксирует броски и выносит вердикт спорных ситуаций. Без мастера бой не начинается.</p>
+    </div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rc-num">📋</div>
+        <div class="rc-body">
+          <div class="rc-title">Что делает мастер</div>
+          <div class="rc-desc">Фиксирует порядок ходов по инициативе. Отслеживает HP каждого участника. Следит за расходом патронов. Описывает последствия критических бросков. Выносит вердикт при спорах о результате.</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">⚖️</div>
+        <div class="rc-body">
+          <div class="rc-title">Вердикт схватки</div>
+          <div class="rc-desc">Мастер объявляет исход боя когда один из участников достигает 0 HP или сдаётся. Мастер также может остановить бой если ситуация стала нелогичной — например персонаж продолжает сражаться с тремя пулями в теле без штрафов.</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">🎲</div>
+        <div class="rc-body">
+          <div class="rc-title">Спорные броски</div>
+          <div class="rc-desc">Если игрок считает бросок нечестным — <strong>один раз за бой</strong> может запросить пересмотр у мастера. Мастер смотрит скриншот из DnD Dice бота. Если бросок зафиксирован ботом — он окончателен. Пересмотр без скриншота не рассматривается.</div>
+        </div>
+      </div>
+      <div class="rule-card red-card">
+        <div class="rc-num">🚫</div>
+        <div class="rc-body">
+          <div class="rc-title">Бой без мастера</div>
+          <div class="rc-desc">Если мастер недоступен — бой <strong>откладывается</strong>. Нельзя проводить боевые сцены без арбитра. Исключение: обоюдное согласие игроков на упрощённый формат — только тогда, и с последующим уведомлением администрации.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПРИМЕР БОЯ -->
+  <section class="lore-section" id="example">
+    <p class="section-eyebrow">Разбор</p>
+    <h2 class="section-title">Пример боя</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Детектив <strong>Эдди Коул</strong> (Меткость 4, Ловкость 3, HP 11) против бандита <strong>Луиджи</strong> из семьи Моретти (Сила 4, Ловкость 2, HP 13). У Коула — пистолет .38, у Луиджи — кастет. Мастер объявил начало боя.</p>
+    </div>
+
+    <div class="combat-example">
+      <div class="ce-label">Ход боя — раунд 1</div>
+
+      <div class="ce-step">
+        <div class="ce-num">①</div>
+        <div class="ce-text"><strong>Инициатива.</strong> В теме кубиков: Коул пишет <em>/roll 1d10+3</em> (D10 + Ловкость 3) = <strong>9</strong>. Луиджи пишет <em>/roll 1d10+2</em> (D10 + Ловкость 2) = <strong>6</strong>. Коул действует первым.</div>
+      </div>
+
+      <div class="ce-step">
+        <div class="ce-num">②</div>
+        <div class="ce-text"><strong>Коул пишет пост</strong> в ролевом чате: описывает, что вскидывает пистолет и стреляет. Затем в теме кубиков: <em>/roll 1d10+5</em> (D10 + Меткость 4 + бонус полиции 1) = <strong>8</strong>. Результат D10 сам по себе: 3 → но с бонусами итого 8 → <span style="color:#6aaa6a">Успех (7–9)</span>.</div>
+      </div>
+
+      <div class="ce-step">
+        <div class="ce-num">③</div>
+        <div class="ce-text"><strong>Урон.</strong> Коул бросает <em>/roll 1d6+2</em> (пистолет .38) = 5+2 = <strong>7 урона</strong>. Луиджи бросает защиту: <em>/roll 1d10+2</em> = 3+2 = <strong>5</strong>. Ниже броска атаки → урон полный. HP Луиджи: 13 − 7 = <strong>6</strong>. Состояние: <span style="color:#cc6040">Тяжело ранен</span>, штраф −2.</div>
+      </div>
+
+      <div class="ce-step">
+        <div class="ce-num">④</div>
+        <div class="ce-text"><strong>Луиджи пишет пост</strong>: замахивается кастетом несмотря на боль. Бросает <em>/roll 1d10+3</em> (Сила 4 + Моретти +1 − штраф −2 = +3) = 5+3 = <strong>8</strong>. D10 сам = 5 → <span style="color:#ccaa40">Частичный успех (5–6)</span>. Урон: <em>/roll 1d4</em> = 2. Коул получает <strong>2 HP</strong>.</div>
+      </div>
+
+      <div class="ce-step">
+        <div class="ce-num">⑤</div>
+        <div class="ce-text"><strong>Мастер объявляет</strong> итог. Фиксирует в чате: «Луиджи: 6 HP / Тяжело ранен. Коул: 9 HP / Здоров.» Следующий раунд или Луиджи сдаётся.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПРАВИЛА БОЕВЫХ СЦЕН -->
+  <section class="lore-section" id="rules">
+    <p class="section-eyebrow">Регламент</p>
+    <h2 class="section-title">Правила боевых сцен</h2>
+    <div class="section-rule"></div>
+
+    <div class="rule-cards">
+      <div class="rule-card">
+        <div class="rc-num">Б.1</div>
+        <div class="rc-body">
+          <div class="rc-title">Бросок — только в теме кубиков</div>
+          <div class="rc-desc">Все броски делаются через <strong>@dicer_dnd_bot</strong> исключительно в <strong>специальной теме ролевого чата</strong>, отведённой под кубики. Бросок в личке, в другом чате, в другой теме или «на словах» — не считается и не принимается. Результат из правильной темы — единственное доказательство.</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">Б.2</div>
+        <div class="rc-body">
+          <div class="rc-title">Ход — пост + бросок</div>
+          <div class="rc-desc">Один ход = <strong>один пост с описанием действия</strong> в ролевом чате + <strong>один бросок</strong> через <strong>@dicer_dnd_bot</strong> в теме кубиков. Нельзя кидать кубик без поста. Нельзя писать пост «подожду, что выпадет». Сначала описываешь действие — потом бросаешь. Формат: <strong>/roll 1d10+модификатор</strong>.</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">Б.3</div>
+        <div class="rc-body">
+          <div class="rc-title">Один бросок — одно действие</div>
+          <div class="rc-desc">За один ход можно сделать <strong>одно действие</strong>: атаку, защиту, перезарядку, первую помощь или отступление. Нельзя атаковать и одновременно перевязываться. Нельзя стрелять дважды за ход (кроме автоматического оружия по решению мастера).</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">Б.4</div>
+        <div class="rc-body">
+          <div class="rc-title">Отступление</div>
+          <div class="rc-desc">Персонаж может попытаться отступить вместо атаки. Бросок D10 + Ловкость против D10 + Ловкость преследователя. Если победил — покинул бой без урона. Если нет — противник успевает нанести один удар без броска защиты.</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">Б.5</div>
+        <div class="rc-body">
+          <div class="rc-title">Сдача</div>
+          <div class="rc-desc">Персонаж может сдаться в любой момент своего хода. Победитель решает исход: плен, отпустить, добить (последнее — только с разрешения мастера и при наличии игрового смысла). <strong>Принудительно убивать сдавшегося игрового персонажа без согласования запрещено.</strong></div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rc-num">Б.6</div>
+        <div class="rc-body">
+          <div class="rc-title">Групповой бой</div>
+          <div class="rc-desc">При бое двух и более против одного — <strong>каждый атакующий бросает отдельно</strong>, но защищающийся получает +1 к броску защиты за каждого союзника рядом (максимум +2). Окружение — по решению мастера снимает бонус к защите полностью.</div>
+        </div>
+      </div>
+      <div class="rule-card red-card">
+        <div class="rc-num">Б.7</div>
+        <div class="rc-body">
+          <div class="rc-title">Годмодинг — запрещён</div>
+          <div class="rc-desc">Запрещено описывать в посте результат своей атаки до броска. <strong>«Он ударил и враг упал»</strong> — нельзя. Правильно: <strong>«Он замахнулся и нанёс удар»</strong> — и только после броска описывается результат. Годмодинг аннулирует ход и даёт противнику бесплатную атаку.</div>
+        </div>
+      </div>
+      <div class="rule-card red-card">
+        <div class="rc-num">Б.8</div>
+        <div class="rc-body">
+          <div class="rc-title">Смерть персонажа</div>
+          <div class="rc-desc">Смерть персонажа при HP 0 — <strong>только с подтверждения администрации</strong>. Мастер может заменить смерть на «без сознания» если сюжет требует иного. Убийство чужого персонажа без согласования с его игроком и администрацией запрещено.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull-quote" style="margin-top:28px;">«Кубик решает исход. Пост делает его историей.»</div>
+
+  </section>
+
+</div>
+
+<div class="page-footer">
+  Port-Mroun Fandom ✦ Боевая система ✦ DnD Dice Bot
+</div>
+
+</body>
+</html>
