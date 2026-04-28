@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Экономика — Port-Mroun</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a; --gold-dim: #8a7a3a; --cream: #e8ddb8;
+      --navy: #0a1520; --text: #c8c0a0; --text-dim: #7a7060;
+      --green: #3a7a3a; --green-bright: #5aaa5a;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--navy); color:var(--text); font-family:'Crimson Text',Georgia,serif; font-size:18px; line-height:1.8; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.35; }
+
+    .hero { position:relative; height:40vh; min-height:250px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:40px; overflow:hidden; background:linear-gradient(135deg,#0a1520 0%,#0c1a10 50%,#0a1520 100%); }
+    .hero-pattern { position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(90,170,90,.012) 40px,rgba(90,170,90,.012) 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(90,170,90,.012) 40px,rgba(90,170,90,.012) 41px); }
+    .hero-vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center,transparent 20%,rgba(10,21,32,.9) 100%); }
+    .hero-bottom { position:absolute; bottom:0; left:0; right:0; height:100px; background:linear-gradient(to bottom,transparent,var(--navy)); }
+    .hero-content { position:relative; z-index:2; text-align:center; padding:0 20px; }
+    .hero-eyebrow { font-family:'Cinzel',serif; font-size:10px; letter-spacing:5px; color:var(--green); text-transform:uppercase; margin-bottom:10px; opacity:.8; }
+    .hero-title { font-family:'Cinzel',serif; font-size:clamp(30px,6vw,56px); font-weight:800; color:var(--gold); letter-spacing:8px; text-shadow:0 0 40px rgba(196,168,74,.2); }
+    .hero-sub { font-family:'IM Fell English',serif; font-style:italic; font-size:16px; color:var(--text-dim); margin-top:10px; }
+    .back-link { position:absolute; top:20px; left:20px; z-index:10; font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; color:var(--gold-dim); text-decoration:none; text-transform:uppercase; transition:color .2s; }
+    .back-link:hover { color:var(--gold); }
+
+    .page-nav { position:sticky; top:0; z-index:100; background:rgba(10,21,32,.97); border-bottom:1px solid rgba(90,170,90,.15); backdrop-filter:blur(10px); overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .page-nav::-webkit-scrollbar { display:none; }
+    .page-nav ul { display:flex; list-style:none; min-width:max-content; padding:0 16px; }
+    .page-nav a { display:block; padding:14px 16px; font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); text-decoration:none; border-bottom:2px solid transparent; white-space:nowrap; transition:color .2s,border-color .2s; }
+    .page-nav a:hover { color:var(--gold); border-bottom-color:var(--green); }
+
+    .page-content { max-width:860px; margin:0 auto; padding:0 20px 80px; }
+
+    .econ-section { padding:52px 0 16px; border-bottom:1px solid rgba(90,170,90,.07); }
+    .econ-section:last-child { border-bottom:none; }
+    .section-eyebrow { font-family:'Cinzel',serif; font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--green); opacity:.8; margin-bottom:8px; }
+    .section-title { font-family:'Cinzel',serif; font-size:clamp(18px,3.5vw,26px); font-weight:600; color:var(--gold); margin-bottom:6px; }
+    .section-rule { width:50px; height:1px; background:linear-gradient(to right,var(--green),transparent); margin-bottom:22px; }
+
+    .prose p { margin-bottom:14px; color:var(--text); font-size:16px; }
+    .prose p:last-child { margin-bottom:0; }
+    .prose strong { color:var(--cream); }
+
+    /* CURRENCY BLOCK */
+    .currency-block {
+      background:rgba(196,168,74,.05);
+      border:1px solid rgba(196,168,74,.2);
+      border-left:4px solid var(--gold);
+      padding:22px 24px;
+      margin-bottom:20px;
+    }
+    .currency-name { font-family:'Cinzel',serif; font-size:22px; color:var(--gold); margin-bottom:4px; letter-spacing:2px; }
+    .currency-sub { font-family:'Cinzel',serif; font-size:10px; letter-spacing:3px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:14px; }
+    .currency-desc { font-size:15px; color:var(--text-dim); line-height:1.65; }
+    .currency-desc strong { color:var(--cream); }
+
+    /* PRICE TABLE */
+    .price-table { width:100%; border-collapse:collapse; margin-top:10px; font-size:15px; }
+    .price-table thead th { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dim); padding:10px 14px; border-bottom:1px solid rgba(196,168,74,.15); text-align:left; }
+    .price-table thead th:last-child { text-align:right; }
+    .price-table td { padding:11px 14px; border-bottom:1px solid rgba(90,170,90,.05); vertical-align:top; color:var(--text-dim); line-height:1.5; }
+    .price-table td:first-child { color:var(--cream); font-size:15px; }
+    .price-table td:last-child { font-family:'Cinzel',serif; color:var(--green-bright); font-size:13px; text-align:right; white-space:nowrap; }
+    .price-table tr:last-child td { border-bottom:none; }
+    .price-table tr:hover td { background:rgba(90,170,90,.04); }
+    .price-table .cat-row td { background:rgba(10,20,10,.5); color:var(--gold-dim); font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; padding:8px 14px; border-bottom:1px solid rgba(196,168,74,.1); }
+    .price-table .cat-row td:last-child { color:var(--gold-dim); text-align:right; }
+
+    /* SALARY TABLE */
+    .salary-grid { display:flex; flex-direction:column; gap:2px; margin-top:10px; }
+    .salary-item { display:flex; justify-content:space-between; align-items:center; padding:13px 18px; background:rgba(13,21,32,.6); border:1px solid rgba(196,168,74,.06); gap:16px; }
+    .salary-item:hover { background:rgba(90,170,90,.04); }
+    .salary-job { font-size:15px; color:var(--text-dim); flex:1; }
+    .salary-job strong { color:var(--cream); display:block; font-size:14px; font-family:'Cinzel',serif; margin-bottom:2px; }
+    .salary-amount { font-family:'Cinzel',serif; font-size:14px; color:var(--green-bright); white-space:nowrap; flex-shrink:0; }
+
+    /* NOTE BOX */
+    .note-box { background:rgba(90,170,90,.05); border:1px solid rgba(90,170,90,.15); border-left:3px solid var(--green); padding:16px 18px; margin:20px 0; font-size:15px; color:var(--text-dim); line-height:1.6; }
+    .note-box strong { color:var(--cream); }
+
+    .pull-quote { border-left:3px solid var(--green); padding:14px 18px; margin:22px 0; background:rgba(90,170,90,.05); font-family:'IM Fell English',serif; font-style:italic; font-size:18px; color:var(--cream); line-height:1.5; }
+
+    .warn-box { background:rgba(80,15,15,.15); border:1px solid rgba(138,32,32,.25); padding:16px 18px; margin:20px 0; font-size:15px; color:#bb8888; line-height:1.6; }
+    .warn-title { font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:#cc4040; text-transform:uppercase; margin-bottom:8px; }
+
+    .page-footer { text-align:center; padding:30px 20px; border-top:1px solid rgba(90,170,90,.1); font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:var(--text-dim); text-transform:uppercase; }
+
+    @media (max-width:600px) {
+      .econ-section { padding:36px 0 12px; }
+      .salary-item { flex-direction:column; align-items:flex-start; gap:4px; }
+      .price-table td:last-child { font-size:12px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="index.html">← Назад</a>
+  <div class="hero-pattern"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-bottom"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Port-Mroun — 1947</p>
+    <h1 class="hero-title">ЭКОНОМИКА</h1>
+    <p class="hero-sub">Деньги — единственный честный язык в этом городе.</p>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <ul>
+    <li><a href="#currency">Валюта</a></li>
+    <li><a href="#salaries">Заработок</a></li>
+    <li><a href="#housing">Жильё</a></li>
+    <li><a href="#transport">Транспорт</a></li>
+    <li><a href="#weapons">Оружие</a></li>
+    <li><a href="#everyday">Повседневность</a></li>
+    <li><a href="#black">Чёрный рынок</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <!-- ДИСКЛЕЙМЕР -->
+  <div class="note-box" style="margin-top:40px;">
+    <strong>Важно.</strong> Все цены — ориентировочные. Экономика города живая: она меняется от действий игроков, событий и решений администрации. Цена может быть выше или ниже в зависимости от контекста, связей персонажа и текущей обстановки в городе.
+  </div>
+
+  <!-- ВАЛЮТА -->
+  <section class="econ-section" id="currency">
+    <p class="section-eyebrow">Деньги</p>
+    <h2 class="section-title">Валюта</h2>
+    <div class="section-rule"></div>
+
+    <div class="currency-block">
+      <div class="currency-name">Доллар США</div>
+      <div class="currency-sub">United States Dollar · USD · $</div>
+      <div class="currency-desc">Единственная ходовая валюта Порт-Мроуна. Наличные — основа всего. <strong>Банковские чеки и безналичные расчёты</strong> существуют, но используются редко и только в легальных сделках. Большинство теневых операций — <strong>только кэш</strong>. Мятые купюры, конверты, пакеты в газете.</div>
+    </div>
+
+    <div class="prose">
+      <p>Для ориентира: средняя американская семья в 1947 году живёт на <strong>$50–70 в неделю</strong>. Рабочий на доках получает около <strong>$45</strong>. Детектив — около <strong>$65</strong>. Хороший костюм стоит <strong>$30–40</strong>. Бутылка виски в баре — <strong>$0.50–1</strong>.</p>
+    </div>
+
+    <div class="pull-quote">«В Порт-Мроуне всё продаётся. Вопрос только в том, хватает ли у вас наличных.»</div>
+  </section>
+
+  <!-- ЗАРАБОТОК -->
+  <section class="econ-section" id="salaries">
+    <p class="section-eyebrow">Еженедельно</p>
+    <h2 class="section-title">Заработок по роду деятельности</h2>
+    <div class="section-rule"></div>
+
+    <div class="salary-grid">
+
+      <div class="salary-item">
+        <div class="salary-job"><strong>Патрульный офицер</strong>Официальная зарплата. До премий и конвертов.</div>
+        <div class="salary-amount">$45 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Детектив</strong>Уголовный розыск, любой класс.</div>
+        <div class="salary-amount">$60–70 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Оперативник «Стального кулака»</strong>Спецотряд, повышенный оклад.</div>
+        <div class="salary-amount">$75 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Агент ФБР</strong>Федеральная зарплата, выше городской.</div>
+        <div class="salary-amount">$90 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Репортёр / журналист</strong>Газета «Порт-Мроун Геральд».</div>
+        <div class="salary-amount">$40–55 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Адвокат / прокурор</strong>Зависит от клиентуры и честности.</div>
+        <div class="salary-amount">$80–200 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Докер / портовый рабочий</strong>Тяжёлый труд, скромная оплата.</div>
+        <div class="salary-amount">$40 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Бармен / официант</strong>Плюс чаевые — зависит от места.</div>
+        <div class="salary-amount">$25–35 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Солдат / ассоциированный Моретти</strong>Доля от операций. Нестабильно.</div>
+        <div class="salary-amount">$50–150 / нед.</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Наёмник / независимый</strong>За задание. Зависит от риска.</div>
+        <div class="salary-amount">$20–300 / задание</div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-job"><strong>Частный сыщик</strong>За дело. Успех — бонус.</div>
+        <div class="salary-amount">$50–200 / дело</div>
+      </div>
+
+    </div>
+
+    <div class="note-box" style="margin-top:12px;">
+      Это <strong>официальные или средние доходы</strong>. Взятки, доли с операций, «благодарности» — отдельная история и отдельные деньги. У многих персонажей реальный доход в два-три раза выше официального.
+    </div>
+  </section>
+
+  <!-- ЖИЛЬЁ -->
+  <section class="econ-section" id="housing">
+    <p class="section-eyebrow">Крыша над головой</p>
+    <h2 class="section-title">Жильё</h2>
+    <div class="section-rule"></div>
+
+    <table class="price-table">
+      <thead>
+        <tr><th>Тип жилья</th><th>Район</th><th>Цена в месяц</th></tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="2">Аренда</td><td>$/мес.</td></tr>
+        <tr>
+          <td>Комната в меблированном доме</td>
+          <td>Серый пояс</td>
+          <td>$8–12</td>
+        </tr>
+        <tr>
+          <td>Небольшая квартира</td>
+          <td>Литтл-Палермо, Чайна-стрит</td>
+          <td>$20–30</td>
+        </tr>
+        <tr>
+          <td>Квартира среднего класса</td>
+          <td>Даунтаун</td>
+          <td>$40–60</td>
+        </tr>
+        <tr>
+          <td>Просторные апартаменты</td>
+          <td>Даунтаун, Хиллсайд</td>
+          <td>$80–150</td>
+        </tr>
+        <tr>
+          <td>Особняк / поместье</td>
+          <td>Хиллсайд</td>
+          <td>$200–500</td>
+        </tr>
+        <tr class="cat-row"><td colspan="2">Покупка (единовременно)</td><td>$</td></tr>
+        <tr>
+          <td>Скромный дом</td>
+          <td>Серый пояс, окраина</td>
+          <td>$4 000–6 000</td>
+        </tr>
+        <tr>
+          <td>Дом среднего класса</td>
+          <td>Даунтаун</td>
+          <td>$10 000–18 000</td>
+        </tr>
+        <tr>
+          <td>Особняк</td>
+          <td>Хиллсайд</td>
+          <td>$40 000+</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ТРАНСПОРТ -->
+  <section class="econ-section" id="transport">
+    <p class="section-eyebrow">Колёса</p>
+    <h2 class="section-title">Транспорт</h2>
+    <div class="section-rule"></div>
+
+    <table class="price-table">
+      <thead>
+        <tr><th>Транспорт</th><th>Описание</th><th>Цена</th></tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="2">Общественный</td><td>За поездку</td></tr>
+        <tr>
+          <td>Трамвай</td>
+          <td>По всему городу</td>
+          <td>$0.05</td>
+        </tr>
+        <tr>
+          <td>Такси</td>
+          <td>В пределах района</td>
+          <td>$0.25–0.75</td>
+        </tr>
+        <tr class="cat-row"><td colspan="2">Личный автомобиль (покупка)</td><td>$</td></tr>
+        <tr>
+          <td>Подержанный седан</td>
+          <td>Довоенный, требует ухода</td>
+          <td>$300–600</td>
+        </tr>
+        <tr>
+          <td>Обычный седан</td>
+          <td>Ford, Chevrolet 1940-х</td>
+          <td>$900–1 400</td>
+        </tr>
+        <tr>
+          <td>Представительский автомобиль</td>
+          <td>Cadillac, Lincoln</td>
+          <td>$2 500–4 000</td>
+        </tr>
+        <tr>
+          <td>Грузовик / фургон</td>
+          <td>Для перевозки грузов</td>
+          <td>$800–1 500</td>
+        </tr>
+        <tr class="cat-row"><td colspan="2">Содержание</td><td>$/мес.</td></tr>
+        <tr>
+          <td>Бензин</td>
+          <td>За галлон (~3.8 л)</td>
+          <td>$0.15–0.20</td>
+        </tr>
+        <tr>
+          <td>Обслуживание и ремонт</td>
+          <td>В среднем в месяц</td>
+          <td>$5–15</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ОРУЖИЕ -->
+  <section class="econ-section" id="weapons">
+    <p class="section-eyebrow">Арсенал</p>
+    <h2 class="section-title">Оружие</h2>
+    <div class="section-rule"></div>
+
+    <table class="price-table">
+      <thead>
+        <tr><th>Оружие</th><th>Описание</th><th>Цена</th></tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="2">Легальный рынок</td><td>$</td></tr>
+        <tr>
+          <td>Нож / складник</td>
+          <td>Бытовой, без разрешения</td>
+          <td>$1–3</td>
+        </tr>
+        <tr>
+          <td>Малокалиберный пистолет</td>
+          <td>.25, .32 — скрытое ношение</td>
+          <td>$25–40</td>
+        </tr>
+        <tr>
+          <td>Пистолет .38 / .45</td>
+          <td>Стандартный, нужно разрешение</td>
+          <td>$40–65</td>
+        </tr>
+        <tr>
+          <td>Армейский Colt M1911</td>
+          <td>Демобилизованный, .45 ACP</td>
+          <td>$50–80</td>
+        </tr>
+        <tr>
+          <td>Охотничье ружьё</td>
+          <td>Легально, за городом</td>
+          <td>$30–60</td>
+        </tr>
+        <tr class="cat-row"><td colspan="2">Чёрный рынок</td><td>$</td></tr>
+        <tr>
+          <td>Боевой нож / штык</td>
+          <td>Военный излишек</td>
+          <td>$8–15</td>
+        </tr>
+        <tr>
+          <td>Пистолет без документов</td>
+          <td>Нечистый ствол</td>
+          <td>$60–120</td>
+        </tr>
+        <tr>
+          <td>Дробовик</td>
+          <td>Обрез или полный</td>
+          <td>$50–100</td>
+        </tr>
+        <tr>
+          <td>Пистолет-пулемёт</td>
+          <td>Thompson, Grease Gun</td>
+          <td>$200–400</td>
+        </tr>
+        <tr class="cat-row"><td colspan="2">Боеприпасы</td><td>За коробку (50 шт.)</td></tr>
+        <tr>
+          <td>Патроны к пистолету</td>
+          <td>.38, .45</td>
+          <td>$1.50–2.50</td>
+        </tr>
+        <tr>
+          <td>Дробовые патроны</td>
+          <td>12 калибр</td>
+          <td>$1.00–1.80</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warn-box" style="margin-top:12px;">
+      <div class="warn-title">⚠ Разрешение на оружие</div>
+      Ношение оружия без разрешения в 1947 году — нарушение закона. Полицейские и агенты ФБР носят служебное оружие официально. Остальные — по ситуации. Если вас остановят с незарегистрированным стволом, это проблема.
+    </div>
+  </section>
+
+  <!-- ПОВСЕДНЕВНОСТЬ -->
+  <section class="econ-section" id="everyday">
+    <p class="section-eyebrow">День за днём</p>
+    <h2 class="section-title">Повседневные расходы</h2>
+    <div class="section-rule"></div>
+
+    <table class="price-table">
+      <thead>
+        <tr><th>Товар / услуга</th><th>Уточнение</th><th>Цена</th></tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="2">Еда и напитки</td><td>$</td></tr>
+        <tr><td>Обед в кафе</td><td>Суп, сэндвич, кофе</td><td>$0.35–0.60</td></tr>
+        <tr><td>Ужин в ресторане</td><td>Нормальное заведение</td><td>$1.50–3.00</td></tr>
+        <tr><td>Ужин в ресторане Моретти</td><td>Литтл-Палермо, с вином</td><td>$4–8</td></tr>
+        <tr><td>Бутылка пива в баре</td><td>Местное</td><td>$0.15–0.25</td></tr>
+        <tr><td>Стакан виски</td><td>Бар среднего класса</td><td>$0.35–0.60</td></tr>
+        <tr><td>Бутылка виски</td><td>В магазине</td><td>$2.50–5.00</td></tr>
+        <tr><td>Пачка сигарет</td><td>Lucky Strike, Camel</td><td>$0.17–0.20</td></tr>
+        <tr class="cat-row"><td colspan="2">Одежда</td><td>$</td></tr>
+        <tr><td>Рубашка</td><td>Обычная</td><td>$1.50–3.00</td></tr>
+        <tr><td>Брюки</td><td>Рабочие</td><td>$3–5</td></tr>
+        <tr><td>Костюм</td><td>Приличный, с галстуком</td><td>$25–45</td></tr>
+        <tr><td>Пальто / тренч</td><td>На сезон</td><td>$15–35</td></tr>
+        <tr><td>Туфли / ботинки</td><td>Кожаные</td><td>$6–12</td></tr>
+        <tr class="cat-row"><td colspan="2">Прочее</td><td>$</td></tr>
+        <tr><td>Газета</td><td>«Порт-Мроун Геральд»</td><td>$0.03</td></tr>
+        <tr><td>Телефонный звонок</td><td>Из будки</td><td>$0.05</td></tr>
+        <tr><td>Номер в мотеле</td><td>Серый пояс, за ночь</td><td>$1–2</td></tr>
+        <tr><td>Номер в отеле</td><td>Даунтаун, за ночь</td><td>$3–8</td></tr>
+        <tr><td>Стрижка</td><td>Парикмахерская</td><td>$0.35–0.50</td></tr>
+        <tr><td>Врач</td><td>Приём у частника</td><td>$3–10</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ЧЁРНЫЙ РЫНОК -->
+  <section class="econ-section" id="black">
+    <p class="section-eyebrow">Тень</p>
+    <h2 class="section-title">Чёрный рынок</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Цены на нелегальные товары и услуги — самые нестабильные в городе. Зависят от спроса, рисков, отношений между фракциями и конкретного продавца. Ниже — приблизительный ориентир.</p>
+    </div>
+
+    <table class="price-table">
+      <thead>
+        <tr><th>Товар / услуга</th><th>Уточнение</th><th>Цена</th></tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="2">Информация</td><td>$</td></tr>
+        <tr><td>Адрес / личные данные</td><td>От информатора</td><td>$5–20</td></tr>
+        <tr><td>Полицейское досье</td><td>Утечка из управления</td><td>$20–80</td></tr>
+        <tr><td>Маршрут и время патруля</td><td>Конкретный район</td><td>$30–60</td></tr>
+        <tr class="cat-row"><td colspan="2">Документы</td><td>$</td></tr>
+        <tr><td>Поддельное удостоверение</td><td>Среднее качество</td><td>$40–80</td></tr>
+        <tr><td>Чистые документы</td><td>Высокое качество, новое имя</td><td>$150–300</td></tr>
+        <tr class="cat-row"><td colspan="2">Услуги</td><td>$</td></tr>
+        <tr><td>Слежка / наружное наблюдение</td><td>За сутки</td><td>$15–40</td></tr>
+        <tr><td>Физическое запугивание</td><td>Без серьёзных последствий</td><td>$25–75</td></tr>
+        <tr><td>Серьёзное избиение</td><td>С последствиями</td><td>$100–250</td></tr>
+        <tr><td>Устранение проблемы</td><td>Без уточнений. Цена договорная.</td><td>$500+</td></tr>
+        <tr class="cat-row"><td colspan="2">Вещества</td><td>$</td></tr>
+        <tr><td>Опиум</td><td>Доза, точка Триады</td><td>$1–3</td></tr>
+        <tr><td>Нелегальный алкоголь</td><td>Самогон, контрафакт</td><td>$0.50–1.50 / бут.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note-box" style="margin-top:14px;">
+      <strong>Торг уместен.</strong> На чёрном рынке цена — это начало разговора, не конец. Связи, репутация и фракционная принадлежность меняют цену в обе стороны. Человеку Моретти у нужного продавца скидка. Чужаку без рекомендации — наценка или отказ.
+    </div>
+  </section>
+
+</div>
+
+<div class="page-footer">
+  Port-Mroun Fandom ✦ Экономика ✦ 1947
+</div>
+
+</body>
+</html>
