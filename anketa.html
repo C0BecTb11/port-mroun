@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Анкета персонажа — Port-Mroun</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c4a84a; --gold-dim: #8a7a3a; --cream: #e8ddb8;
+      --navy: #0a1520; --text: #c8c0a0; --text-dim: #7a7060;
+      --red: #8a2020; --red-dim: #5a1010;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--navy); color:var(--text); font-family:'Crimson Text',Georgia,serif; font-size:18px; line-height:1.8; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.35; }
+
+    .hero { position:relative; height:42vh; min-height:260px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:40px; overflow:hidden; background:linear-gradient(135deg,#0a1520 0%,#0e1c2c 50%,#0a1520 100%); }
+    .hero-pattern { position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 50px,rgba(196,168,74,.015) 50px,rgba(196,168,74,.015) 51px),repeating-linear-gradient(90deg,transparent,transparent 50px,rgba(196,168,74,.015) 50px,rgba(196,168,74,.015) 51px); }
+    .hero-vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center,transparent 20%,rgba(10,21,32,.9) 100%); }
+    .hero-bottom { position:absolute; bottom:0; left:0; right:0; height:100px; background:linear-gradient(to bottom,transparent,var(--navy)); }
+    .hero-content { position:relative; z-index:2; text-align:center; padding:0 20px; }
+    .hero-eyebrow { font-family:'Cinzel',serif; font-size:10px; letter-spacing:5px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:10px; }
+    .hero-title { font-family:'Cinzel',serif; font-size:clamp(30px,6vw,56px); font-weight:800; color:var(--gold); letter-spacing:8px; text-shadow:0 0 40px rgba(196,168,74,.2); }
+    .hero-sub { font-family:'IM Fell English',serif; font-style:italic; font-size:16px; color:var(--text-dim); margin-top:10px; }
+    .back-link { position:absolute; top:20px; left:20px; z-index:10; font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; color:var(--gold-dim); text-decoration:none; text-transform:uppercase; transition:color .2s; }
+    .back-link:hover { color:var(--gold); }
+
+    .page-nav { position:sticky; top:0; z-index:100; background:rgba(10,21,32,.97); border-bottom:1px solid rgba(196,168,74,.15); backdrop-filter:blur(10px); overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .page-nav::-webkit-scrollbar { display:none; }
+    .page-nav ul { display:flex; list-style:none; min-width:max-content; padding:0 16px; }
+    .page-nav a { display:block; padding:14px 16px; font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); text-decoration:none; border-bottom:2px solid transparent; white-space:nowrap; transition:color .2s,border-color .2s; }
+    .page-nav a:hover { color:var(--gold); border-bottom-color:var(--gold); }
+
+    .page-content { max-width:860px; margin:0 auto; padding:0 20px 80px; }
+
+    .lore-section { padding:56px 0 16px; border-bottom:1px solid rgba(196,168,74,.08); }
+    .lore-section:last-child { border-bottom:none; }
+    .section-eyebrow { font-family:'Cinzel',serif; font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--gold-dim); margin-bottom:8px; }
+    .section-title { font-family:'Cinzel',serif; font-size:clamp(20px,4vw,28px); font-weight:600; color:var(--gold); margin-bottom:6px; }
+    .section-rule { width:50px; height:1px; background:linear-gradient(to right,var(--gold),transparent); margin-bottom:24px; }
+
+    .prose p { margin-bottom:16px; color:var(--text); }
+    .prose p:last-child { margin-bottom:0; }
+    .prose strong { color:var(--cream); }
+
+    .pull-quote { border-left:3px solid var(--gold-dim); padding:14px 18px; margin:24px 0; background:rgba(196,168,74,.04); font-family:'IM Fell English',serif; font-style:italic; font-size:18px; color:var(--cream); line-height:1.5; }
+
+    /* RULES */
+    .rules-list { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+    .rule-item { display:flex; gap:16px; align-items:flex-start; background:rgba(13,21,32,.6); border:1px solid rgba(196,168,74,.07); border-left:3px solid var(--gold-dim); padding:16px 18px; transition:border-left-color .2s; }
+    .rule-item:hover { border-left-color:var(--gold); }
+    .rule-item.strict { border-left-color:var(--red-dim); }
+    .rule-item.strict:hover { border-left-color:var(--red); }
+    .rule-num { font-family:'Cinzel',serif; font-size:12px; color:var(--gold-dim); flex-shrink:0; width:30px; padding-top:2px; }
+    .rule-item.strict .rule-num { color:#aa4040; }
+    .rule-body { flex:1; }
+    .rule-title { font-family:'Cinzel',serif; font-size:13px; color:var(--gold); margin-bottom:5px; }
+    .rule-item.strict .rule-title { color:#cc7070; }
+    .rule-desc { font-size:15px; color:var(--text-dim); line-height:1.65; }
+    .rule-desc strong { color:var(--cream); }
+    .rule-tag { display:inline-block; margin-top:8px; font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; padding:2px 8px; border:1px solid rgba(138,32,32,.4); color:#aa4040; text-transform:uppercase; }
+
+    /* STATS */
+    .stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:8px; margin-top:12px; }
+    .stat-card { background:rgba(13,21,32,.7); border:1px solid rgba(196,168,74,.1); border-top:2px solid var(--gold-dim); padding:14px 16px; }
+    .stat-name { font-family:'Cinzel',serif; font-size:12px; color:var(--gold); margin-bottom:4px; }
+    .stat-range { font-family:'Cinzel',serif; font-size:10px; color:var(--red); letter-spacing:2px; margin-bottom:6px; }
+    .stat-desc { font-size:13px; color:var(--text-dim); line-height:1.5; }
+
+    /* TEMPLATE */
+    .template-box { background:rgba(8,14,22,.97); border:1px solid rgba(196,168,74,.2); border-top:3px solid var(--gold); padding:28px; margin-top:16px; }
+    .template-label { font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:20px; }
+    .tpl-section-head { font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:rgba(196,168,74,.45); text-transform:uppercase; margin:18px 0 8px; }
+    .tpl-line { font-family:'Courier New',monospace; font-size:14px; line-height:2.1; color:var(--text-dim); }
+    .tpl-key { color:var(--gold); }
+    .tpl-val { color:#6a9a6a; font-style:italic; }
+    .tpl-comment { color:rgba(196,168,74,.3); font-size:12px; }
+    .tpl-divider { border:none; border-top:1px solid rgba(196,168,74,.1); margin:14px 0; }
+    .tpl-bio-hint { font-family:'Courier New',monospace; font-size:13px; color:#5a8a5a; font-style:italic; padding-left:16px; line-height:1.7; }
+
+    /* EXAMPLES */
+    .examples-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .ex-box { padding:16px; font-size:14px; line-height:1.6; }
+    .ex-box.good { background:rgba(20,60,20,.2); border:1px solid rgba(74,138,74,.25); border-top:2px solid #4a8a4a; color:#8abb8a; }
+    .ex-box.bad { background:rgba(80,15,15,.2); border:1px solid rgba(138,32,32,.25); border-top:2px solid var(--red); color:#bb7070; }
+    .ex-label { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; display:block; }
+    .ex-box.good .ex-label { color:#4a8a4a; }
+    .ex-box.bad .ex-label { color:var(--red); }
+
+    /* WARN / INFO */
+    .warn-box { background:rgba(80,15,15,.2); border:1px solid rgba(138,32,32,.3); padding:18px 20px; margin:20px 0; }
+    .warn-title { font-family:'Cinzel',serif; font-size:10px; letter-spacing:3px; color:#cc4040; text-transform:uppercase; margin-bottom:8px; }
+    .warn-text { font-size:15px; color:#bb8888; line-height:1.6; }
+
+    .info-box { background:rgba(42,74,122,.08); border:1px solid rgba(42,74,122,.2); padding:18px 20px; margin:20px 0; }
+    .info-title { font-family:'Cinzel',serif; font-size:10px; letter-spacing:3px; color:#6a8aaa; text-transform:uppercase; margin-bottom:8px; }
+    .info-text { font-size:15px; color:#8899bb; line-height:1.6; }
+    .info-text strong { color:var(--cream); }
+
+    /* PROCESS STEPS */
+    .steps-list { display:flex; flex-direction:column; gap:2px; margin-top:10px; }
+    .step-item { display:flex; gap:16px; align-items:flex-start; padding:16px 18px; background:rgba(13,21,32,.6); border:1px solid rgba(196,168,74,.07); }
+    .step-num { font-family:'Cinzel',serif; font-size:18px; color:var(--gold-dim); flex-shrink:0; width:30px; line-height:1.4; }
+    .step-body { flex:1; }
+    .step-title { font-family:'Cinzel',serif; font-size:13px; color:var(--gold); margin-bottom:4px; }
+    .step-desc { font-size:15px; color:var(--text-dim); line-height:1.6; }
+    .step-desc strong { color:var(--cream); }
+
+    .anketolog-box { background:rgba(196,168,74,.06); border:1px solid rgba(196,168,74,.25); border-left:4px solid var(--gold); padding:22px 24px; margin-bottom:16px; }
+    .anketolog-label { font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:8px; }
+    .anketolog-tag { font-family:'Cinzel',serif; font-size:26px; color:var(--gold); letter-spacing:2px; margin-bottom:10px; text-shadow:0 0 20px rgba(196,168,74,.2); }
+    .anketolog-desc { font-size:15px; color:var(--text-dim); line-height:1.6; }
+
+    .page-footer { text-align:center; padding:30px 20px; border-top:1px solid rgba(196,168,74,.1); font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px; color:var(--text-dim); text-transform:uppercase; }
+
+    @media (max-width:600px) {
+      .lore-section { padding:40px 0 12px; }
+      .stat-grid { grid-template-columns:1fr 1fr; }
+      .examples-grid { grid-template-columns:1fr; }
+      .template-box { padding:16px; }
+      .tpl-line { font-size:12px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="index.html">← Назад</a>
+  <div class="hero-pattern"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-bottom"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Port-Mroun — 1947</p>
+    <h1 class="hero-title">АНКЕТА</h1>
+    <p class="hero-sub">Твой персонаж начинается здесь.</p>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <ul>
+    <li><a href="#rules">Правила</a></li>
+    <li><a href="#stats">Характеристики</a></li>
+    <li><a href="#template">Шаблон</a></li>
+    <li><a href="#bio">Биография</a></li>
+    <li><a href="#photo">Фото</a></li>
+    <li><a href="#process">Подача</a></li>
+  </ul>
+</nav>
+
+<div class="page-content">
+
+  <!-- ПРАВИЛА -->
+  <section class="lore-section" id="rules">
+    <p class="section-eyebrow">Обязательно к прочтению</p>
+    <h2 class="section-title">Правила анкеты</h2>
+    <div class="section-rule"></div>
+
+    <div class="rules-list">
+
+      <div class="rule-item strict">
+        <div class="rule-num">А.1</div>
+        <div class="rule-body">
+          <div class="rule-title">Строго по шаблону</div>
+          <div class="rule-desc">Анкета подаётся <strong>строго по предоставленному шаблону</strong>. Никакого собственного оформления, переименования полей, пропущенных пунктов. Анкета не по шаблону — отклоняется без рассмотрения.</div>
+          <div class="rule-tag">Обязательно</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">А.2</div>
+        <div class="rule-body">
+          <div class="rule-title">После одобрения — изменения невозможны</div>
+          <div class="rule-desc">После одобрения анкеты администрацией <strong>вносить любые изменения запрещено</strong>. Ни имя, ни характеристики, ни биографию. Думайте хорошо перед подачей — это финальное решение.</div>
+          <div class="rule-tag">Строго</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">А.3</div>
+        <div class="rule-body">
+          <div class="rule-title">Никаких секретных данных</div>
+          <div class="rule-desc">В анкете <strong>не должно быть «тайн», не раскрытых в биографии</strong>. Нельзя писать «имеет тёмное прошлое» без его описания. Всё значимое — прописано открыто. Тайны раскрываются в игре через действия персонажа, не существуют «за кадром».</div>
+          <div class="rule-tag">Обязательно</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">А.4</div>
+        <div class="rule-body">
+          <div class="rule-title">Биография раскрывает персонажа</div>
+          <div class="rule-desc">Биография — не формальность. Она должна объяснить <strong>кто этот человек, откуда, почему такой</strong>. Что привело его в Порт-Мроун, что им движет. Список фактов — это не биография.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">А.5</div>
+        <div class="rule-body">
+          <div class="rule-title">Реалистичность</div>
+          <div class="rule-desc">Персонаж живёт в <strong>1947 году</strong>. Он не супергерой и не всезнайка. У него есть слабости, ограничения и логичная история. Персонаж с запредельными характеристиками или биографией, противоречащей сеттингу — отклоняется.</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">А.6</div>
+        <div class="rule-body">
+          <div class="rule-title">Роль вытекает из биографии</div>
+          <div class="rule-desc">Выбранная роль должна <strong>логично следовать из истории</strong> персонажа. Нельзя взять роль капо Моретти, если в биографии персонаж приехал три дня назад. Высокие роли требуют особого обоснования — см. страницы фракций.</div>
+        </div>
+      </div>
+
+      <div class="rule-item strict">
+        <div class="rule-num">А.7</div>
+        <div class="rule-body">
+          <div class="rule-title">До трёх персонажей — в разных фракциях</div>
+          <div class="rule-desc">Один игрок — <strong>максимум три персонажа</strong>, каждый в разной фракции. Каждый подаётся отдельной анкетой. Четвёртый — только с разрешения администрации.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="warn-box">
+      <div class="warn-title">⚠ Анкета — это договор</div>
+      <div class="warn-text">Подавая анкету, вы соглашаетесь со всеми правилами проекта. Одобренная анкета финальна. Игра начинается только после одобрения.</div>
+    </div>
+  </section>
+
+  <!-- ХАРАКТЕРИСТИКИ -->
+  <section class="lore-section" id="stats">
+    <p class="section-eyebrow">Боевые параметры</p>
+    <h2 class="section-title">Характеристики персонажа</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>При создании персонажа распределяете <strong>15 очков</strong> между пятью характеристиками. Минимум каждой — <strong>1</strong>, максимум — <strong>5</strong>. Сумма ровно 15. Характеристики прибавляются к броскам кубиков в бою — подробнее в боевой системе.</p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-name">⚔️ Сила</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Рукопашный бой, физическое давление. Бросок атаки в ближнем бою.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-name">🎯 Меткость</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Точность стрельбы из огнестрела. Бросок атаки при стрельбе.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-name">🐾 Ловкость</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Уклонение, нож, инициатива. Бросок защиты и атаки холодным оружием.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-name">🛡 Выносливость</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Запас здоровья. HP = 5 + (Выносливость × 2). От 7 до 15 HP.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-name">🧠 Интеллект</div>
+        <div class="stat-range">1 — 5</div>
+        <div class="stat-desc">Тактика, допрос, нестандартные решения. Бонус по решению мастера.</div>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:20px;">
+      <div class="info-title">Примеры распределения</div>
+      <div class="info-text">
+        <strong>Детектив:</strong> Сила 2 · Меткость 4 · Ловкость 3 · Выносливость 3 · Интеллект 3 = 15 → HP 11<br>
+        <strong>Боец Моретти:</strong> Сила 5 · Меткость 2 · Ловкость 2 · Выносливость 4 · Интеллект 2 = 15 → HP 13<br>
+        <strong>Агент Триады:</strong> Сила 2 · Меткость 3 · Ловкость 4 · Выносливость 2 · Интеллект 4 = 15 → HP 9
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <div class="warn-title">Важно</div>
+      <div class="warn-text">Характеристики должны соответствовать биографии. Журналист с Силой 5 и Меткостью 5 вызовет вопросы. Администрация может попросить пересмотреть распределение если оно противоречит роли и истории персонажа.</div>
+    </div>
+  </section>
+
+  <!-- ШАБЛОН -->
+  <section class="lore-section" id="template">
+    <p class="section-eyebrow">Копируй и заполняй</p>
+    <h2 class="section-title">Шаблон анкеты</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Скопируй шаблон полностью, заполни каждое поле. Не удаляй названия полей. <span style="color:#6a9a6a">Зелёным курсивом</span> — подсказки что писать, заменяются твоим текстом.</p>
+    </div>
+
+    <div class="template-box">
+      <div class="template-label">Шаблон анкеты — Port-Mroun 1947</div>
+
+      <div class="tpl-section-head">// ОСНОВНЫЕ ДАННЫЕ</div>
+      <div class="tpl-line"><span class="tpl-key">ФОТО:</span> <span class="tpl-val">[вставить изображение]</span></div>
+      <div class="tpl-line"><span class="tpl-key">ИМЯ:</span> <span class="tpl-val">[имя персонажа]</span></div>
+      <div class="tpl-line"><span class="tpl-key">ФАМИЛИЯ:</span> <span class="tpl-val">[фамилия персонажа]</span></div>
+      <div class="tpl-line"><span class="tpl-key">ПРОЗВИЩЕ:</span> <span class="tpl-val">[если есть, иначе — прочерк]</span></div>
+      <div class="tpl-line"><span class="tpl-key">ВОЗРАСТ:</span> <span class="tpl-val">[полных лет, не моложе 18]</span></div>
+      <div class="tpl-line"><span class="tpl-key">ПОЛ:</span> <span class="tpl-val">[мужской / женский]</span></div>
+      <div class="tpl-line"><span class="tpl-key">ПРОИСХОЖДЕНИЕ:</span> <span class="tpl-val">[откуда родом — город, страна]</span></div>
+
+      <hr class="tpl-divider"/>
+      <div class="tpl-section-head">// ФРАКЦИЯ И РОЛЬ</div>
+      <div class="tpl-line"><span class="tpl-key">ФРАКЦИЯ:</span> <span class="tpl-val">[Полиция / Моретти / Триада / Независимые / Пресса / ФБР]</span></div>
+      <div class="tpl-line"><span class="tpl-key">РОЛЬ:</span> <span class="tpl-val">[конкретная роль — см. страницу фракции]</span></div>
+      <div class="tpl-line"><span class="tpl-key">В ГОРОДЕ:</span> <span class="tpl-val">[давно / недавно / родился здесь]</span></div>
+
+      <hr class="tpl-divider"/>
+      <div class="tpl-section-head">// ВНЕШНОСТЬ</div>
+      <div class="tpl-line"><span class="tpl-key">ВНЕШНОСТЬ:</span> <span class="tpl-val">[рост, телосложение, черты лица, особые приметы — 3–5 предложений]</span></div>
+      <div class="tpl-line"><span class="tpl-key">СТИЛЬ:</span> <span class="tpl-val">[как обычно одет, что носит постоянно]</span></div>
+
+      <hr class="tpl-divider"/>
+      <div class="tpl-section-head">// ХАРАКТЕР</div>
+      <div class="tpl-line"><span class="tpl-key">ХАРАКТЕР:</span> <span class="tpl-val">[3–6 черт — не только хорошие, у каждого есть слабости]</span></div>
+      <div class="tpl-line"><span class="tpl-key">СИЛЬНЫЕ СТОРОНЫ:</span> <span class="tpl-val">[2–3 пункта]</span></div>
+      <div class="tpl-line"><span class="tpl-key">СЛАБЫЕ СТОРОНЫ:</span> <span class="tpl-val">[2–3 пункта — обязательно]</span></div>
+      <div class="tpl-line"><span class="tpl-key">ЦЕЛЬ В ГОРОДЕ:</span> <span class="tpl-val">[чего хочет персонаж — конкретно]</span></div>
+
+      <hr class="tpl-divider"/>
+      <div class="tpl-section-head">// ХАРАКТЕРИСТИКИ (сумма = 15, мин. 1, макс. 5)</div>
+      <div class="tpl-line"><span class="tpl-key">⚔️ СИЛА:</span> <span class="tpl-val">[1–5]</span><span class="tpl-comment">  // рукопашный бой</span></div>
+      <div class="tpl-line"><span class="tpl-key">🎯 МЕТКОСТЬ:</span> <span class="tpl-val">[1–5]</span><span class="tpl-comment">  // огнестрел</span></div>
+      <div class="tpl-line"><span class="tpl-key">🐾 ЛОВКОСТЬ:</span> <span class="tpl-val">[1–5]</span><span class="tpl-comment">  // уклонение, нож, инициатива</span></div>
+      <div class="tpl-line"><span class="tpl-key">🛡 ВЫНОСЛИВОСТЬ:</span> <span class="tpl-val">[1–5]</span><span class="tpl-comment">  // HP = 5 + (Вын. × 2)</span></div>
+      <div class="tpl-line"><span class="tpl-key">🧠 ИНТЕЛЛЕКТ:</span> <span class="tpl-val">[1–5]</span><span class="tpl-comment">  // тактика, нестандарт</span></div>
+      <div class="tpl-line" style="margin-top:6px;"><span class="tpl-key">HP:</span> <span class="tpl-val">[5 + (Выносливость × 2)]</span></div>
+
+      <hr class="tpl-divider"/>
+      <div class="tpl-section-head">// СНАРЯЖЕНИЕ</div>
+      <div class="tpl-line"><span class="tpl-key">ОРУЖИЕ:</span> <span class="tpl-val">[что носит — см. список в боевой системе]</span></div>
+      <div class="tpl-line"><span class="tpl-key">ПРОЧЕЕ:</span> <span class="tpl-val">[значок, документы, особые предметы]</span></div>
+
+      <hr class="tpl-divider"/>
+      <div class="tpl-section-head">// БИОГРАФИЯ</div>
+      <div class="tpl-line"><span class="tpl-key">БИОГРАФИЯ:</span></div>
+      <div class="tpl-bio-hint">
+        [Минимум 10 предложений. Расскажите историю: откуда, что сформировало характер,<br>
+        как оказался в Порт-Мроуне, как попал во фракцию, чем живёт сейчас.<br>
+        Биография объясняет характеристики и роль.]
+      </div>
+    </div>
+  </section>
+
+  <!-- БИОГРАФИЯ -->
+  <section class="lore-section" id="bio">
+    <p class="section-eyebrow">Главный раздел</p>
+    <h2 class="section-title">Как писать биографию</h2>
+    <div class="section-rule"></div>
+
+    <div class="prose">
+      <p>Биография — самая важная часть анкеты. Именно она убеждает администрацию, что персонаж продуман и вписывается в мир. Плохая биография — главная причина отказа.</p>
+    </div>
+
+    <div class="pull-quote">Биография — это не резюме. Это история человека, которому предстоит жить в вашем городе.</div>
+
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-num">📝</div>
+        <div class="rule-body">
+          <div class="rule-title">Минимум 10 предложений</div>
+          <div class="rule-desc">Это нижняя планка. Хорошая биография — больше. Три предложения «родился, вырос, приехал» — не биография.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">📝</div>
+        <div class="rule-body">
+          <div class="rule-title">Обосновывайте характеристики</div>
+          <div class="rule-desc">Меткость 5 — почему? Армейский снайпер, десять лет на стрельбище, охотник с детства. <strong>Характеристика без обоснования — просто цифра.</strong></div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">📝</div>
+        <div class="rule-body">
+          <div class="rule-title">Объясняйте принадлежность к фракции</div>
+          <div class="rule-desc">Как персонаж попал в полицию? Кто рекомендовал его в Моретти? Почему работает один? <strong>Это должно быть в биографии, не оставаться тайной.</strong></div>
+        </div>
+      </div>
+      <div class="rule-item strict">
+        <div class="rule-num">📝</div>
+        <div class="rule-body">
+          <div class="rule-title">Никаких белых пятен</div>
+          <div class="rule-desc">«Имеет тайное прошлое» без описания — прямой путь к отказу. <strong>Всё значимое прописано открыто.</strong> Тайны раскрываются в игре через действия.</div>
+          <div class="rule-tag">Строго</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="examples-grid" style="margin-top:20px;">
+      <div class="ex-box good">
+        <span class="ex-label">✓ Хорошо</span>
+        Джек Коул вырос в Бруклине, сын портового рабочего. После смерти отца от рук местной банды решил стать копом. Восемь лет в участке Нью-Йорка, перевод в Порт-Мроун по рекомендации капитана Харриса. Честный, но ещё не понял, насколько глубока яма под ногами.
+      </div>
+      <div class="ex-box bad">
+        <span class="ex-label">✗ Плохо</span>
+        Опытный детектив с тёмным прошлым. Много чего повидал. Скрывает важную информацию о себе. Умеет всё что нужно. Мотивы неизвестны даже ему самому.
+      </div>
+    </div>
+  </section>
+
+  <!-- ФОТО -->
+  <section class="lore-section" id="photo">
+    <p class="section-eyebrow">Визуал</p>
+    <h2 class="section-title">Фото персонажа</h2>
+    <div class="section-rule"></div>
+
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-num">📸</div>
+        <div class="rule-body">
+          <div class="rule-title">Что разрешено</div>
+          <div class="rule-desc"><strong>Реальные фотографии людей</strong> — включая знаменитостей и публичных персон — и <strong>изображения, сгенерированные нейросетью</strong>. Изображение должно хотя бы примерно соответствовать описанию внешности в анкете.</div>
+        </div>
+      </div>
+      <div class="rule-item strict">
+        <div class="rule-num">📸</div>
+        <div class="rule-body">
+          <div class="rule-title">Что запрещено</div>
+          <div class="rule-desc"><strong>Аниме, арты, персонажи из игр, мультфильмов и комиксов</strong> — категорически запрещены. Изображения с <strong>неприемлемым контентом</strong>. Мемы и юмористические изображения.</div>
+          <div class="rule-tag">Запрещено</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">📸</div>
+        <div class="rule-body">
+          <div class="rule-title">Соответствие описанию</div>
+          <div class="rule-desc">Фото и текстовое описание внешности должны совпадать. Если в анкете «высокий блондин», а на фото противоположное — анкетолог попросит исправить.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПОДАЧА -->
+  <section class="lore-section" id="process">
+    <p class="section-eyebrow">Шаги</p>
+    <h2 class="section-title">Как подать анкету</h2>
+    <div class="section-rule"></div>
+
+    <!-- АНКЕТОЛОГ -->
+    <div class="anketolog-box">
+      <div class="anketolog-label">Анкетолог и владелец проекта</div>
+      <div class="anketolog-tag">@Cc0BecTb</div>
+      <div class="anketolog-desc">Именно к нему подаётся анкета. Именно с ним обсуждаются роли, нестандартные запросы и вопросы по персонажу. Не пишите в общий чат — пишите лично.</div>
+    </div>
+
+    <!-- РОЛИ -->
+    <div class="info-box">
+      <div class="info-title">О ролях во фракциях</div>
+      <div class="info-text">На страницах фракций представлен <strong>стандартный список ролей</strong> — чтобы игроки могли быстро выбрать профессию для персонажа, не тратя много времени. Список не является исчерпывающим. <strong>Если у вас есть идея роли, которой нет в списке</strong> — обсудите её с <strong>@Cc0BecTb</strong>. Список может быть значительно шире.</div>
+    </div>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">①</div>
+        <div class="step-body">
+          <div class="step-title">Прочитайте правила и лор фракции</div>
+          <div class="step-desc">Перед написанием анкеты — прочитайте <a href="rules.html" style="color:var(--gold-dim);">правила игры</a>, <a href="combat.html" style="color:var(--gold-dim);">боевую систему</a> и страницу своей фракции. Незнание лора при подаче — повод для отказа.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">②</div>
+        <div class="step-body">
+          <div class="step-title">Заполните шаблон</div>
+          <div class="step-desc">Скопируйте шаблон выше, заполните все поля. Проверьте: <strong>сумма характеристик = 15</strong>, HP посчитан правильно, биография не менее 10 предложений, нет секретных данных без описания.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">③</div>
+        <div class="step-body">
+          <div class="step-title">Отправьте анкетологу лично</div>
+          <div class="step-desc">Готовую анкету отправьте <strong>лично <a href="https://t.me/Cc0BecTb" style="color:var(--gold);">@Cc0BecTb</a></strong>. Новые участники не имеют доступа к ролевому чату и флуду — вы можете только просматривать информационный канал и канал с анкетами. Писать там нельзя. Единственный способ вступить — написать анкетологу напрямую.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">④</div>
+        <div class="step-body">
+          <div class="step-title">Ожидайте ответа — до 48 часов</div>
+          <div class="step-desc">Анкеты рассматриваются в порядке очереди. Один вежливый вопрос через двое суток — нормально. Несколько сообщений подряд — нет.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">⑤</div>
+        <div class="step-body">
+          <div class="step-title">Одобрение, правки или отказ</div>
+          <div class="step-desc">Анкета может быть <strong>одобрена</strong>, отправлена на <strong>правки</strong> с комментариями, или <strong>отклонена</strong> с объяснением. При правках — исправьте и пришлите снова. <strong>После одобрения изменения невозможны.</strong></div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">⑥</div>
+        <div class="step-body">
+          <div class="step-title">Добро пожаловать в Порт-Мроун</div>
+          <div class="step-desc">После одобрения вы получаете <strong>доступ к ролевым чатам и флуду</strong>. Одобренная анкета публикуется в канале анкет. Первый пост — в локации, где логично начинается ваш персонаж.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull-quote" style="margin-top:28px;">«Порт-Мроун не прощает непродуманных решений. Начни с хорошей истории.»</div>
+
+  </section>
+
+</div>
+
+<div class="page-footer">
+  Port-Mroun Fandom ✦ Анкета персонажа ✦ 1947
+</div>
+
+</body>
+</html>
