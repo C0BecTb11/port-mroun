@@ -764,12 +764,12 @@
       <div class="bot-commands-title">Команды бота</div>
       <div class="bot-cmd-grid">
         <div class="bot-cmd-item">
-          <div class="bot-cmd-code">/roll 1d10</div>
-          <div class="bot-cmd-desc">Один D10 — основной бросок атаки и защиты</div>
+          <div class="bot-cmd-code">/roll 1d20</div>
+          <div class="bot-cmd-desc">Один D20 — основной бросок атаки и защиты</div>
         </div>
         <div class="bot-cmd-item">
-          <div class="bot-cmd-code">/roll 1d10+4</div>
-          <div class="bot-cmd-desc">D10 + модификатор характеристики (например Меткость 4)</div>
+          <div class="bot-cmd-code">/roll 1d20+2</div>
+          <div class="bot-cmd-desc">D20 + модификатор (например Меткость 4 → бонус +2)</div>
         </div>
         <div class="bot-cmd-item">
           <div class="bot-cmd-code">/roll 1d6+2</div>
@@ -777,7 +777,7 @@
         </div>
         <div class="bot-cmd-item">
           <div class="bot-cmd-code">/roll 2d6</div>
-          <div class="bot-cmd-desc">Двойной урон — для дробовика</div>
+          <div class="bot-cmd-desc">Дробовик — один выстрел за бой, максимальный урон</div>
         </div>
         <div class="bot-cmd-item">
           <div class="bot-cmd-code">/roll 1d4</div>
@@ -800,8 +800,8 @@
     <div class="dice-row">
       <div class="dice-card">
         <span class="dice-face">⬟</span>
-        <div class="dice-name">D10</div>
-        <div class="dice-desc">Основной кубик. Используется для всех атак, защиты и проверок.</div>
+        <div class="dice-name">D20</div>
+        <div class="dice-desc">Основной кубик. Все атаки, защита, инициатива и проверки.</div>
       </div>
       <div class="dice-card">
         <span class="dice-face">⬡</span>
@@ -816,7 +816,8 @@
     </div>
 
     <div class="prose" style="margin-top:16px;">
-      <p><strong>Базовый принцип:</strong> бросаешь D10 + модификатор характеристики. Сравниваешь с броском противника или с пороговым значением. Если атакуешь — бросаешь урон отдельным кубиком.</p>
+      <p><strong>Базовый принцип:</strong> бросаешь D20 + модификатор из таблицы (от −1 до +3). Сравниваешь с броском противника. Кто выше — победил в этом обмене. Если атакуешь — бросаешь урон отдельным кубиком.</p>
+      <p><strong>Характеристика ≠ модификатор.</strong> Значение характеристики конвертируется в бонус по таблице: 1 → −1 / 2 → 0 / 3 → +1 / 4 → +2 / 5 → +3. Фракционный бонус прибавляется к итоговому модификатору, но суммарный бонус не может превышать <strong>+4</strong>.</p>
     </div>
   </section>
 
@@ -827,7 +828,15 @@
     <div class="section-rule"></div>
 
     <div class="prose">
-      <p>При создании персонажа игрок <strong>распределяет 15 очков</strong> между пятью характеристиками. Минимум в каждой — 1, максимум — 5. Характеристики отражают то, кем является персонаж, а не только его боевые навыки.</p>
+      <p>При создании персонажа игрок распределяет <strong>15 очков</strong> между пятью характеристиками. Минимум в каждой — 1, максимум — 5.</p>
+      <p><strong>Правило специализации:</strong> если поднимаешь одну характеристику до 5 — минимум одна другая не может быть выше 2. Мастер в одном платит слабостью в другом. Это не штраф — это выбор.</p>
+      <table class="result-table" style="margin-top:12px; margin-bottom:4px;">
+        <thead><tr><th>Архетип</th><th>Пример распределения</th><th>Суть</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--gold);">Специалист</td><td>5 · 3 · 3 · 2 · 2</td><td>Мастер в одном, слаб в двух. Работает в своей стихии — незаменим. Вне неё — уязвим.</td></tr>
+          <tr><td style="color:var(--gold);">Универсал</td><td>4 · 3 · 3 · 3 · 2</td><td>Хорош в одном, стабилен в остальном. Одна слабость. Предсказуем, но надёжен.</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="stat-grid">
@@ -844,12 +853,12 @@
       <div class="stat-card">
         <div class="stat-name">🐾 Ловкость</div>
         <div class="stat-range">1 — 5</div>
-        <div class="stat-desc">Уклонение, холодное оружие, скрытность. Прибавляется к броску защиты и атаке ножом.</div>
+        <div class="stat-desc">Уклонение, холодное оружие, инициатива. Если бросок защиты превышает атаку на 5+ — урон 0 (полное уклонение). Если просто выше — урон вдвое.</div>
       </div>
       <div class="stat-card">
         <div class="stat-name">🛡 Выносливость</div>
         <div class="stat-range">1 — 5</div>
-        <div class="stat-desc">Определяет максимальный HP. Снижает урон при ранениях. HP = 5 + (Выносливость × 2).</div>
+        <div class="stat-desc">Определяет HP по нелинейной таблице: 1→12 / 2→15 / 3→19 / 4→24 / 5→30. Танк ощущается как танк.</div>
       </div>
       <div class="stat-card">
         <div class="stat-name">🧠 Интеллект</div>
@@ -860,12 +869,12 @@
 
     <div class="info-box" style="margin-top:20px;">
       <div class="info-title">Пример распределения — Детектив</div>
-      <div class="info-text">Сила 2 · Меткость 4 · Ловкость 3 · Выносливость 3 · Интеллект 3 = 15 очков.<br>HP = 5 + (3×2) = <strong>11 HP</strong>. Хорош со стволом, средняя выносливость, умный.</div>
+      <div class="info-text">Сила 2 · Меткость 4 · Ловкость 3 · Выносливость 3 · Интеллект 3 = 15 очков.<br>Модификаторы: Сила 0 · Меткость +2 · Ловкость +1 · Вын. +1 · Инт. +1. <strong>HP 19</strong>. Хорош со стволом, есть уклонение.</div>
     </div>
 
     <div class="info-box">
       <div class="info-title">Пример распределения — Enforcer Моретти</div>
-      <div class="info-text">Сила 5 · Меткость 2 · Ловкость 2 · Выносливость 4 · Интеллект 2 = 15 очков.<br>HP = 5 + (4×2) = <strong>13 HP</strong>. Опасен в рукопашной, живучий, но плохо стреляет.</div>
+      <div class="info-text">Сила 5 · Меткость 2 · Ловкость 2 · Выносливость 4 · Интеллект 2 = 15 очков (правило специализации: Сила 5 → одна другая макс. 2).<br>Модификаторы: Сила +3 · Меткость 0 · Ловкость 0 · Вын. +2 · Инт. 0. <strong>HP 24</strong>. Машина в рукопашной, слеп со стволом.</div>
     </div>
   </section>
 
@@ -879,9 +888,24 @@
       <p>Каждое действие в бою — это <strong>бросок D10 + модификатор</strong> против броска противника или порогового числа. Кто больше — тот победил в этом обмене.</p>
     </div>
 
-    <div class="pull-quote">Атака: D10 + характеристика<br>Защита: D10 + Ловкость<br>Урон: кубик урона оружия</div>
+    <div class="pull-quote">Атака: D20 + модификатор<br>Защита: D20 + модификатор Ловкости<br>Урон: кубик урона оружия<br>Уклонение: защита выше атаки на 5+ → урон 0</div>
 
-    <h3 style="font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin:20px 0 10px;">Шкала результатов D10</h3>
+    <h3 style="font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin:20px 0 10px;">Таблица модификаторов</h3>
+
+    <table class="result-table">
+      <thead>
+        <tr><th>Характеристика</th><th>Модификатор к броску</th><th>Кто это</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:#cc8080;">1</td><td class="critical">−1</td><td>Слабость. Активный штраф к броску.</td></tr>
+        <tr><td>2</td><td class="fail">0</td><td>Обыватель. Нет ни бонуса, ни штрафа.</td></tr>
+        <tr><td>3</td><td class="partial">+1</td><td>Тренированный. Небольшое преимущество.</td></tr>
+        <tr><td>4</td><td class="success">+2</td><td>Профессионал. Заметный перевес.</td></tr>
+        <tr><td style="color:#4aaa4a;">5</td><td class="perfect">+3</td><td>Мастер. Максимум. Требует жертвы в другой характеристике.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin:20px 0 10px;">Шкала результатов D20</h3>
 
     <table class="result-table">
       <thead>
@@ -895,25 +919,25 @@
         <tr>
           <td><span class="roll-badge rb-critical">1</span></td>
           <td class="critical">Критический провал</td>
-          <td>Атака не только провалена — что-то идёт совсем не так. Осечка, падение, потеря оружия. Мастер описывает последствие.</td>
+          <td>Полный провал с последствием. Осечка, падение, потеря оружия. Мастер описывает что именно пошло не так.</td>
         </tr>
         <tr>
-          <td><span class="roll-badge rb-fail">2–4</span></td>
+          <td><span class="roll-badge rb-fail">2–7</span></td>
           <td class="fail">Промах</td>
           <td>Атака не достигла цели. Урон не наносится. Ход переходит к противнику.</td>
         </tr>
         <tr>
-          <td><span class="roll-badge rb-partial">5–6</span></td>
+          <td><span class="roll-badge rb-partial">8–12</span></td>
           <td class="partial">Частичный успех</td>
-          <td>Удар вскользь. Наносится урон D4 вместо полного кубика оружия. Противник тоже может контратаковать.</td>
+          <td>Удар вскользь. Наносится D4 урона вместо полного кубика. Противник делает бросок защиты как обычно.</td>
         </tr>
         <tr>
-          <td><span class="roll-badge rb-success">7–9</span></td>
+          <td><span class="roll-badge rb-success">13–18</span></td>
           <td class="success">Успех</td>
           <td>Чистое попадание. Бросается полный кубик урона оружия. Противник делает бросок защиты.</td>
         </tr>
         <tr>
-          <td><span class="roll-badge rb-perfect">10</span></td>
+          <td><span class="roll-badge rb-perfect">19–20</span></td>
           <td class="perfect">Критический успех</td>
           <td>Идеальный удар. Урон максимальный без броска + D6 бонусного урона. Противник теряет следующий ход атаки.</td>
         </tr>
@@ -923,14 +947,14 @@
     <h3 style="font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin:24px 0 10px;">Бросок защиты</h3>
 
     <div class="prose">
-      <p>Когда в тебя попадают — бросаешь <strong>D10 + Ловкость</strong>. Если результат <strong>выше или равен</strong> броску атаки противника — удар отражён или пришёлся вскользь, урон уменьшается вдвое (округление вниз). Если ниже — урон полный.</p>
-      <p>Защитный бросок делается <strong>только при результате 7–9 у атакующего</strong>. Критический успех (10) защиту не позволяет.</p>
+      <p>Когда в тебя попадают — бросаешь <strong>D20 + модификатор Ловкости</strong>. Три варианта исхода:<br>• Результат выше атаки на <strong>5+</strong> — полное уклонение, урон 0<br>• Результат выше атаки (менее чем на 5) — удар вскользь, урон вдвое<br>• Результат ниже или равен атаке — полный урон</p>
+      <p>Защитный бросок делается при результате <strong>8–18 у атакующего</strong>. Критический успех (19–20) защиту не позволяет.</p>
     </div>
 
     <h3 style="font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin:24px 0 10px;">Инициатива</h3>
 
     <div class="prose">
-      <p>В начале боя каждый участник бросает <strong>D10 + Ловкость</strong>. Кто выше — действует первым. При равенстве — повторный бросок. Порядок ходов фиксируется мастером и сохраняется до конца боя.</p>
+      <p>В начале боя каждый участник бросает <strong>D20 + модификатор Ловкости</strong>. Кто выше — действует первым. При равенстве — повторный бросок. Порядок ходов фиксируется мастером и сохраняется до конца боя.</p>
     </div>
   </section>
 
@@ -949,7 +973,7 @@
       <div class="weapon-header">
         <div class="weapon-icon">👊</div>
         <div class="weapon-type">Рукопашная</div>
-        <div class="weapon-dice">Атака: D10 + Сила</div>
+        <div class="weapon-dice">Атака: D20 + мод. Силы</div>
       </div>
       <div class="weapon-list">
         <div class="weapon-item">
@@ -975,7 +999,7 @@
       <div class="weapon-header">
         <div class="weapon-icon">🔪</div>
         <div class="weapon-type">Холодное оружие</div>
-        <div class="weapon-dice">Атака: D10 + Ловкость</div>
+        <div class="weapon-dice">Атака: D20 + мод. Ловкости</div>
       </div>
       <div class="weapon-list">
         <div class="weapon-item">
@@ -1001,7 +1025,7 @@
       <div class="weapon-header">
         <div class="weapon-icon">🔫</div>
         <div class="weapon-type">Огнестрельное оружие</div>
-        <div class="weapon-dice">Атака: D10 + Меткость</div>
+        <div class="weapon-dice">Атака: D20 + мод. Меткости</div>
       </div>
       <div class="weapon-list">
         <div class="weapon-item">
@@ -1022,7 +1046,7 @@
         <div class="weapon-item">
           <div class="weapon-item-name">Дробовик</div>
           <div class="weapon-item-bonus">2D6 урон</div>
-          <div class="weapon-item-desc">Смертоносен вблизи. На дальней дистанции — −2 к броску атаки. 2 патрона до перезарядки. Не скроешь под пальто.</div>
+          <div class="weapon-item-desc">Один выстрел за бой — максимально смертоносный. После выстрела перезарядка только вне боя. Игрок переходит на пистолет или нож. На дальней дистанции −2 к броску. Не скроешь под пальто.</div>
         </div>
         <div class="weapon-item">
           <div class="weapon-item-name">Пистолет-пулемёт (ТМП)</div>
@@ -1050,7 +1074,20 @@
     <div class="section-rule"></div>
 
     <div class="prose">
-      <p>HP персонажа рассчитывается по формуле: <strong>HP = 5 + (Выносливость × 2)</strong>. Минимум — 7 HP (Выносливость 1), максимум — 15 HP (Выносливость 5).</p>
+      <p>HP персонажа определяется по <strong>нелинейной таблице</strong> на основе Выносливости. Высокая Выносливость даёт резкий прирост — это осознанная жертва другими характеристиками.</p>
+
+    <table class="result-table" style="margin-top:12px;">
+      <thead>
+        <tr><th>Выносливость</th><th>Модификатор</th><th>HP</th><th>Кто это</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class="critical">−1</td><td style="color:#cc8080; font-family:'Cinzel',serif;">12</td><td>Хлюпик. Одно попадание меняет картину.</td></tr>
+        <tr><td>2</td><td class="fail">0</td><td style="color:#aa9040; font-family:'Cinzel',serif;">15</td><td>Обычный человек. Держится, но ненадолго.</td></tr>
+        <tr><td>3</td><td class="partial">+1</td><td style="color:#aa9040; font-family:'Cinzel',serif;">19</td><td>Крепкий. Выдержит схватку.</td></tr>
+        <tr><td>4</td><td class="success">+2</td><td style="color:#6aaa6a; font-family:'Cinzel',serif;">24</td><td>Живучий. Серьёзная угроза для противника.</td></tr>
+        <tr><td>5</td><td class="perfect">+3</td><td style="color:#4aaa4a; font-family:'Cinzel',serif;">30</td><td>Танк. Требует жертвы — Сила или Меткость будет слабой.</td></tr>
+      </tbody>
+    </table>
       <p>Помимо числового HP, персонаж имеет <strong>состояние</strong> — качественную оценку того, насколько он боеспособен. Состояние меняется автоматически при пересечении порогов HP.</p>
     </div>
 
@@ -1191,7 +1228,8 @@
     <div class="section-rule"></div>
 
     <div class="prose">
-      <p>Детектив <strong>Эдди Коул</strong> (Меткость 4, Ловкость 3, HP 11) против бандита <strong>Луиджи</strong> из семьи Моретти (Сила 4, Ловкость 2, HP 13). У Коула — пистолет .38, у Луиджи — кастет. Мастер объявил начало боя.</p>
+      <p>Детектив <strong>Эдди Коул</strong> (Меткость 4 → мод. +2, Ловкость 3 → мод. +1, HP 19) против бандита <strong>Луиджи</strong> (Сила 5 → мод. +3, Ловкость 2 → мод. 0, HP 24). У Коула — пистолет .38, у Луиджи — кастет. Мастер объявил начало боя.</p>
+      <p style="font-size:14px; color:var(--text-dim);">Напоминание: суммарный модификатор к броску — не более +3.</p>
     </div>
 
     <div class="combat-example">
@@ -1199,12 +1237,12 @@
 
       <div class="ce-step">
         <div class="ce-num">①</div>
-        <div class="ce-text"><strong>Инициатива.</strong> В теме кубиков: Коул пишет <em>/roll 1d10+3</em> (D10 + Ловкость 3) = <strong>9</strong>. Луиджи пишет <em>/roll 1d10+2</em> (D10 + Ловкость 2) = <strong>6</strong>. Коул действует первым.</div>
+        <div class="ce-text"><strong>Инициатива.</strong> Коул: <em>/roll 1d20+1</em> (мод. Ловкости 3 → +1) = 14+1 = <strong>15</strong>. Луиджи: <em>/roll 1d20+0</em> (Ловкость 2 → 0) = 11 = <strong>11</strong>. Коул первым.</div>
       </div>
 
       <div class="ce-step">
         <div class="ce-num">②</div>
-        <div class="ce-text"><strong>Коул пишет пост</strong> в ролевом чате: описывает, что вскидывает пистолет и стреляет. Затем в теме кубиков: <em>/roll 1d10+5</em> (D10 + Меткость 4 + бонус полиции 1) = <strong>8</strong>. Результат D10 сам по себе: 3 → но с бонусами итого 8 → <span style="color:#6aaa6a">Успех (7–9)</span>.</div>
+        <div class="ce-text"><strong>Коул пишет пост</strong>: вскидывает пистолет и стреляет. В теме кубиков: <em>/roll 1d20+3</em> (Меткость 4 → +2, бонус полиции +1 = итого +3). Бросок = 12+3 = <strong>15</strong> → <span style="color:#6aaa6a">Успех (13–18)</span>.</div>
       </div>
 
       <div class="ce-step">
@@ -1214,12 +1252,12 @@
 
       <div class="ce-step">
         <div class="ce-num">④</div>
-        <div class="ce-text"><strong>Луиджи пишет пост</strong>: замахивается кастетом несмотря на боль. Бросает <em>/roll 1d10+3</em> (Сила 4 + Моретти +1 − штраф −2 = +3) = 5+3 = <strong>8</strong>. D10 сам = 5 → <span style="color:#ccaa40">Частичный успех (5–6)</span>. Урон: <em>/roll 1d4</em> = 2. Коул получает <strong>2 HP</strong>.</div>
+        <div class="ce-text"><strong>Луиджи пишет пост</strong>: замахивается кастетом. <em>/roll 1d20+4</em> (Сила 5 → +3, бонус Моретти +1 = +4) = 8+4 = <strong>12</strong> → <span style="color:#ccaa40">Частичный успех (8–12)</span>. Урон D4: <em>/roll 1d4</em> = 2. Коул бросает защиту: <em>/roll 1d20+1</em> = 7+1 = <strong>8</strong>. Атака 12 − защита 8 = 4, меньше 5 → урон вдвое: 2÷2 = <strong>1 HP</strong>. Коул: 19−1 = <strong>18 HP</strong>.</div>
       </div>
 
       <div class="ce-step">
         <div class="ce-num">⑤</div>
-        <div class="ce-text"><strong>Мастер объявляет</strong> итог. Фиксирует в чате: «Луиджи: 6 HP / Тяжело ранен. Коул: 9 HP / Здоров.» Следующий раунд или Луиджи сдаётся.</div>
+        <div class="ce-text"><strong>Мастер объявляет</strong> итог раунда. «Луиджи: 17 HP / Ранен. Коул: 18 HP / Здоров.» Заметьте: даже сильный боец Луиджи (Сила +3) не размазал детектива — система работает.</div>
       </div>
     </div>
   </section>
@@ -1242,7 +1280,7 @@
         <div class="rc-num">Б.2</div>
         <div class="rc-body">
           <div class="rc-title">Ход — пост + бросок</div>
-          <div class="rc-desc">Один ход = <strong>один пост с описанием действия</strong> в ролевом чате + <strong>один бросок</strong> через <strong>@dicer_dnd_bot</strong> в теме кубиков. Нельзя кидать кубик без поста. Нельзя писать пост «подожду, что выпадет». Сначала описываешь действие — потом бросаешь. Формат: <strong>/roll 1d10+модификатор</strong>.</div>
+          <div class="rc-desc">Один ход = <strong>один пост с описанием действия</strong> в ролевом чате + <strong>один бросок</strong> через <strong>@dicer_dnd_bot</strong> в теме кубиков. Нельзя кидать кубик без поста. Нельзя писать пост «подожду, что выпадет». Сначала описываешь действие — потом бросаешь. Формат: <strong>/roll 1d20+модификатор</strong>.</div>
         </div>
       </div>
       <div class="rule-card">
